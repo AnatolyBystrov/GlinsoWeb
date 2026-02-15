@@ -83,13 +83,9 @@ export default function Home() {
         mouseY={mouseY}
       />
 
-      {/* Globe navigation -- appears on scroll, sticks to the right */}
+      {/* Globe -- mont-fort mountain style: large background element behind content */}
       {mounted && (
-        <GlobeNav
-          scrollProgress={scrollProgress}
-          mouseX={mouseX}
-          mouseY={mouseY}
-        />
+        <GlobeNav scrollProgress={scrollProgress} mouseX={mouseX} mouseY={mouseY} />
       )}
 
       {/* Content */}
