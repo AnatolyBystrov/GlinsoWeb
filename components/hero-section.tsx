@@ -27,51 +27,7 @@ export default function HeroSection({ mounted }: HeroSectionProps) {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Company logo top-left */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="absolute top-6 left-6 md:top-8 md:left-10 z-20"
-      >
-        <div className="flex items-center gap-3">
-          <div className="relative w-10 h-10 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-primary/20" />
-            <svg
-              viewBox="0 0 40 40"
-              className="w-10 h-10 text-primary"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <circle cx="20" cy="20" r="8" />
-              {Array.from({ length: 8 }, (_, i) => {
-                const angle = (i / 8) * Math.PI * 2
-                const x1 = 20 + Math.cos(angle) * 11
-                const y1 = 20 + Math.sin(angle) * 11
-                const x2 = 20 + Math.cos(angle) * 16
-                const y2 = 20 + Math.sin(angle) * 16
-                return (
-                  <line
-                    key={i}
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                )
-              })}
-            </svg>
-          </div>
-          <div className="hidden md:block">
-            <span className="text-sm font-sans font-semibold tracking-[0.15em] uppercase text-foreground">
-              Glinso
-            </span>
-          </div>
-        </div>
-      </motion.div>
+
 
       {/* Top nav */}
       <motion.nav
