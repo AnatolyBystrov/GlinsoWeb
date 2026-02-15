@@ -7,6 +7,9 @@ import ContentSections from "@/components/content-sections"
 import SiteFooter from "@/components/site-footer"
 import ScrollIndicator from "@/components/scroll-indicator"
 import PhoenixCursor from "@/components/phoenix-cursor"
+import dynamic from "next/dynamic"
+
+const GlobeScene = dynamic(() => import("@/components/globe-scene"), { ssr: false })
 
 const sectionIds = [
   "hero",
@@ -100,6 +103,15 @@ export default function Home() {
         mouseX={mouseX}
         mouseY={mouseY}
       />
+
+      {/* 3D Globe scene -- desktop only */}
+      {mounted && (
+        <GlobeScene
+          scrollProgress={scrollProgress}
+          mouseX={mouseX}
+          mouseY={mouseY}
+        />
+      )}
 
       {/* Side scroll indicator */}
       {mounted && (
