@@ -99,15 +99,8 @@ export default function HeroSection({ mounted }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Center content -- on mobile, pushed to bottom so phoenix animation stays visible above */}
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-auto md:mt-16 pb-20 md:pb-0 pt-6 md:pt-0">
-        {/* Mobile gradient backdrop behind text for readability */}
-        <div
-          className="absolute inset-0 -mx-4 md:hidden pointer-events-none"
-          style={{
-            background: "linear-gradient(to top, hsl(220 25% 4% / 0.95) 30%, hsl(220 25% 4% / 0.6) 70%, transparent 100%)",
-          }}
-        />
+      {/* Center content */}
+      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-auto md:mt-16 pb-20 md:pb-0">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
