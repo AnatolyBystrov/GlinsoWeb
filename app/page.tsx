@@ -8,16 +8,6 @@ import SiteFooter from "@/components/site-footer"
 import PhoenixCursor from "@/components/phoenix-cursor"
 import GlobeNav from "@/components/globe-nav"
 
-const sectionIds = [
-  "hero",
-  "who-we-are",
-  "divisions",
-  "presence",
-  "esg",
-  "csr",
-  "contact",
-]
-
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [mouseX, setMouseX] = useState(0)
@@ -45,7 +35,6 @@ export default function Home() {
         y: (e.clientY / window.innerHeight - 0.5) * 2,
       }
     }
-
     const lerpLoop = () => {
       currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.06
       currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.06
@@ -53,10 +42,8 @@ export default function Home() {
       setMouseY(currentMouse.current.y)
       rafMouse.current = requestAnimationFrame(lerpLoop)
     }
-
     window.addEventListener("mousemove", onMouseMove)
     rafMouse.current = requestAnimationFrame(lerpLoop)
-
     return () => {
       window.removeEventListener("mousemove", onMouseMove)
       cancelAnimationFrame(rafMouse.current)
@@ -83,12 +70,14 @@ export default function Home() {
         mouseY={mouseY}
       />
 
-      {/* Globe -- mont-fort mountain style: large background element behind content */}
       {mounted && (
-        <GlobeNav scrollProgress={scrollProgress} mouseX={mouseX} mouseY={mouseY} />
+        <GlobeNav
+          scrollProgress={scrollProgress}
+          mouseX={mouseX}
+          mouseY={mouseY}
+        />
       )}
 
-      {/* Content */}
       <div className="relative z-10">
         <HeroSection />
         <ContentSections />
