@@ -6,6 +6,7 @@ import HeroSection from "@/components/hero-section"
 import ContentSections from "@/components/content-sections"
 import SiteFooter from "@/components/site-footer"
 import ScrollIndicator from "@/components/scroll-indicator"
+import PhoenixCursor from "@/components/phoenix-cursor"
 
 const sectionIds = [
   "hero",
@@ -91,6 +92,8 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen bg-background">
+      {/* Phoenix cursor -- desktop only */}
+      {mounted && <PhoenixCursor />}
       {/* Fixed video background with particles -- always alive */}
       <VideoBackground
         scrollProgress={scrollProgress}
