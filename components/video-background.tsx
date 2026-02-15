@@ -32,11 +32,13 @@ export default function VideoBackground({ scrollProgress }: VideoBackgroundProps
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "brightness(0.65) saturate(1.1) contrast(1.05)" }}
+          className="absolute inset-0 w-full h-full object-contain md:object-cover"
+          style={{ filter: "brightness(0.7) saturate(1.1) contrast(1.05)" }}
         >
           <source src="/video/hero-bg.mp4" type="video/mp4" />
         </video>
+        {/* On mobile, fill black bars behind contained video */}
+        <div className="absolute inset-0 bg-background md:hidden -z-10" />
       </div>
 
       {/* Soft vignette edges -- keeps the phoenix centre bright, darkens edges for text readability */}

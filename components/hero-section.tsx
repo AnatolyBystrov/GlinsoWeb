@@ -26,7 +26,7 @@ export default function HeroSection({ mounted }: HeroSectionProps) {
   }
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-end md:justify-center overflow-hidden">
 
 
       {/* Top nav */}
@@ -99,8 +99,8 @@ export default function HeroSection({ mounted }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Center content -- positioned so the phoenix from the video is visible behind */}
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
+      {/* Center content -- on mobile, pushed to bottom so phoenix animation stays visible above */}
+      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-auto md:mt-16 pb-24 md:pb-0">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -116,7 +116,7 @@ export default function HeroSection({ mounted }: HeroSectionProps) {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.6 }}
-          className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-sans font-light tracking-tight text-balance leading-[1.1]"
+          className="text-3xl md:text-6xl lg:text-7xl xl:text-8xl font-sans font-light tracking-tight text-balance leading-[1.1]"
         >
           <span className="text-foreground">Advancing</span>{" "}
           <span className="text-primary">Innovation</span>
@@ -148,10 +148,10 @@ export default function HeroSection({ mounted }: HeroSectionProps) {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 2.5 }}
         onClick={handleScrollDown}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 cursor-pointer group"
+        className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 md:gap-3 cursor-pointer group"
         aria-label="Scroll down to discover"
       >
-        <span className="text-xs font-mono tracking-[0.3em] uppercase text-muted-foreground group-hover:text-primary transition-colors duration-300">
+        <span className="hidden md:block text-xs font-mono tracking-[0.3em] uppercase text-muted-foreground group-hover:text-primary transition-colors duration-300">
           Scroll down to discover
         </span>
         <motion.div
