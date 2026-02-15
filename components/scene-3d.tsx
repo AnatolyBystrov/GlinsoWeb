@@ -1,3 +1,11 @@
 "use client"
-// Re-export terrain scene to resolve stale Turbopack cache referencing this path
-export { default } from "./terrain-scene"
+
+import TerrainScene from "./terrain-scene"
+
+export default function Scene3D(props: {
+  scrollProgress: number
+  mouseX: number
+  mouseY: number
+}) {
+  return <TerrainScene {...props} />
+}

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react"
 
-const navItems = [
-  { label: "About", href: "#who-we-are" },
-  { label: "Divisions", href: "#divisions" },
-  { label: "Presence", href: "#presence" },
-  { label: "ESG", href: "#esg" },
-  { label: "Contact", href: "#contact" },
+const sections = [
+  { id: "who-we-are", label: "About", range: [0.2, 0.4] },
+  { id: "divisions", label: "Divisions", range: [0.4, 0.55] },
+  { id: "presence", label: "Global", range: [0.55, 0.7] },
+  { id: "esg", label: "ESG", range: [0.7, 0.85] },
+  { id: "csr", label: "Community", range: [0.85, 1.0] },
 ]
 
 interface GlassNavProps {
@@ -18,8 +18,14 @@ export default function GlassNav({ scrollProgress }: GlassNavProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    setVisible(scrollProgress > 0.04)
+    /* Show nav once you leave the hero area */
+    setVisible(scrollProgress > 0.15)
   }, [scrollProgress])
+
+  /* Find active section */
+  const activeIdx = sections.findIndex(
+    (s) => scrollProgress >= s.range[0] && scrollProgress < s.range[1]
+  )
 
   return (
     <header
@@ -40,6 +46,7 @@ export default function GlassNav({ scrollProgress }: GlassNavProps) {
           }}
           aria-label="Main navigation"
         >
+          {/* Logo - click returns to hero */}
           <a
             href="#hero"
             className="text-xs md:text-sm font-sans font-light tracking-[0.2em] uppercase text-foreground/90 hover:text-primary transition-colors duration-300"
@@ -47,21 +54,32 @@ export default function GlassNav({ scrollProgress }: GlassNavProps) {
             Glinso
           </a>
 
+          {/* Section links */}
           <div className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
+            {sections.map((sec, i) => (
               <a
-                key={item.label}
-                href={item.href}
-                className="text-[10px] font-mono tracking-[0.18em] uppercase text-muted-foreground/60 hover:text-primary transition-colors duration-300"
+                key={sec.id}
+                href={`#${sec.id}`}
+                className="relative text-[10px] font-mono tracking-[0.18em] uppercase transition-colors duration-300"
+                style={{
+                  color: i === activeIdx
+                    ? "hsl(38 75% 55%)"
+                    : "hsl(38 20% 50% / 0.4)",
+                }}
               >
-                {item.label}
+                {sec.label}
+                {/* Active underline */}
+                <span
+                  className="absolute left-0 -bottom-1 h-px bg-primary transition-all duration-500"
+                  style={{ width: i === activeIdx ? "100%" : "0%" }}
+                />
               </a>
             ))}
           </div>
 
-          {/* Mobile: just show GLINSO brand, nav is implicit via scroll */}
-          <span className="md:hidden text-[9px] font-mono tracking-[0.15em] text-muted-foreground/40">
-            Scroll to explore
+          {/* Mobile: current section indicator */}
+          <span className="md:hidden text-[9px] font-mono tracking-[0.15em] text-primary/60 uppercase">
+            {activeIdx >= 0 ? sections[activeIdx].label : "Explore"}
           </span>
         </nav>
       </div>
