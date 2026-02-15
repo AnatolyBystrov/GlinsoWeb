@@ -4,6 +4,15 @@ import { motion } from "framer-motion"
 import VerticalText from "./vertical-text"
 import { ChevronDown } from "lucide-react"
 
+const orbitalNavItems = [
+  { label: "Advantage", href: "#about", angle: -60 },
+  { label: "Leadership", href: "#about", angle: -20 },
+  { label: "Partnerships", href: "#about", angle: 20 },
+  { label: "ESG", href: "#about", angle: 60 },
+  { label: "Access", href: "#about", angle: 100 },
+  { label: "Governance", href: "#about", angle: 140 },
+]
+
 export default function HeroSection() {
   const handleScrollDown = () => {
     const target = document.getElementById("about")
@@ -22,6 +31,42 @@ export default function HeroSection() {
       {/* Side vertical text - right */}
       <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 hidden md:flex">
         <VerticalText text="REINSURANCE" delay={1.8} side="right" />
+      </div>
+
+      {/* Orbital navigation menu - positioned around the central globe */}
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none hidden lg:flex">
+        <div className="relative" style={{ width: 520, height: 520 }}>
+          {orbitalNavItems.map((item, i) => {
+            const radian = (item.angle * Math.PI) / 180
+            const radiusX = 260
+            const radiusY = 220
+            const x = Math.cos(radian) * radiusX
+            const y = Math.sin(radian) * radiusY
+
+            return (
+              <motion.a
+                key={item.label}
+                href={item.href}
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 1.8 + i * 0.12 }}
+                className="absolute pointer-events-auto group"
+                style={{
+                  left: `calc(50% + ${x}px)`,
+                  top: `calc(50% + ${y}px)`,
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                {/* Connecting dot */}
+                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors duration-300" />
+                {/* Label */}
+                <span className="relative block whitespace-nowrap text-[10px] font-mono tracking-[0.25em] uppercase text-foreground/40 group-hover:text-primary transition-colors duration-300 px-3 py-2">
+                  {item.label}
+                </span>
+              </motion.a>
+            )
+          })}
+        </div>
       </div>
 
       {/* Center content */}
@@ -91,7 +136,7 @@ export default function HeroSection() {
         </motion.div>
       </motion.button>
 
-      {/* Navigation links top-right */}
+      {/* Top nav - right */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -118,9 +163,8 @@ export default function HeroSection() {
         className="absolute top-6 left-6 md:top-8 md:left-10 z-20"
       >
         <div className="flex items-center gap-3">
-          {/* Sun logo */}
           <div className="relative w-10 h-10 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-primary/20 animate-pulse-glow" />
+            <div className="absolute inset-0 rounded-full bg-primary/20" />
             <svg
               viewBox="0 0 40 40"
               className="w-10 h-10 text-primary"

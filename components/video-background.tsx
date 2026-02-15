@@ -20,13 +20,25 @@ export default function VideoBackground() {
         muted
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: "brightness(0.3) saturate(0.7)" }}
+        style={{ filter: "brightness(0.25) saturate(0.5)" }}
       >
         <source src="/video/hero-bg.mp4" type="video/mp4" />
       </video>
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
+      {/* Softer gradient overlays -- less black, more translucent deep navy */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, hsl(220 25% 3% / 0.65) 0%, hsl(220 25% 3% / 0.25) 40%, hsl(220 25% 3% / 0.6) 80%, hsl(220 25% 3% / 0.95) 100%)",
+        }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 60% at 50% 45%, transparent 0%, hsl(220 25% 3% / 0.5) 100%)",
+        }}
+      />
     </div>
   )
 }
