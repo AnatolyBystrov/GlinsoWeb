@@ -1,12 +1,14 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
+import dynamic from "next/dynamic"
 import VideoBackground from "@/components/video-background"
 import HeroSection from "@/components/hero-section"
 import ContentSections from "@/components/content-sections"
 import SiteFooter from "@/components/site-footer"
 import PhoenixCursor from "@/components/phoenix-cursor"
-import GlobeNav from "@/components/globe-nav"
+
+const TerrainScene = dynamic(() => import("@/components/terrain-scene"), { ssr: false })
 
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -70,8 +72,9 @@ export default function Home() {
         mouseY={mouseY}
       />
 
+      {/* 3D terrain + globe scene (mont-fort mountain style) */}
       {mounted && (
-        <GlobeNav
+        <TerrainScene
           scrollProgress={scrollProgress}
           mouseX={mouseX}
           mouseY={mouseY}
