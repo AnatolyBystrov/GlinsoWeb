@@ -1,21 +1,13 @@
 "use client"
 
 import { motion } from "framer-motion"
-import VerticalText from "./vertical-text"
 import { ChevronDown } from "lucide-react"
 
-const navItems = [
-  { label: "Advantage", href: "#advantage" },
-  { label: "Leadership", href: "#leadership" },
-  { label: "Partnerships", href: "#partnerships" },
-  { label: "ESG", href: "#esg" },
-  { label: "Market Access", href: "#access" },
-  { label: "Governance", href: "#governance" },
-]
+const ease = [0.16, 1, 0.3, 1] as const
 
 export default function HeroSection() {
   const handleScrollDown = () => {
-    const target = document.getElementById("about")
+    const target = document.getElementById("who-we-are")
     if (target) target.scrollIntoView({ behavior: "smooth" })
   }
 
@@ -24,132 +16,88 @@ export default function HeroSection() {
       id="hero"
       className="relative h-screen flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* Top nav -- positioned within the hero, top-right */}
-      <motion.nav
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="absolute top-5 right-5 md:top-8 md:right-10 z-20 flex items-center gap-4 md:gap-6"
-        aria-label="Main navigation"
-      >
-        {["Contact", "ESG", "Privacy Policy"].map((item) => (
-          <a
-            key={item}
-            href={`#${item.toLowerCase().replace(/\s/g, "-")}`}
-            className="text-[10px] md:text-xs font-mono tracking-[0.15em] md:tracking-[0.2em] uppercase text-foreground/40 hover:text-primary transition-colors duration-300"
+      {/* Main stacked heading */}
+      <div className="relative z-10 text-center px-6">
+        {/* Main word stack */}
+        <div className="flex flex-col items-center gap-1 md:gap-2">
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.3, ease }}
+            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-sans font-extralight tracking-[-0.02em] uppercase text-foreground leading-none"
           >
-            {item}
-          </a>
-        ))}
-      </motion.nav>
+            Glinso
+          </motion.h1>
 
-      {/* Side vertical text */}
-      <div className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 hidden lg:flex">
-        <VerticalText text="GLINSO" delay={1.5} side="left" />
-      </div>
-      <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 hidden lg:flex">
-        <VerticalText text="REINSURANCE" delay={1.8} side="right" />
-      </div>
+          <motion.span
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.5, ease }}
+            className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-sans font-extralight tracking-[0.05em] uppercase text-foreground/70 leading-none"
+          >
+            Reinsurance
+          </motion.span>
 
-      {/* Circular nav around the phoenix (desktop) */}
-      <div className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none hidden xl:flex">
-        <div className="relative" style={{ width: 560, height: 560 }}>
-          <div className="absolute inset-0 rounded-full border border-primary/[0.06]" />
-          <div className="absolute inset-8 rounded-full border border-primary/[0.03]" />
-
-          {navItems.map((item, i) => {
-            const startAngle = -90
-            const angleStep = 360 / navItems.length
-            const angle = startAngle + i * angleStep
-            const radian = (angle * Math.PI) / 180
-            const radius = 280
-            const x = Math.cos(radian) * radius
-            const y = Math.sin(radian) * radius
-
-            return (
-              <motion.a
-                key={item.label}
-                href={item.href}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 2.2 + i * 0.08 }}
-                className="absolute pointer-events-auto group flex items-center gap-2"
-                style={{
-                  left: `calc(50% + ${x}px)`,
-                  top: `calc(50% + ${y}px)`,
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary group-hover:shadow-[0_0_10px_hsl(38_70%_55%_/_0.5)] transition-all duration-300" />
-                <span className="whitespace-nowrap text-[10px] font-mono tracking-[0.2em] uppercase text-foreground/25 group-hover:text-primary transition-colors duration-300">
-                  {item.label}
-                </span>
-              </motion.a>
-            )
-          })}
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7, ease }}
+            className="mt-2 md:mt-3 text-xs sm:text-sm md:text-base font-mono tracking-[0.3em] md:tracking-[0.4em] uppercase text-primary/60"
+          >
+            {"Advisory \u00B7 Analytics"}
+          </motion.span>
         </div>
-      </div>
 
-      {/* Main content -- centred on all screens */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-5"
-        >
-          <span className="text-xs md:text-sm font-mono tracking-[0.4em] md:tracking-[0.5em] uppercase text-primary/60">
-            Glinso Group
-          </span>
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 35 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-sans font-light tracking-tight text-balance leading-[1.05]"
-        >
-          <span className="text-foreground">Advancing</span>{" "}
-          <span className="text-primary">Innovation</span>
-          <br />
-          <span className="text-foreground/80">in Reinsurance</span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-6 md:mt-8 text-sm md:text-base lg:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed"
-        >
-          Strategic reinsurance brokerage delivering global market access,
-          innovative risk solutions, and unparalleled client partnerships.
-        </motion.p>
-
+        {/* Divider */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 1.5, delay: 1.6 }}
-          className="mt-8 mx-auto w-20 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+          transition={{ duration: 1.5, delay: 1.0 }}
+          className="mt-8 md:mt-10 mx-auto w-16 md:w-24 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
         />
+
+        {/* Subtext */}
+        <motion.p
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.2, ease }}
+          className="mt-6 md:mt-8 text-xs sm:text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed text-balance"
+        >
+          Glinso is a global reinsurance brokerage and risk advisory group. We
+          structure, place and manage reinsurance programmes, delivering
+          capital-efficient risk transfer solutions to insurers and specialty
+          carriers worldwide.
+        </motion.p>
+
+        {/* CTA Button */}
+        <motion.a
+          href="#who-we-are"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.6, ease }}
+          className="inline-block mt-8 md:mt-10 px-8 py-3 border border-primary/30 text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary hover:bg-primary/10 hover:border-primary/50 transition-all duration-400"
+        >
+          Discover Glinso
+        </motion.a>
       </div>
 
       {/* Scroll indicator */}
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 2.5 }}
+        transition={{ duration: 1, delay: 2.2 }}
         onClick={handleScrollDown}
         className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer group"
         aria-label="Scroll down to discover"
       >
-        <span className="hidden md:block text-[10px] font-mono tracking-[0.3em] uppercase text-muted-foreground/50 group-hover:text-primary/70 transition-colors duration-300">
-          Scroll to explore
+        <span className="text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-muted-foreground/40 group-hover:text-primary/60 transition-colors duration-300">
+          Scroll down to discover
         </span>
         <motion.div
-          animate={{ y: [0, 6, 0] }}
+          animate={{ y: [0, 5, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ChevronDown className="w-4 h-4 text-primary/40" />
+          <ChevronDown className="w-4 h-4 text-primary/30" />
         </motion.div>
       </motion.button>
     </section>

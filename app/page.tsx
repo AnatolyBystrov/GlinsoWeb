@@ -9,13 +9,11 @@ import ScrollIndicator from "@/components/scroll-indicator"
 
 const sectionIds = [
   "hero",
-  "about",
-  "advantage",
-  "leadership",
-  "partnerships",
+  "who-we-are",
+  "divisions",
+  "presence",
   "esg",
-  "access",
-  "governance",
+  "csr",
   "contact",
 ]
 
