@@ -1,10 +1,12 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { useRef } from "react"
 import ExpandableSection from "./expandable-section"
 
 const sections = [
   {
+    id: "advantage",
     title: "The Glinso Advantage",
     shortText:
       "As a premier reinsurance broker, Glinso delivers strategic risk transfer solutions across global markets. Our portfolio spans property, casualty, specialty, and marine lines, providing clients with comprehensive access to capacity and innovative placement strategies.",
@@ -13,6 +15,7 @@ const sections = [
     verticalLabel: "Advantage",
   },
   {
+    id: "leadership",
     title: "Leadership driving growth and innovation",
     shortText:
       "Glinso's greatest strength lies in the synergy between its talented team and robust operating platform. The leadership team plays a pivotal role in managing a diverse portfolio of client relationships and reinsurance programmes, driving growth and innovation across every market we serve.",
@@ -21,6 +24,7 @@ const sections = [
     verticalLabel: "Leadership",
   },
   {
+    id: "partnerships",
     title: "Strategic relationships and market access",
     shortText:
       "Glinso prioritises relationship building within global reinsurance markets, maintaining preferred access to leading reinsurers across London, Bermuda, Continental Europe, and Asia-Pacific. Our established partnerships ensure competitive terms and reliable capacity, even in challenging market conditions.",
@@ -29,6 +33,7 @@ const sections = [
     verticalLabel: "Partnerships",
   },
   {
+    id: "esg",
     title: "Empowering communities through social responsibility",
     shortText:
       "Beyond our core reinsurance operations, Glinso is committed to making a meaningful impact in the communities we serve. Our ESG framework integrates sustainability principles into every aspect of our business, from responsible underwriting practices to community engagement.",
@@ -37,6 +42,7 @@ const sections = [
     verticalLabel: "Community",
   },
   {
+    id: "access",
     title: "Preferential market access",
     shortText:
       "Courtesy of Glinso's extensive global network spanning multiple continents, we are uniquely positioned to capitalise on opportunities and provide exclusive access to a diverse array of reinsurance markets and deal flow, delivering a tactical advantage for our clients.",
@@ -45,6 +51,7 @@ const sections = [
     verticalLabel: "Access",
   },
   {
+    id: "governance",
     title: "Corporate governance and global compliance",
     shortText:
       "Glinso operates under an integrated ESG management framework and adheres to strict corporate governance principles. Compliance with all relevant laws and regulations across global operations ensures that services are delivered responsibly and reliably.",
@@ -54,39 +61,50 @@ const sections = [
   },
 ]
 
+function ParallaxIntro() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  })
+  const y = useTransform(scrollYProgress, [0, 1], [80, -80])
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0])
+
+  return (
+    <motion.div
+      ref={ref}
+      id="about"
+      style={{ y, opacity }}
+      className="max-w-4xl mx-auto px-6 md:px-12 pt-32 pb-16 text-center"
+    >
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        transition={{ duration: 1, delay: 0.2 }}
+        viewport={{ once: true }}
+        className="w-16 h-px bg-primary/40 mx-auto mb-8"
+      />
+      <p className="text-lg md:text-xl text-muted-foreground leading-relaxed text-balance">
+        As the dedicated reinsurance brokerage of the Glinso Group, we support
+        our clients&apos; success through strategic risk transfer, innovative
+        placement structures, and deep market intelligence. Functioning as
+        both an advisor and an execution partner, Glinso delivers access to
+        global reinsurance capacity while creating sustainable competitive
+        advantages.
+      </p>
+    </motion.div>
+  )
+}
+
 export default function ContentSections() {
   return (
     <div className="relative z-10">
-      {/* Intro text block */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true, margin: "-100px" }}
-        id="about"
-        className="max-w-4xl mx-auto px-6 md:px-12 pt-32 pb-16 text-center"
-      >
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="w-16 h-px bg-primary/40 mx-auto mb-8"
-        />
-        <p className="text-lg md:text-xl text-muted-foreground leading-relaxed text-balance">
-          As the dedicated reinsurance brokerage of the Glinso Group, we support
-          our clients&apos; success through strategic risk transfer, innovative
-          placement structures, and deep market intelligence. Functioning as
-          both an advisor and an execution partner, Glinso delivers access to
-          global reinsurance capacity while creating sustainable competitive
-          advantages.
-        </p>
-      </motion.div>
+      <ParallaxIntro />
 
-      {/* Expandable sections */}
       {sections.map((section, index) => (
         <ExpandableSection
-          key={index}
+          key={section.id}
+          id={section.id}
           title={section.title}
           shortText={section.shortText}
           fullText={section.fullText}

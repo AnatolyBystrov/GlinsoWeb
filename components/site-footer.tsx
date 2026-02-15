@@ -52,38 +52,9 @@ export default function SiteFooter() {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <svg
-              viewBox="0 0 40 40"
-              className="w-8 h-8 text-primary"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <circle cx="20" cy="20" r="8" />
-              {Array.from({ length: 8 }, (_, i) => {
-                const angle = (i / 8) * Math.PI * 2
-                const x1 = 20 + Math.cos(angle) * 11
-                const y1 = 20 + Math.sin(angle) * 11
-                const x2 = 20 + Math.cos(angle) * 16
-                const y2 = 20 + Math.sin(angle) * 16
-                return (
-                  <line
-                    key={i}
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                )
-              })}
-            </svg>
-            <span className="text-lg font-sans font-semibold tracking-[0.15em] uppercase text-foreground">
-              Glinso
-            </span>
-          </div>
+          <span className="text-lg font-sans font-semibold tracking-[0.15em] uppercase text-foreground mb-4 block">
+            Glinso
+          </span>
           <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
             Strategic reinsurance brokerage delivering global market access and
             innovative risk solutions.

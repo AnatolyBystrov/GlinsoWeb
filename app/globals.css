@@ -71,3 +71,10 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Section reveal transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .section-reveal {
+    will-change: transform, opacity;
+  }
+}

@@ -26,7 +26,7 @@ export default function HeroSection({ mounted }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
 
       {/* Top nav */}

@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { Plus, Minus } from "lucide-react"
 
 interface ExpandableSectionProps {
+  id: string
   title: string
   shortText: string
   fullText: string
@@ -13,6 +14,7 @@ interface ExpandableSectionProps {
 }
 
 export default function ExpandableSection({
+  id,
   title,
   shortText,
   fullText,
@@ -22,13 +24,20 @@ export default function ExpandableSection({
   const [isExpanded, setIsExpanded] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
 
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  })
+
+  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [60, 0, 0, -40])
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0.3])
+  const lineScale = useTransform(scrollYProgress, [0, 0.4], [0, 1])
+
   return (
     <motion.div
       ref={sectionRef}
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
-      viewport={{ once: true, margin: "-100px" }}
+      id={id}
+      style={{ y, opacity }}
       className="relative py-16 md:py-24 border-t border-border/30"
     >
       <div className="flex items-start gap-6 md:gap-12 max-w-6xl mx-auto px-6 md:px-12">
@@ -125,13 +134,10 @@ export default function ExpandableSection({
           </motion.button>
         </div>
 
-        {/* Decorative element right side */}
+        {/* Animated side line */}
         <div className="hidden lg:block min-w-[60px]">
           <motion.div
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            viewport={{ once: true }}
+            style={{ scaleY: lineScale }}
             className="w-px h-32 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent origin-top"
           />
         </div>
