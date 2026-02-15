@@ -7,6 +7,8 @@ import HeroSection from "@/components/hero-section"
 import ContentSections from "@/components/content-sections"
 import SiteFooter from "@/components/site-footer"
 import PhoenixCursor from "@/components/phoenix-cursor"
+import ScrollProgress from "@/components/scroll-progress"
+import GlassNav from "@/components/glass-nav"
 
 const TerrainScene = dynamic(() => import("@/components/terrain-scene"), { ssr: false })
 
@@ -65,6 +67,8 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-background">
       {mounted && <PhoenixCursor />}
+      <ScrollProgress progress={scrollProgress} />
+      <GlassNav scrollProgress={scrollProgress} />
 
       <VideoBackground
         scrollProgress={scrollProgress}

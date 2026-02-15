@@ -299,15 +299,28 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
       bPos.needsUpdate = true
       backGeo.computeVertexNormals()
 
-      /* Dune color: warm golden to deeper amber as you scroll */
-      const fR = 0.77 - sp * 0.15
-      const fG = 0.58 - sp * 0.12
-      const fB = 0.16 + sp * 0.05
+      /* Dune color: smooth multi-stop transition through sections
+         0.0 = warm golden sand (hero)
+         0.3 = deep amber (divisions)
+         0.6 = dusky copper-violet (ESG)
+         1.0 = deep twilight blue-purple (footer) */
+      const lerpC = (a: number, b: number, t: number) => a + (b - a) * t
+      let fR: number, fG: number, fB: number
+      let bR: number, bG: number, bB: number
+      if (sp < 0.3) {
+        const t = sp / 0.3
+        fR = lerpC(0.77, 0.65, t); fG = lerpC(0.58, 0.42, t); fB = lerpC(0.16, 0.12, t)
+        bR = lerpC(0.55, 0.45, t); bG = lerpC(0.41, 0.28, t); bB = lerpC(0.08, 0.08, t)
+      } else if (sp < 0.6) {
+        const t = (sp - 0.3) / 0.3
+        fR = lerpC(0.65, 0.48, t); fG = lerpC(0.42, 0.28, t); fB = lerpC(0.12, 0.22, t)
+        bR = lerpC(0.45, 0.32, t); bG = lerpC(0.28, 0.18, t); bB = lerpC(0.08, 0.18, t)
+      } else {
+        const t = (sp - 0.6) / 0.4
+        fR = lerpC(0.48, 0.2, t); fG = lerpC(0.28, 0.14, t); fB = lerpC(0.22, 0.35, t)
+        bR = lerpC(0.32, 0.12, t); bG = lerpC(0.18, 0.08, t); bB = lerpC(0.18, 0.28, t)
+      }
       ;(terrain.material as THREE.MeshStandardMaterial).color.setRGB(fR, fG, fB)
-
-      const bR = 0.55 - sp * 0.1
-      const bG = 0.41 - sp * 0.08
-      const bB = 0.08 + sp * 0.04
       ;(terrainBack.material as THREE.MeshStandardMaterial).color.setRGB(bR, bG, bB)
 
       /* Wire overlay subtle shift */
@@ -367,11 +380,16 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
       }
       wp.needsUpdate = true
 
-      /* Fog: warm desert haze */
-      ;(scene.fog as THREE.FogExp2).density = 0.035 - sp * 0.015
-      ;(scene.fog as THREE.FogExp2).color.setHex(
-        sp < 0.5 ? 0x1a120a : 0x100c06
-      )
+      /* Fog: transitions from warm haze to cool twilight */
+      ;(scene.fog as THREE.FogExp2).density = 0.035 - sp * 0.012
+      const fogR = lerpC(0.1, 0.04, sp)
+      const fogG = lerpC(0.07, 0.02, sp)
+      const fogB = lerpC(0.04, 0.08, sp)
+      ;(scene.fog as THREE.FogExp2).color.setRGB(fogR, fogG, fogB)
+
+      /* Light warmth shifts with scroll */
+      sunLight.intensity = 1.0 - sp * 0.4
+      rimLight.intensity = 0.3 + sp * 0.2
 
       renderer.render(scene, camera)
       S.animId = requestAnimationFrame(animate)

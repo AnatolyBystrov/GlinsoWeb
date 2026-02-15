@@ -5,8 +5,8 @@ import { useRef, useState, useEffect } from "react"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
-/* ── Intersection Observer hook ── */
-function useReveal(threshold = 0.15) {
+/* ── Intersection Observer hook with parallax offset ── */
+function useReveal(threshold = 0.12) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   useEffect(() => {
@@ -14,7 +14,7 @@ function useReveal(threshold = 0.15) {
     if (!el) return
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setVisible(true) },
-      { threshold, rootMargin: "0px 0px -40px 0px" }
+      { threshold, rootMargin: "0px 0px -60px 0px" }
     )
     obs.observe(el)
     return () => obs.disconnect()
@@ -22,11 +22,42 @@ function useReveal(threshold = 0.15) {
   return { ref, visible }
 }
 
+/* ── Glass card wrapper ── */
+function GlassCard({ children, className = "", delay = 0, visible }: {
+  children: React.ReactNode
+  className?: string
+  delay?: number
+  visible: boolean
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={visible ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, delay, ease }}
+      className={`group relative overflow-hidden rounded-sm border border-white/[0.06] ${className}`}
+      style={{
+        background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+      }}
+    >
+      {/* Hover shimmer */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+        style={{
+          background: "linear-gradient(135deg, rgba(232,168,64,0.04) 0%, transparent 60%)",
+        }}
+      />
+      {children}
+    </motion.div>
+  )
+}
+
 /* ── SECTION: WHO WE ARE ── */
 function WhoWeAre() {
   const { ref, visible } = useReveal()
   return (
-    <section id="who-we-are" ref={ref} className="py-24 md:py-36 border-t border-border/15">
+    <section id="who-we-are" ref={ref} className="relative py-28 md:py-40 border-t border-border/10">
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <motion.span
           initial={{ opacity: 0 }}
@@ -37,23 +68,23 @@ function WhoWeAre() {
           01
         </motion.span>
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 35 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.1, ease }}
-          className="text-2xl md:text-4xl lg:text-5xl font-sans font-extralight tracking-tight uppercase text-foreground mb-8 leading-[1.1]"
+          transition={{ duration: 1, delay: 0.1, ease }}
+          className="text-3xl md:text-5xl lg:text-6xl font-sans font-extralight tracking-tight uppercase text-foreground mb-8 leading-[1.05]"
         >
           Who We Are
         </motion.h2>
         <motion.div
           initial={{ scaleX: 0 }}
           animate={visible ? { scaleX: 1 } : {}}
-          transition={{ duration: 1, delay: 0.2, ease }}
+          transition={{ duration: 1.2, delay: 0.2, ease }}
           className="w-16 h-px bg-primary/30 mb-8 origin-left"
         />
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3, ease }}
+          transition={{ duration: 0.9, delay: 0.3, ease }}
           className="text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed max-w-3xl"
         >
           Glinso is a global reinsurance broker that combines deep market
@@ -73,25 +104,29 @@ const divisions = [
   {
     name: "Glinso Reinsurance",
     desc: "Structuring resilient risk transfer programmes across treaty, facultative and specialty lines.",
+    icon: "Re",
   },
   {
     name: "Glinso Advisory",
     desc: "Strategic risk and capital advisory for insurers navigating complex regulatory and market landscapes.",
+    icon: "Ad",
   },
   {
     name: "Glinso Analytics",
     desc: "Data-driven underwriting, portfolio insights and catastrophe modelling that sharpen decision-making.",
+    icon: "An",
   },
   {
     name: "Glinso Capital Solutions",
     desc: "Connecting risk with global capital markets through ILS, sidecars and alternative risk transfer structures.",
+    icon: "Cs",
   },
 ]
 
 function OurDivisions() {
   const { ref, visible } = useReveal()
   return (
-    <section id="divisions" ref={ref} className="py-24 md:py-36 border-t border-border/15">
+    <section id="divisions" ref={ref} className="relative py-28 md:py-40 border-t border-border/10">
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <motion.span
           initial={{ opacity: 0 }}
@@ -102,10 +137,10 @@ function OurDivisions() {
           02
         </motion.span>
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 35 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.1, ease }}
-          className="text-2xl md:text-4xl lg:text-5xl font-sans font-extralight tracking-tight uppercase text-foreground mb-4 leading-[1.1]"
+          transition={{ duration: 1, delay: 0.1, ease }}
+          className="text-3xl md:text-5xl lg:text-6xl font-sans font-extralight tracking-tight uppercase text-foreground mb-4 leading-[1.05]"
         >
           Our Divisions
         </motion.h2>
@@ -113,29 +148,35 @@ function OurDivisions() {
           initial={{ opacity: 0, y: 15 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2, ease }}
-          className="text-sm md:text-base text-muted-foreground mb-12 md:mb-16 max-w-2xl"
+          className="text-sm md:text-base text-muted-foreground mb-14 md:mb-18 max-w-2xl"
         >
           Four interlinked divisions that complement each other, creating a
           unified platform for comprehensive risk transfer and advisory.
         </motion.p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
           {divisions.map((div, i) => (
-            <motion.div
+            <GlassCard
               key={div.name}
-              initial={{ opacity: 0, y: 25 }}
-              animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.3 + i * 0.1, ease }}
-              className="group relative p-6 md:p-8 border border-border/20 hover:border-primary/20 transition-colors duration-500"
+              delay={0.3 + i * 0.1}
+              visible={visible}
+              className="p-6 md:p-8"
             >
-              <div className="absolute top-0 left-0 w-8 h-px bg-primary/30 group-hover:w-full transition-all duration-700" />
-              <h3 className="text-xs md:text-sm font-mono tracking-[0.15em] uppercase text-primary mb-3">
-                {div.name}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {div.desc}
-              </p>
-            </motion.div>
+              <div className="flex items-start gap-4">
+                <span className="flex-shrink-0 w-9 h-9 flex items-center justify-center border border-primary/20 text-primary/60 text-[10px] font-mono tracking-wider rounded-sm">
+                  {div.icon}
+                </span>
+                <div>
+                  <h3 className="text-xs md:text-sm font-mono tracking-[0.15em] uppercase text-primary/80 mb-2.5 group-hover:text-primary transition-colors duration-500">
+                    {div.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {div.desc}
+                  </p>
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 w-0 h-px bg-primary/30 group-hover:w-full transition-all duration-700" />
+            </GlassCard>
           ))}
         </div>
       </div>
@@ -144,12 +185,17 @@ function OurDivisions() {
 }
 
 /* ── SECTION: GLOBAL PRESENCE ── */
-const cities = ["London", "Zurich", "Singapore", "Dubai"]
+const cities = [
+  { name: "London", tz: "GMT" },
+  { name: "Zurich", tz: "CET" },
+  { name: "Singapore", tz: "SGT" },
+  { name: "Dubai", tz: "GST" },
+]
 
 function GlobalPresence() {
   const { ref, visible } = useReveal()
   return (
-    <section id="presence" ref={ref} className="py-24 md:py-36 border-t border-border/15">
+    <section id="presence" ref={ref} className="relative py-28 md:py-40 border-t border-border/10">
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <motion.span
           initial={{ opacity: 0 }}
@@ -160,41 +206,35 @@ function GlobalPresence() {
           03
         </motion.span>
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 35 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.1, ease }}
-          className="text-2xl md:text-4xl lg:text-5xl font-sans font-extralight tracking-tight uppercase text-foreground mb-8 leading-[1.1]"
+          transition={{ duration: 1, delay: 0.1, ease }}
+          className="text-3xl md:text-5xl lg:text-6xl font-sans font-extralight tracking-tight uppercase text-foreground mb-8 leading-[1.05]"
         >
           Global Presence
         </motion.h2>
         <motion.div
           initial={{ scaleX: 0 }}
           animate={visible ? { scaleX: 1 } : {}}
-          transition={{ duration: 1, delay: 0.2, ease }}
-          className="w-16 h-px bg-primary/30 mb-8 origin-left"
+          transition={{ duration: 1.2, delay: 0.2, ease }}
+          className="w-16 h-px bg-primary/30 mb-10 origin-left"
         />
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3, ease }}
-          className="text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed max-w-3xl mb-12"
-        >
-          Glinso maintains a strategic presence in the world{"'"}s major reinsurance
-          and financial hubs, ensuring proximity to markets and clients across
-          every time zone.
-        </motion.p>
 
-        <div className="flex flex-wrap items-center gap-6 md:gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {cities.map((city, i) => (
-            <motion.span
-              key={city}
-              initial={{ opacity: 0, y: 15 }}
-              animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 + i * 0.08, ease }}
-              className="text-lg md:text-2xl lg:text-3xl font-sans font-extralight tracking-[0.05em] uppercase text-foreground/60"
+            <GlassCard
+              key={city.name}
+              delay={0.3 + i * 0.08}
+              visible={visible}
+              className="p-5 md:p-6 text-center"
             >
-              {city}
-            </motion.span>
+              <span className="text-xl md:text-3xl lg:text-4xl font-sans font-extralight tracking-[0.03em] uppercase text-foreground/80 block mb-1.5">
+                {city.name}
+              </span>
+              <span className="text-[10px] font-mono tracking-[0.2em] text-primary/40">
+                {city.tz}
+              </span>
+            </GlassCard>
           ))}
         </div>
 
@@ -202,7 +242,7 @@ function GlobalPresence() {
           initial={{ opacity: 0 }}
           animate={visible ? { opacity: 1 } : {}}
           transition={{ duration: 0.7, delay: 0.8, ease }}
-          className="mt-8 text-xs font-mono tracking-[0.15em] text-muted-foreground/50"
+          className="mt-10 text-xs font-mono tracking-[0.15em] text-muted-foreground/40"
         >
           Serving global reinsurance and insurance markets across all continents.
         </motion.p>
@@ -230,7 +270,7 @@ const esgColumns = [
 function EsgGovernance() {
   const { ref, visible } = useReveal()
   return (
-    <section id="esg" ref={ref} className="py-24 md:py-36 border-t border-border/15">
+    <section id="esg" ref={ref} className="relative py-28 md:py-40 border-t border-border/10">
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <motion.span
           initial={{ opacity: 0 }}
@@ -241,30 +281,30 @@ function EsgGovernance() {
           04
         </motion.span>
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 35 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.1, ease }}
-          className="text-2xl md:text-4xl lg:text-5xl font-sans font-extralight tracking-tight uppercase text-foreground mb-12 md:mb-16 leading-[1.1]"
+          transition={{ duration: 1, delay: 0.1, ease }}
+          className="text-3xl md:text-5xl lg:text-6xl font-sans font-extralight tracking-tight uppercase text-foreground mb-14 md:mb-18 leading-[1.05]"
         >
           {"ESG & Governance"}
         </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
           {esgColumns.map((col, i) => (
-            <motion.div
+            <GlassCard
               key={col.title}
-              initial={{ opacity: 0, y: 25 }}
-              animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.2 + i * 0.12, ease }}
+              delay={0.2 + i * 0.12}
+              visible={visible}
+              className="p-6 md:p-8"
             >
               <div className="w-8 h-px bg-primary/30 mb-5" />
-              <h3 className="text-xs md:text-sm font-mono tracking-[0.2em] uppercase text-primary mb-4">
+              <h3 className="text-xs md:text-sm font-mono tracking-[0.2em] uppercase text-primary/80 mb-4 group-hover:text-primary transition-colors duration-500">
                 {col.title}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {col.text}
               </p>
-            </motion.div>
+            </GlassCard>
           ))}
         </div>
       </div>
@@ -291,7 +331,7 @@ const csrBlocks = [
 function CsrCommunity() {
   const { ref, visible } = useReveal()
   return (
-    <section id="csr" ref={ref} className="py-24 md:py-36 border-t border-border/15">
+    <section id="csr" ref={ref} className="relative py-28 md:py-40 border-t border-border/10">
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <motion.span
           initial={{ opacity: 0 }}
@@ -302,31 +342,30 @@ function CsrCommunity() {
           05
         </motion.span>
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 35 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.1, ease }}
-          className="text-2xl md:text-4xl lg:text-5xl font-sans font-extralight tracking-tight uppercase text-foreground mb-12 md:mb-16 leading-[1.1]"
+          transition={{ duration: 1, delay: 0.1, ease }}
+          className="text-3xl md:text-5xl lg:text-6xl font-sans font-extralight tracking-tight uppercase text-foreground mb-14 md:mb-18 leading-[1.05]"
         >
           Community
         </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
           {csrBlocks.map((block, i) => (
-            <motion.div
+            <GlassCard
               key={block.title}
-              initial={{ opacity: 0, y: 25 }}
-              animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.2 + i * 0.12, ease }}
-              className="group"
+              delay={0.2 + i * 0.12}
+              visible={visible}
+              className="p-6 md:p-8"
             >
               <div className="w-8 h-px bg-primary/30 group-hover:w-16 transition-all duration-500 mb-5" />
-              <h3 className="text-xs md:text-sm font-mono tracking-[0.12em] uppercase text-foreground/80 mb-3 leading-relaxed">
+              <h3 className="text-xs md:text-sm font-mono tracking-[0.12em] uppercase text-foreground/80 mb-3 leading-relaxed group-hover:text-primary/90 transition-colors duration-500">
                 {block.title}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {block.text}
               </p>
-            </motion.div>
+            </GlassCard>
           ))}
         </div>
       </div>

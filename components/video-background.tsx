@@ -129,21 +129,21 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
         style={{ opacity: Math.max(0.1, 1 - scrollProgress * 1.5) }}
       />
 
-      {/* Radial vignette */}
+      {/* Radial vignette -- warm desert tint */}
       <div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
           background:
-            "radial-gradient(ellipse 80% 70% at 50% 45%, transparent 0%, hsl(220 25% 3% / 0.35) 55%, hsl(220 25% 3% / 0.85) 100%)",
+            "radial-gradient(ellipse 80% 70% at 50% 45%, transparent 0%, hsl(25 30% 4% / 0.35) 55%, hsl(25 25% 3% / 0.85) 100%)",
         }}
       />
 
-      {/* Bottom gradient for blending into content */}
+      {/* Bottom gradient -- warm sand blend */}
       <div
         className="absolute inset-x-0 bottom-0 h-[50vh] pointer-events-none z-[2]"
         style={{
           background:
-            "linear-gradient(to bottom, transparent 0%, hsl(220 25% 4% / 0.6) 40%, hsl(220 25% 4%) 100%)",
+            "linear-gradient(to bottom, transparent 0%, hsl(30 25% 4% / 0.6) 40%, hsl(25 25% 4%) 100%)",
         }}
       />
 
@@ -151,7 +151,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
       <div
         className="absolute inset-x-0 top-0 h-28 pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to bottom, hsl(220 25% 3% / 0.4) 0%, transparent 100%)",
+          background: "linear-gradient(to bottom, hsl(25 25% 3% / 0.4) 0%, transparent 100%)",
         }}
       />
     </div>
