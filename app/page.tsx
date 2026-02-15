@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect, useCallback, lazy, Suspense } from "react"
+import { useState, useEffect, useCallback } from "react"
+import dynamic from "next/dynamic"
 import VideoBackground from "@/components/video-background"
 import HeroSection from "@/components/hero-section"
 import ContentSections from "@/components/content-sections"
 import SiteFooter from "@/components/site-footer"
 
-const Scene3D = lazy(() => import("@/components/scene-3d"))
+const Scene3D = dynamic(() => import("@/components/scene-3d"), { ssr: false })
 
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -51,13 +52,11 @@ export default function Home() {
 
       {/* 3D scene layer (desktop only) */}
       {mounted && !isMobile && (
-        <Suspense fallback={null}>
-          <Scene3D
-            scrollProgress={scrollProgress}
-            mouseX={mouseX}
-            mouseY={mouseY}
-          />
-        </Suspense>
+        <Scene3D
+          scrollProgress={scrollProgress}
+          mouseX={mouseX}
+          mouseY={mouseY}
+        />
       )}
 
       {/* Content layer on top */}

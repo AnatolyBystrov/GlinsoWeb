@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
-      <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
+      <body suppressHydrationWarning className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
         {children}
       </body>
     </html>

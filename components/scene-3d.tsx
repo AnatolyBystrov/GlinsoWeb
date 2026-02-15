@@ -1,8 +1,7 @@
 "use client"
 
-import { Canvas } from "@react-three/fiber"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { Suspense, useRef, useMemo } from "react"
-import { useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
 
 function Sun({ scrollProgress }: { scrollProgress: number }) {
@@ -251,11 +250,9 @@ function Particles() {
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
-        <bufferAttribute
+        <float32BufferAttribute
           attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
+          args={[positions, 3]}
         />
       </bufferGeometry>
       <pointsMaterial
