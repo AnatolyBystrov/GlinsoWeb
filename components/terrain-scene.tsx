@@ -16,25 +16,28 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
     scene: null as THREE.Scene | null,
     camera: null as THREE.PerspectiveCamera | null,
     terrain: null as THREE.Mesh | null,
+    terrainBack: null as THREE.Mesh | null,
     globe: null as THREE.Group | null,
-    particles: null as THREE.Points | null,
+    sandParticles: null as THREE.Points | null,
+    windParticles: null as THREE.Points | null,
+    embers: null as THREE.Points | null,
     rings: [] as THREE.Line[],
     animId: 0,
     scroll: 0,
     mx: 0,
     my: 0,
     time: 0,
+    baseHeights: null as Float32Array | null,
+    backHeights: null as Float32Array | null,
   })
   const [isMobile, setIsMobile] = useState(false)
 
-  /* keep scroll/mouse in sync without re-creating the effect */
   useEffect(() => { stateRef.current.scroll = scrollProgress }, [scrollProgress])
   useEffect(() => { stateRef.current.mx = mouseX; stateRef.current.my = mouseY }, [mouseX, mouseY])
 
   useEffect(() => {
     const touch = window.innerWidth < 768 || "ontouchstart" in window
     setIsMobile(touch)
-    if (touch) return
   }, [])
 
   useEffect(() => {
@@ -43,7 +46,6 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
     if (!container) return
     const S = stateRef.current
 
-    /* ── Renderer ── */
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setSize(container.offsetWidth, container.offsetHeight)
@@ -51,28 +53,69 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
     container.appendChild(renderer.domElement)
     S.renderer = renderer
 
-    /* ── Scene + Fog ── */
     const scene = new THREE.Scene()
-    scene.fog = new THREE.FogExp2(0x080c18, 0.06)
+    scene.fog = new THREE.FogExp2(0x1a120a, 0.035)
     S.scene = scene
 
-    /* ── Camera ── */
     const camera = new THREE.PerspectiveCamera(55, container.offsetWidth / container.offsetHeight, 0.1, 200)
-    camera.position.set(0, 3, 12)
-    camera.lookAt(0, 1, 0)
+    camera.position.set(0, 4, 14)
+    camera.lookAt(0, 1.5, 0)
     S.camera = camera
 
-    /* ── Lights ── */
-    scene.add(new THREE.AmbientLight(0x1a2040, 0.5))
-    const dirLight = new THREE.DirectionalLight(0xe8a840, 0.6)
-    dirLight.position.set(5, 10, 5)
-    scene.add(dirLight)
-    const pointLight = new THREE.PointLight(0xe8a840, 1.5, 30)
-    pointLight.position.set(0, 5, 0)
-    scene.add(pointLight)
+    /* ── Lights: warm desert sun ── */
+    scene.add(new THREE.AmbientLight(0xd4a574, 0.4))
+    const sunLight = new THREE.DirectionalLight(0xffd699, 1.0)
+    sunLight.position.set(3, 12, 5)
+    scene.add(sunLight)
+    const rimLight = new THREE.DirectionalLight(0xff9933, 0.3)
+    rimLight.position.set(-5, 3, -3)
+    scene.add(rimLight)
+    const skyLight = new THREE.HemisphereLight(0xffd699, 0x3d2b1f, 0.5)
+    scene.add(skyLight)
 
-    /* ── Terrain (mountain landscape like mont-fort) ── */
-    const terrainGeo = new THREE.PlaneGeometry(60, 40, 200, 140)
+    /* ── Helper: smooth dune noise ── */
+    const duneNoise = (x: number, z: number): number => {
+      /* Large sweeping barkhan shapes */
+      const b1 = Math.sin(x * 0.08 + 0.5) * Math.cos(z * 0.06) * 5
+      const b2 = Math.sin(x * 0.15 + 1.8) * Math.cos(z * 0.12 + 0.3) * 2.5
+      /* Sharp ridges (barkhans have crescent ridges) */
+      const ridge = Math.abs(Math.sin(x * 0.11 + z * 0.07 + 0.7)) * 2.5
+      /* Small ripples (wind ripples on sand surface) */
+      const ripple = Math.sin(x * 0.6 + 2.0) * Math.cos(z * 0.5 + 1.0) * 0.35
+      /* Central dune ridge for dramatic silhouette */
+      const dist = Math.sqrt(x * x + (z + 2) * (z + 2))
+      const centralDune = Math.max(0, 7 - dist * 0.4) * Math.exp(-dist * 0.03)
+      return (b1 + b2 + ridge + ripple + centralDune) * 0.6
+    }
+
+    /* ── Back dune layer (further, taller, forms the horizon) ── */
+    const backGeo = new THREE.PlaneGeometry(80, 50, 160, 110)
+    backGeo.rotateX(-Math.PI / 2)
+    const backPos = backGeo.getAttribute("position")
+    const backHeights = new Float32Array(backPos.count)
+    for (let i = 0; i < backPos.count; i++) {
+      const x = backPos.getX(i)
+      const z = backPos.getZ(i)
+      const h = duneNoise(x * 0.8 + 10, z * 0.8 + 5) * 1.3 + 1.5
+      backHeights[i] = h
+      backPos.setY(i, h)
+    }
+    backGeo.computeVertexNormals()
+    S.backHeights = backHeights
+
+    const backMat = new THREE.MeshStandardMaterial({
+      color: 0x8b6914,
+      metalness: 0.05,
+      roughness: 0.95,
+      flatShading: true,
+    })
+    const terrainBack = new THREE.Mesh(backGeo, backMat)
+    terrainBack.position.set(0, -4, -12)
+    scene.add(terrainBack)
+    S.terrainBack = terrainBack
+
+    /* ── Front dune layer (closer, creates silhouette over video) ── */
+    const terrainGeo = new THREE.PlaneGeometry(70, 40, 180, 120)
     terrainGeo.rotateX(-Math.PI / 2)
     const posAttr = terrainGeo.getAttribute("position")
     const baseHeights = new Float32Array(posAttr.count)
@@ -80,187 +123,255 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
     for (let i = 0; i < posAttr.count; i++) {
       const x = posAttr.getX(i)
       const z = posAttr.getZ(i)
-      /* Multi-octave noise for mountain terrain */
-      const h1 = Math.sin(x * 0.15) * Math.cos(z * 0.12) * 4
-      const h2 = Math.sin(x * 0.4 + 1.3) * Math.cos(z * 0.35 + 0.7) * 1.5
-      const h3 = Math.sin(x * 0.8 + 2.1) * Math.cos(z * 0.75 + 1.4) * 0.5
-      /* Central peak */
-      const distFromCenter = Math.sqrt(x * x + z * z)
-      const peak = Math.max(0, 6 - distFromCenter * 0.35) * Math.exp(-distFromCenter * 0.04)
-      const height = (h1 + h2 + h3 + peak) * 0.8
-      baseHeights[i] = height
-      posAttr.setY(i, height)
+      baseHeights[i] = duneNoise(x, z)
+      posAttr.setY(i, baseHeights[i])
     }
     terrainGeo.computeVertexNormals()
+    S.baseHeights = baseHeights
 
     const terrainMat = new THREE.MeshStandardMaterial({
-      color: 0x0d1a2f,
-      metalness: 0.3,
-      roughness: 0.85,
-      wireframe: false,
+      color: 0xc4952a,
+      metalness: 0.05,
+      roughness: 0.92,
       flatShading: true,
     })
     const terrain = new THREE.Mesh(terrainGeo, terrainMat)
-    terrain.position.set(0, -3, -5)
+    terrain.position.set(0, -4, -4)
     scene.add(terrain)
     S.terrain = terrain
 
-    /* ── Wireframe overlay on terrain ── */
+    /* ── Sand ripple wireframe overlay ── */
     const wireGeo = terrainGeo.clone()
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xe8a840,
+      color: 0xffd699,
       wireframe: true,
       transparent: true,
-      opacity: 0.04,
+      opacity: 0.03,
     })
     const wire = new THREE.Mesh(wireGeo, wireMat)
     wire.position.copy(terrain.position)
     wire.position.y += 0.02
     scene.add(wire)
 
-    /* ── Globe (wireframe icosphere) ── */
+    /* ── Globe (wireframe icosphere -- rises from behind dunes) ── */
     const globeGroup = new THREE.Group()
-    const sphereGeo = new THREE.IcosahedronGeometry(1.8, 4)
+    const sphereGeo = new THREE.IcosahedronGeometry(2.0, 4)
     const sphereWire = new THREE.MeshBasicMaterial({
       color: 0xe8a840,
       wireframe: true,
       transparent: true,
-      opacity: 0.12,
+      opacity: 0.15,
     })
-    const sphere = new THREE.Mesh(sphereGeo, sphereWire)
-    globeGroup.add(sphere)
+    globeGroup.add(new THREE.Mesh(sphereGeo, sphereWire))
 
-    /* Inner glow sphere */
-    const innerGeo = new THREE.IcosahedronGeometry(1.6, 2)
+    const innerGeo = new THREE.IcosahedronGeometry(1.7, 2)
     const innerMat = new THREE.MeshBasicMaterial({
       color: 0xe8a840,
       transparent: true,
-      opacity: 0.03,
+      opacity: 0.04,
     })
     globeGroup.add(new THREE.Mesh(innerGeo, innerMat))
 
     /* Orbital rings */
-    const ringRadii = [2.6, 3.2]
-    const ringTilts = [0.3, -0.5]
-    ringRadii.forEach((r, idx) => {
-      const ringGeo = new THREE.BufferGeometry()
-      const ringPts: number[] = []
+    ;[2.8, 3.4].forEach((r, idx) => {
+      const rGeo = new THREE.BufferGeometry()
+      const pts: number[] = []
       for (let i = 0; i <= 128; i++) {
         const a = (i / 128) * Math.PI * 2
-        ringPts.push(Math.cos(a) * r, Math.sin(a) * r * 0.35, Math.sin(a) * r * 0.15)
+        pts.push(Math.cos(a) * r, Math.sin(a) * r * 0.35, Math.sin(a) * r * 0.15)
       }
-      ringGeo.setAttribute("position", new THREE.Float32BufferAttribute(ringPts, 3))
-      const ringLine = new THREE.Line(
-        ringGeo,
-        new THREE.LineBasicMaterial({ color: 0xe8a840, transparent: true, opacity: 0.12 })
-      )
-      ringLine.rotation.x = ringTilts[idx]
-      ringLine.rotation.z = idx * 0.4
-      globeGroup.add(ringLine)
-      S.rings.push(ringLine)
+      rGeo.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3))
+      const line = new THREE.Line(rGeo, new THREE.LineBasicMaterial({ color: 0xe8a840, transparent: true, opacity: 0.12 }))
+      line.rotation.x = idx === 0 ? 0.3 : -0.5
+      line.rotation.z = idx * 0.4
+      globeGroup.add(line)
+      S.rings.push(line)
     })
 
-    globeGroup.position.set(0, 4, 0)
+    globeGroup.position.set(0, -5, -2)
     globeGroup.visible = false
     scene.add(globeGroup)
     S.globe = globeGroup
 
-    /* ── Particles ── */
-    const pCount = 300
-    const pGeo = new THREE.BufferGeometry()
-    const pPos = new Float32Array(pCount * 3)
-    for (let i = 0; i < pCount; i++) {
-      pPos[i * 3] = (Math.random() - 0.5) * 40
-      pPos[i * 3 + 1] = Math.random() * 15
-      pPos[i * 3 + 2] = (Math.random() - 0.5) * 30
+    /* ── Floating sand particles (ambient) ── */
+    const spCount = 200
+    const spGeo = new THREE.BufferGeometry()
+    const spPos = new Float32Array(spCount * 3)
+    for (let i = 0; i < spCount; i++) {
+      spPos[i * 3] = (Math.random() - 0.5) * 50
+      spPos[i * 3 + 1] = Math.random() * 12
+      spPos[i * 3 + 2] = (Math.random() - 0.5) * 30
     }
-    pGeo.setAttribute("position", new THREE.Float32BufferAttribute(pPos, 3))
-    const pMat = new THREE.PointsMaterial({
-      color: 0xe8a840,
+    spGeo.setAttribute("position", new THREE.Float32BufferAttribute(spPos, 3))
+    const spMat = new THREE.PointsMaterial({
+      color: 0xffd699,
       size: 0.04,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.3,
       sizeAttenuation: true,
     })
-    const particles = new THREE.Points(pGeo, pMat)
-    scene.add(particles)
-    S.particles = particles
+    const sandParts = new THREE.Points(spGeo, spMat)
+    scene.add(sandParts)
+    S.sandParticles = sandParts
 
-    /* ── Animate ── */
+    /* ── Desert wind particles (horizontal, appear on scroll) ── */
+    const wCount = 400
+    const wGeo = new THREE.BufferGeometry()
+    const wPos = new Float32Array(wCount * 3)
+    for (let i = 0; i < wCount; i++) {
+      wPos[i * 3] = (Math.random() - 0.5) * 60
+      wPos[i * 3 + 1] = Math.random() * 8 - 1
+      wPos[i * 3 + 2] = (Math.random() - 0.5) * 30
+    }
+    wGeo.setAttribute("position", new THREE.Float32BufferAttribute(wPos, 3))
+    const wMat = new THREE.PointsMaterial({
+      color: 0xd4a06a,
+      size: 0.025,
+      transparent: true,
+      opacity: 0,
+      sizeAttenuation: true,
+    })
+    const windParts = new THREE.Points(wGeo, wMat)
+    scene.add(windParts)
+    S.windParticles = windParts
+
+    /* ── Ember particles (golden, near globe) ── */
+    const eCount = 80
+    const eGeo = new THREE.BufferGeometry()
+    const ePos = new Float32Array(eCount * 3)
+    for (let i = 0; i < eCount; i++) {
+      ePos[i * 3] = (Math.random() - 0.5) * 6
+      ePos[i * 3 + 1] = Math.random() * 8
+      ePos[i * 3 + 2] = (Math.random() - 0.5) * 6
+    }
+    eGeo.setAttribute("position", new THREE.Float32BufferAttribute(ePos, 3))
+    const eMat = new THREE.PointsMaterial({
+      color: 0xe8a840,
+      size: 0.06,
+      transparent: true,
+      opacity: 0,
+      sizeAttenuation: true,
+    })
+    const embers = new THREE.Points(eGeo, eMat)
+    scene.add(embers)
+    S.embers = embers
+
+    /* ── Animation loop ── */
     const animate = () => {
-      S.time += 0.008
+      S.time += 0.006
       const t = S.time
       const sp = S.scroll
 
-      /* ── Camera: scroll drives the journey ── */
-      /* Start: high & far looking down at terrain
-         Middle: come closer, terrain sinks, globe rises
-         End: orbit around globe */
-      const camY = 3 + sp * 5
-      const camZ = 12 - sp * 8
-      const lookY = 1 + sp * 3
-      camera.position.x = S.mx * 1.2
-      camera.position.y = camY + S.my * 0.5
+      /* Camera journey: scroll drives everything */
+      const camY = 4 - sp * 1.5
+      const camZ = 14 - sp * 6
+      const lookY = 1.5 + sp * 2
+      camera.position.x = S.mx * 1.5
+      camera.position.y = camY + S.my * 0.4
       camera.position.z = camZ
-      camera.lookAt(S.mx * 0.3, lookY, -2)
+      camera.lookAt(S.mx * 0.2, lookY, -3)
 
-      /* ── Terrain: animate vertices with time + scroll ── */
+      /* ── Dune animation: gentle wind-blown shifting ── */
       const tPos = terrainGeo.getAttribute("position")
       for (let i = 0; i < tPos.count; i++) {
         const x = tPos.getX(i)
         const z = tPos.getZ(i)
         const base = baseHeights[i]
-        const wave = Math.sin(x * 0.2 + t * 0.8) * Math.cos(z * 0.15 + t * 0.6) * 0.3
-        /* Terrain sinks as scroll increases (globe takes over) */
-        const sinkFactor = 1 - sp * 0.5
-        tPos.setY(i, (base + wave) * sinkFactor)
+        /* Wind ripples: move along surface */
+        const windWave = Math.sin(x * 0.3 + t * 1.2) * Math.cos(z * 0.2 + t * 0.8) * 0.15
+        /* Gentle breathing of the dunes */
+        const breathe = Math.sin(t * 0.4 + x * 0.05) * 0.08
+        const sinkFactor = 1 - sp * 0.3
+        tPos.setY(i, (base + windWave + breathe) * sinkFactor)
       }
       tPos.needsUpdate = true
       terrainGeo.computeVertexNormals()
 
-      /* Terrain color shift: blue -> purple -> dark as scroll progresses */
-      const r = 0.05 + sp * 0.08
-      const g = 0.1 - sp * 0.04
-      const b = 0.18 + sp * 0.12
-      ;(terrain.material as THREE.MeshStandardMaterial).color.setRGB(r, g, b)
+      /* Back dunes animate too */
+      const bPos = backGeo.getAttribute("position")
+      for (let i = 0; i < bPos.count; i++) {
+        const x = bPos.getX(i)
+        const z = bPos.getZ(i)
+        const base = backHeights[i]
+        const wave = Math.sin(x * 0.2 + t * 0.6) * 0.12
+        bPos.setY(i, (base + wave) * (1 - sp * 0.2))
+      }
+      bPos.needsUpdate = true
+      backGeo.computeVertexNormals()
 
-      /* Wireframe overlay fades in/out */
-      ;(wire.material as THREE.MeshBasicMaterial).opacity = 0.04 + sp * 0.06
+      /* Dune color: warm golden to deeper amber as you scroll */
+      const fR = 0.77 - sp * 0.15
+      const fG = 0.58 - sp * 0.12
+      const fB = 0.16 + sp * 0.05
+      ;(terrain.material as THREE.MeshStandardMaterial).color.setRGB(fR, fG, fB)
 
-      /* ── Globe: appears from scroll 15%, fully visible by 40% ── */
+      const bR = 0.55 - sp * 0.1
+      const bG = 0.41 - sp * 0.08
+      const bB = 0.08 + sp * 0.04
+      ;(terrainBack.material as THREE.MeshStandardMaterial).color.setRGB(bR, bG, bB)
+
+      /* Wire overlay subtle shift */
+      ;(wire.material as THREE.MeshBasicMaterial).opacity = 0.03 + sp * 0.04
+
+      /* ── Globe: emerges from behind dunes ── */
       const globeFade = Math.min(1, Math.max(0, (sp - 0.15) / 0.25))
       globeGroup.visible = globeFade > 0.01
       if (globeGroup.visible) {
-        /* Scale up as it appears */
-        const s = globeFade * (0.6 + sp * 0.4)
+        const s = globeFade * (0.5 + sp * 0.5)
         globeGroup.scale.setScalar(s)
-        /* Globe rises from behind the terrain */
-        globeGroup.position.y = -2 + globeFade * 6
-        /* SCROLL drives the rotation */
+        globeGroup.position.y = -5 + globeFade * 7
+        /* Scroll drives rotation */
         globeGroup.rotation.y = sp * Math.PI * 4
         globeGroup.rotation.x = Math.sin(t * 0.5) * 0.1 + S.my * 0.15
-        /* Wireframe opacity pulses */
-        ;(sphere.material as THREE.MeshBasicMaterial).opacity = 0.08 + Math.sin(t * 2) * 0.04
-
-        /* Rings rotation driven by scroll */
+        ;(sphereWire as THREE.MeshBasicMaterial).opacity = 0.1 + Math.sin(t * 2) * 0.05
         S.rings.forEach((ring, idx) => {
           ring.rotation.y = sp * Math.PI * 2 + idx * 1.2
         })
       }
 
-      /* ── Particles drift upward ── */
-      const pp = particles.geometry.getAttribute("position")
-      for (let i = 0; i < pCount; i++) {
-        let y = pp.getY(i) + 0.01
-        if (y > 15) y = 0
-        pp.setY(i, y)
-        pp.setX(i, pp.getX(i) + Math.sin(t + i) * 0.002)
+      /* ── Embers near globe ── */
+      ;(eMat as THREE.PointsMaterial).opacity = globeFade * 0.5
+      const ep = eGeo.getAttribute("position")
+      for (let i = 0; i < eCount; i++) {
+        let y = ep.getY(i) + 0.015
+        if (y > 8) y = 0
+        ep.setY(i, y)
+        ep.setX(i, ep.getX(i) + Math.sin(t * 2 + i) * 0.003)
       }
-      pp.needsUpdate = true
-      ;(particles.material as THREE.PointsMaterial).opacity = 0.2 + sp * 0.15
+      ep.needsUpdate = true
 
-      /* Fog density decreases as we scroll (reveals more) */
-      ;(scene.fog as THREE.FogExp2).density = 0.06 - sp * 0.03
+      /* ── Sand particles: ambient float ── */
+      const spp = spGeo.getAttribute("position")
+      for (let i = 0; i < spCount; i++) {
+        let y = spp.getY(i) + 0.005
+        if (y > 12) y = 0
+        spp.setY(i, y)
+        spp.setX(i, spp.getX(i) + Math.sin(t + i * 0.3) * 0.001)
+      }
+      spp.needsUpdate = true
+      ;(spMat as THREE.PointsMaterial).opacity = 0.2 + sp * 0.1
+
+      /* ── Desert wind: horizontal sand blowing (intensifies on scroll) ── */
+      const windStrength = Math.min(1, sp * 2.5)
+      ;(wMat as THREE.PointsMaterial).opacity = windStrength * 0.35
+      const wp = wGeo.getAttribute("position")
+      for (let i = 0; i < wCount; i++) {
+        /* Move mostly horizontal (like wind) */
+        let x = wp.getX(i) + (0.15 + windStrength * 0.3 + Math.sin(i * 0.7) * 0.05)
+        const yOff = Math.sin(t * 3 + i * 0.5) * 0.01
+        wp.setY(i, wp.getY(i) + yOff)
+        /* Reset when going off-screen */
+        if (x > 30) x = -30
+        wp.setX(i, x)
+        wp.setZ(i, wp.getZ(i) + Math.sin(t + i) * 0.005)
+      }
+      wp.needsUpdate = true
+
+      /* Fog: warm desert haze */
+      ;(scene.fog as THREE.FogExp2).density = 0.035 - sp * 0.015
+      ;(scene.fog as THREE.FogExp2).color.setHex(
+        sp < 0.5 ? 0x1a120a : 0x100c06
+      )
 
       renderer.render(scene, camera)
       S.animId = requestAnimationFrame(animate)
@@ -268,7 +379,6 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
 
     S.animId = requestAnimationFrame(animate)
 
-    /* ── Resize ── */
     const onResize = () => {
       const w = container.offsetWidth
       const h = container.offsetHeight
@@ -282,17 +392,10 @@ export default function TerrainScene({ scrollProgress, mouseX, mouseY }: Terrain
       cancelAnimationFrame(S.animId)
       window.removeEventListener("resize", onResize)
       renderer.dispose()
-      terrainGeo.dispose()
-      terrainMat.dispose()
-      wireGeo.dispose()
-      wireMat.dispose()
-      sphereGeo.dispose()
-      sphereWire.dispose()
-      innerGeo.dispose()
-      innerMat.dispose()
-      pGeo.dispose()
-      pMat.dispose()
-      container.removeChild(renderer.domElement)
+      ;[terrainGeo, terrainMat, wireGeo, wireMat, backGeo, backMat,
+        sphereGeo, sphereWire, innerGeo, innerMat,
+        spGeo, spMat, wGeo, wMat, eGeo, eMat].forEach(d => d.dispose())
+      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement)
     }
   }, [isMobile])
 
