@@ -1,7 +1,7 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
+import { motion } from "framer-motion"
+import { useRef, useState, useEffect } from "react"
 import ExpandableSection from "./expandable-section"
 
 const sections = [
@@ -61,38 +61,48 @@ const sections = [
   },
 ]
 
+// Intro block that appears between hero and content sections -- mont-fort style
 function ParallaxIntro() {
   const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  })
-  const y = useTransform(scrollYProgress, [0, 1], [80, -80])
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0])
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVisible(true) },
+      { threshold: 0.2 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   return (
-    <motion.div
+    <div
       ref={ref}
       id="about"
-      style={{ y, opacity }}
-      className="max-w-4xl mx-auto px-6 md:px-12 pt-32 pb-16 text-center"
+      className="max-w-4xl mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-12 md:pb-16 text-center"
     >
       <motion.div
         initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        transition={{ duration: 1, delay: 0.2 }}
-        viewport={{ once: true }}
-        className="w-16 h-px bg-primary/40 mx-auto mb-8"
+        animate={visible ? { scaleX: 1 } : {}}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        className="w-16 h-px bg-primary/40 mx-auto mb-8 origin-center"
       />
-      <p className="text-lg md:text-xl text-muted-foreground leading-relaxed text-balance">
+      <motion.p
+        initial={{ opacity: 0, y: 30 }}
+        animate={visible ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed text-balance"
+      >
         As the dedicated reinsurance brokerage of the Glinso Group, we support
         our clients&apos; success through strategic risk transfer, innovative
         placement structures, and deep market intelligence. Functioning as
         both an advisor and an execution partner, Glinso delivers access to
         global reinsurance capacity while creating sustainable competitive
         advantages.
-      </p>
-    </motion.div>
+      </motion.p>
+    </div>
   )
 }
 

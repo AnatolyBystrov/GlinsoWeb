@@ -19,20 +19,20 @@ export default function VerticalText({
 
   return (
     <div
-      className={`flex flex-col items-center gap-1 ${className}`}
+      className={`flex flex-col items-center gap-[3px] ${className}`}
       aria-label={text}
     >
       {letters.map((letter, i) => (
         <motion.span
           key={i}
-          initial={{ opacity: 0, x: side === "left" ? -20 : 20 }}
+          initial={{ opacity: 0, x: side === "left" ? -12 : 12 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{
-            duration: 0.4,
-            delay: delay + i * 0.05,
-            ease: "easeOut",
+            duration: 0.45,
+            delay: delay + i * 0.04,
+            ease: [0.16, 1, 0.3, 1],
           }}
-          className="text-xs font-mono tracking-[0.3em] uppercase text-foreground/40 leading-none"
+          className="text-[10px] font-mono tracking-[0.3em] uppercase text-foreground/30 leading-none"
           aria-hidden="true"
         >
           {letter === " " ? "\u00A0" : letter}

@@ -13,6 +13,8 @@ interface ExpandableSectionProps {
   index: number
 }
 
+const ease = [0.16, 1, 0.3, 1] as const
+
 export default function ExpandableSection({
   id,
   title,
@@ -29,34 +31,32 @@ export default function ExpandableSection({
     const el = sectionRef.current
     if (!el) return
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.15 }
+      ([entry]) => { if (entry.isIntersecting) setIsVisible(true) },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
 
+  const baseDelay = 0.15
+
   return (
     <section
       ref={sectionRef}
       id={id}
-      className="relative py-16 md:py-24 border-t border-border/30"
+      className="relative py-20 md:py-28 border-t border-border/20"
     >
       <div className="flex items-start gap-6 md:gap-12 max-w-6xl mx-auto px-6 md:px-12">
         {/* Vertical label */}
         {verticalLabel && (
-          <div className="hidden md:flex flex-col items-center gap-1 pt-2 min-w-[20px]">
+          <div className="hidden md:flex flex-col items-center gap-[3px] pt-3 min-w-[18px]">
             {verticalLabel.split("").map((letter, i) => (
               <motion.span
                 key={i}
-                initial={{ opacity: 0 }}
-                animate={isVisible ? { opacity: 1 } : {}}
-                transition={{ duration: 0.3, delay: 0.3 + i * 0.03 }}
-                className="text-[10px] font-mono tracking-[0.3em] uppercase text-primary/40 leading-none"
+                initial={{ opacity: 0, y: 8 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.35, delay: baseDelay + i * 0.025, ease }}
+                className="text-[9px] font-mono tracking-[0.3em] uppercase text-primary/35 leading-none"
               >
                 {letter === " " ? "\u00A0" : letter}
               </motion.span>
@@ -65,33 +65,33 @@ export default function ExpandableSection({
         )}
 
         {/* Content */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {/* Section number */}
           <motion.span
             initial={{ opacity: 0 }}
             animate={isVisible ? { opacity: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xs font-mono text-primary/30 mb-4 block"
+            transition={{ duration: 0.5, delay: baseDelay, ease }}
+            className="text-[11px] font-mono text-primary/25 mb-4 block"
           >
             {String(index + 1).padStart(2, "0")}
           </motion.span>
 
           {/* Title */}
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-2xl md:text-3xl lg:text-4xl font-sans font-light tracking-tight text-foreground mb-6 text-pretty"
+            transition={{ duration: 0.7, delay: baseDelay + 0.1, ease }}
+            className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-sans font-light tracking-tight text-foreground mb-6 text-pretty leading-[1.2]"
           >
             {title}
           </motion.h2>
 
           {/* Short text */}
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-3xl"
+            transition={{ duration: 0.7, delay: baseDelay + 0.2, ease }}
+            className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-3xl"
           >
             {shortText}
           </motion.p>
@@ -106,7 +106,7 @@ export default function ExpandableSection({
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <p className="pt-6 text-base text-muted-foreground/80 leading-relaxed max-w-3xl">
+                <p className="pt-5 text-sm md:text-base text-muted-foreground/70 leading-relaxed max-w-3xl">
                   {fullText}
                 </p>
               </motion.div>
@@ -117,31 +117,31 @@ export default function ExpandableSection({
           <motion.button
             initial={{ opacity: 0 }}
             animate={isVisible ? { opacity: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: baseDelay + 0.3, ease }}
             onClick={() => setIsExpanded(!isExpanded)}
             className="mt-6 flex items-center gap-3 group cursor-pointer"
             aria-expanded={isExpanded}
           >
-            <span className="flex items-center justify-center w-8 h-8 rounded-full border border-primary/30 group-hover:border-primary/60 transition-colors duration-300">
+            <span className="flex items-center justify-center w-7 h-7 rounded-full border border-primary/25 group-hover:border-primary/50 transition-colors duration-300">
               {isExpanded ? (
-                <Minus className="w-3.5 h-3.5 text-primary" />
+                <Minus className="w-3 h-3 text-primary/70" />
               ) : (
-                <Plus className="w-3.5 h-3.5 text-primary" />
+                <Plus className="w-3 h-3 text-primary/70" />
               )}
             </span>
-            <span className="text-xs font-mono tracking-[0.2em] uppercase text-primary/60 group-hover:text-primary transition-colors duration-300">
-              {isExpanded ? "Collapse" : "Expand text"}
+            <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-primary/40 group-hover:text-primary/70 transition-colors duration-300">
+              {isExpanded ? "Collapse" : "Read more"}
             </span>
           </motion.button>
         </div>
 
-        {/* Animated side line */}
-        <div className="hidden lg:block min-w-[60px]">
+        {/* Side accent line */}
+        <div className="hidden lg:block min-w-[50px]">
           <motion.div
             initial={{ scaleY: 0 }}
             animate={isVisible ? { scaleY: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="w-px h-32 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent origin-top"
+            transition={{ duration: 0.9, delay: baseDelay + 0.15, ease }}
+            className="w-px h-28 bg-gradient-to-b from-primary/15 via-primary/5 to-transparent origin-top"
           />
         </div>
       </div>
