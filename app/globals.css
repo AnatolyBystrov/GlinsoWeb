@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 4%;
+    --foreground: 40 20% 92%;
+    --card: 220 18% 7%;
+    --card-foreground: 40 20% 92%;
+    --popover: 220 18% 7%;
+    --popover-foreground: 40 20% 92%;
+    --primary: 38 70% 55%;
+    --primary-foreground: 220 20% 4%;
+    --secondary: 220 15% 12%;
+    --secondary-foreground: 40 15% 80%;
+    --muted: 220 15% 12%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 38 70% 55%;
+    --accent-foreground: 220 20% 4%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 12% 16%;
+    --input: 220 12% 16%;
+    --ring: 38 70% 55%;
+    --radius: 0.5rem;
+    --gold: 38 70% 55%;
+    --gold-light: 40 80% 70%;
+    --gold-dark: 35 60% 40%;
+    --deep-bg: 220 25% 3%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(220 20% 4%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(38 70% 55% / 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(38 70% 55% / 0.5);
+}
+
+/* Selection */
+::selection {
+  background: hsl(38 70% 55% / 0.3);
+  color: hsl(40 20% 92%);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
