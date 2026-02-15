@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
+import { useState, useRef, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Plus, Minus } from "lucide-react"
 
 interface ExpandableSectionProps {
@@ -22,22 +22,28 @@ export default function ExpandableSection({
   index,
 }: ExpandableSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const sectionRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  })
-
-  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [60, 0, 0, -40])
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0.3])
-  const lineScale = useTransform(scrollYProgress, [0, 0.4], [0, 1])
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.15 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <motion.div
+    <section
       ref={sectionRef}
       id={id}
-      style={{ y, opacity }}
       className="relative py-16 md:py-24 border-t border-border/30"
     >
       <div className="flex items-start gap-6 md:gap-12 max-w-6xl mx-auto px-6 md:px-12">
@@ -48,9 +54,8 @@ export default function ExpandableSection({
               <motion.span
                 key={i}
                 initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                animate={isVisible ? { opacity: 1 } : {}}
                 transition={{ duration: 0.3, delay: 0.3 + i * 0.03 }}
-                viewport={{ once: true }}
                 className="text-[10px] font-mono tracking-[0.3em] uppercase text-primary/40 leading-none"
               >
                 {letter === " " ? "\u00A0" : letter}
@@ -64,9 +69,8 @@ export default function ExpandableSection({
           {/* Section number */}
           <motion.span
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            animate={isVisible ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
             className="text-xs font-mono text-primary/30 mb-4 block"
           >
             {String(index + 1).padStart(2, "0")}
@@ -75,9 +79,8 @@ export default function ExpandableSection({
           {/* Title */}
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
             className="text-2xl md:text-3xl lg:text-4xl font-sans font-light tracking-tight text-foreground mb-6 text-pretty"
           >
             {title}
@@ -86,9 +89,8 @@ export default function ExpandableSection({
           {/* Short text */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
             className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-3xl"
           >
             {shortText}
@@ -114,9 +116,8 @@ export default function ExpandableSection({
           {/* Expand button */}
           <motion.button
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            animate={isVisible ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.5 }}
-            viewport={{ once: true }}
             onClick={() => setIsExpanded(!isExpanded)}
             className="mt-6 flex items-center gap-3 group cursor-pointer"
             aria-expanded={isExpanded}
@@ -137,11 +138,13 @@ export default function ExpandableSection({
         {/* Animated side line */}
         <div className="hidden lg:block min-w-[60px]">
           <motion.div
-            style={{ scaleY: lineScale }}
+            initial={{ scaleY: 0 }}
+            animate={isVisible ? { scaleY: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.4 }}
             className="w-px h-32 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent origin-top"
           />
         </div>
       </div>
-    </motion.div>
+    </section>
   )
 }
