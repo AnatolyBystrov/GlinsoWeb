@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react"
 
 export default function PhoenixCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const isTouchDevice = useRef(false)
   const mouse = useRef({ x: -100, y: -100 })
   const pos = useRef({ x: -100, y: -100 })
   const particles = useRef<
@@ -29,8 +30,15 @@ export default function PhoenixCursor() {
   }, [])
 
   useEffect(() => {
-    // Skip on touch devices
-    if (window.matchMedia("(pointer: coarse)").matches) return
+    // Skip entirely on touch/mobile devices
+    const isTouch =
+      window.matchMedia("(pointer: coarse)").matches ||
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0
+    if (isTouch) {
+      isTouchDevice.current = true
+      return
+    }
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -157,21 +165,16 @@ export default function PhoenixCursor() {
     }
   }, [resize])
 
-  // Detect touch device and skip rendering entirely
-  if (typeof window !== "undefined" && typeof matchMedia !== "undefined") {
-    // This check runs only on the client
-  }
-
   return (
     <>
       <style jsx global>{`
-        @media (pointer: fine) {
+        @media (hover: hover) and (pointer: fine) {
           * { cursor: none !important; }
         }
       `}</style>
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 z-[9999] pointer-events-none"
+        className="fixed inset-0 z-[9999] pointer-events-none hidden md:block"
         aria-hidden="true"
       />
     </>
