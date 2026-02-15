@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
-import dynamic from "next/dynamic"
 import VideoBackground from "@/components/video-background"
 import HeroSection from "@/components/hero-section"
 import ContentSections from "@/components/content-sections"
@@ -9,8 +8,7 @@ import SiteFooter from "@/components/site-footer"
 import PhoenixCursor from "@/components/phoenix-cursor"
 import ScrollProgress from "@/components/scroll-progress"
 import GlassNav from "@/components/glass-nav"
-
-const TerrainScene = dynamic(() => import("@/components/terrain-scene"), { ssr: false })
+import DuneLayers from "@/components/dune-layers"
 
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -70,21 +68,17 @@ export default function Home() {
       <ScrollProgress progress={scrollProgress} />
       <GlassNav scrollProgress={scrollProgress} />
 
+      {/* Video background -- fixed, always behind */}
       <VideoBackground
         scrollProgress={scrollProgress}
         mouseX={mouseX}
         mouseY={mouseY}
       />
 
-      {/* 3D terrain + globe scene (mont-fort mountain style) */}
-      {mounted && (
-        <TerrainScene
-          scrollProgress={scrollProgress}
-          mouseX={mouseX}
-          mouseY={mouseY}
-        />
-      )}
+      {/* SVG dune silhouettes -- layered over video, parallax */}
+      <DuneLayers scrollProgress={scrollProgress} mouseX={mouseX} />
 
+      {/* Content -- on top of everything */}
       <div className="relative z-10">
         <HeroSection scrollProgress={scrollProgress} />
         <ContentSections />

@@ -78,3 +78,21 @@ html {
     will-change: transform, opacity;
   }
 }
+
+/* Sand particle drift animation */
+@keyframes sand-drift {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(40px, -10px);
+    opacity: 0.2;
+  }
+  90% {
+    opacity: 0.3;
+  }
+}
