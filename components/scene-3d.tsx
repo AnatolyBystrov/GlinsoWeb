@@ -1,333 +1,379 @@
 "use client"
 
-import { useRef, useEffect, useCallback } from "react"
+import { useRef, useMemo, useEffect, useState } from "react"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
+import * as THREE from "three"
 
+/* ── Glowing Sun ── */
+function Sun({ scrollProgress }: { scrollProgress: number }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const glowRef = useRef<THREE.Mesh>(null)
+  const haloRef = useRef<THREE.Mesh>(null)
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime()
+    const pulse = 1 + Math.sin(t * 0.8) * 0.04
+    if (meshRef.current) {
+      meshRef.current.scale.setScalar(pulse)
+    }
+    if (glowRef.current) {
+      glowRef.current.scale.setScalar(pulse * 1.6)
+      const mat = glowRef.current.material as THREE.MeshBasicMaterial
+      mat.opacity = 0.12 + Math.sin(t * 0.5) * 0.03
+    }
+    if (haloRef.current) {
+      haloRef.current.scale.setScalar(pulse * 3.5)
+      const mat = haloRef.current.material as THREE.MeshBasicMaterial
+      mat.opacity = 0.04 + Math.sin(t * 0.3) * 0.01
+    }
+  })
+
+  const yOffset = -scrollProgress * 4
+
+  return (
+    <group position={[0, 2.2 + yOffset, -8]}>
+      {/* Outer halo */}
+      <mesh ref={haloRef}>
+        <sphereGeometry args={[1.2, 32, 32]} />
+        <meshBasicMaterial color="#e8a840" transparent opacity={0.04} side={THREE.FrontSide} />
+      </mesh>
+      {/* Mid glow */}
+      <mesh ref={glowRef}>
+        <sphereGeometry args={[1.2, 32, 32]} />
+        <meshBasicMaterial color="#f0c860" transparent opacity={0.12} />
+      </mesh>
+      {/* Core */}
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[1.2, 64, 64]} />
+        <meshBasicMaterial color="#f5d070" />
+      </mesh>
+      {/* Bright center */}
+      <mesh scale={0.7}>
+        <sphereGeometry args={[1.2, 32, 32]} />
+        <meshBasicMaterial color="#fff5d0" transparent opacity={0.5} />
+      </mesh>
+      {/* Sun rays as a point light */}
+      <pointLight color="#e8a840" intensity={8} distance={30} decay={2} />
+      <pointLight color="#f0c860" intensity={3} distance={50} decay={1.5} />
+    </group>
+  )
+}
+
+/* ── Volumetric Rays ── */
+function SunRays({ scrollProgress }: { scrollProgress: number }) {
+  const groupRef = useRef<THREE.Group>(null)
+  const raysCount = 16
+
+  const rayData = useMemo(() => {
+    return Array.from({ length: raysCount }, (_, i) => ({
+      angle: (i / raysCount) * Math.PI * 2,
+      length: 3 + Math.random() * 4,
+      width: 0.03 + Math.random() * 0.05,
+      speed: 0.02 + Math.random() * 0.03,
+    }))
+  }, [])
+
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.z = clock.getElapsedTime() * 0.01
+    }
+  })
+
+  const yOffset = -scrollProgress * 4
+
+  return (
+    <group ref={groupRef} position={[0, 2.2 + yOffset, -7.9]}>
+      {rayData.map((ray, i) => (
+        <mesh
+          key={i}
+          rotation={[0, 0, ray.angle]}
+          position={[
+            Math.cos(ray.angle) * (ray.length / 2 + 1.2),
+            Math.sin(ray.angle) * (ray.length / 2 + 1.2),
+            0,
+          ]}
+        >
+          <planeGeometry args={[ray.length, ray.width]} />
+          <meshBasicMaterial
+            color="#f0c860"
+            transparent
+            opacity={0.06}
+            side={THREE.DoubleSide}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+/* ── Ocean Surface ── */
+function Ocean({ scrollProgress }: { scrollProgress: number }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const geoRef = useRef<THREE.PlaneGeometry>(null)
+
+  const segments = 128
+  const size = 40
+
+  useFrame(({ clock }) => {
+    if (!geoRef.current) return
+    const t = clock.getElapsedTime()
+    const pos = geoRef.current.attributes.position
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i)
+      const z = pos.getZ(i)
+      const y =
+        Math.sin(x * 0.3 + t * 0.4) * 0.15 +
+        Math.sin(z * 0.2 + t * 0.3) * 0.1 +
+        Math.sin((x + z) * 0.15 + t * 0.5) * 0.08
+      pos.setY(i, y)
+    }
+    pos.needsUpdate = true
+    geoRef.current.computeVertexNormals()
+  })
+
+  const yOffset = -scrollProgress * 1
+
+  return (
+    <mesh
+      ref={meshRef}
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -1.2 + yOffset, -5]}
+    >
+      <planeGeometry ref={geoRef} args={[size, size, segments, segments]} />
+      <meshStandardMaterial
+        color="#0a1428"
+        roughness={0.3}
+        metalness={0.8}
+        envMapIntensity={0.5}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  )
+}
+
+/* ── Sun Reflection on Water ── */
+function WaterReflection({ scrollProgress }: { scrollProgress: number }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+
+  useFrame(({ clock }) => {
+    if (meshRef.current) {
+      const mat = meshRef.current.material as THREE.MeshBasicMaterial
+      mat.opacity = 0.06 + Math.sin(clock.getElapsedTime() * 0.5) * 0.02
+    }
+  })
+
+  const yOffset = -scrollProgress * 1
+
+  return (
+    <mesh
+      ref={meshRef}
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -1.15 + yOffset, -3]}
+    >
+      <planeGeometry args={[4, 20]} />
+      <meshBasicMaterial
+        color="#e8a840"
+        transparent
+        opacity={0.06}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </mesh>
+  )
+}
+
+/* ── Tanker Ship ── */
+function Ship({ scrollProgress }: { scrollProgress: number }) {
+  const groupRef = useRef<THREE.Group>(null)
+  const startX = useRef(-12)
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return
+    const t = clock.getElapsedTime()
+    startX.current += 0.003
+    if (startX.current > 14) startX.current = -14
+
+    groupRef.current.position.x = startX.current
+    groupRef.current.position.y = -1.0 + Math.sin(t * 0.5) * 0.06 - scrollProgress * 1
+    groupRef.current.rotation.z = Math.sin(t * 0.4) * 0.015
+  })
+
+  return (
+    <group ref={groupRef} position={[-12, -1.0, -3]} scale={0.12}>
+      {/* Hull */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[8, 0.8, 2]} />
+        <meshStandardMaterial color="#0f0f20" roughness={0.8} />
+      </mesh>
+      {/* Deck */}
+      <mesh position={[0, 0.6, 0]}>
+        <boxGeometry args={[6, 0.4, 1.6]} />
+        <meshStandardMaterial color="#151530" roughness={0.7} />
+      </mesh>
+      {/* Bridge */}
+      <mesh position={[1.5, 1.4, 0]}>
+        <boxGeometry args={[1.5, 1.2, 1.2]} />
+        <meshStandardMaterial color="#1a1a38" roughness={0.6} />
+      </mesh>
+      {/* Funnel */}
+      <mesh position={[1.5, 2.2, 0]}>
+        <boxGeometry args={[0.5, 0.6, 0.5]} />
+        <meshStandardMaterial color="#1e1e40" roughness={0.7} />
+      </mesh>
+      {/* Funnel accent stripe */}
+      <mesh position={[1.5, 2.55, 0]}>
+        <boxGeometry args={[0.52, 0.1, 0.52]} />
+        <meshBasicMaterial color="#e8a840" />
+      </mesh>
+      {/* Bridge windows */}
+      {[-0.3, 0, 0.3].map((offset, i) => (
+        <mesh key={i} position={[1.5, 1.5, offset * 1.3]}>
+          <boxGeometry args={[0.02, 0.2, 0.2]} />
+          <meshBasicMaterial color="#e8a840" transparent opacity={0.7} />
+        </mesh>
+      ))}
+      {/* Bow */}
+      <mesh position={[-4.2, 0.2, 0]}>
+        <boxGeometry args={[0.8, 0.4, 1.2]} />
+        <meshStandardMaterial color="#0f0f20" roughness={0.8} />
+      </mesh>
+    </group>
+  )
+}
+
+/* ── Ambient Particles ── */
+function Particles() {
+  const pointsRef = useRef<THREE.Points>(null)
+  const count = 120
+
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      arr[i * 3] = (Math.random() - 0.5) * 30
+      arr[i * 3 + 1] = Math.random() * 8 - 1
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 20 - 5
+    }
+    return arr
+  }, [])
+
+  useFrame(({ clock }) => {
+    if (!pointsRef.current) return
+    const t = clock.getElapsedTime()
+    const pos = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
+    for (let i = 0; i < count; i++) {
+      let y = pos.getY(i)
+      y += 0.002 + Math.sin(t + i) * 0.001
+      if (y > 7) y = -1
+      pos.setY(i, y)
+      const x = pos.getX(i)
+      pos.setX(i, x + Math.sin(t * 0.3 + i * 0.5) * 0.001)
+    }
+    pos.needsUpdate = true
+  })
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <float32BufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        color="#e8a840"
+        size={0.04}
+        transparent
+        opacity={0.35}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  )
+}
+
+/* ── Camera Controller ── */
+function CameraController({
+  scrollProgress,
+  mouseX,
+  mouseY,
+}: {
+  scrollProgress: number
+  mouseX: number
+  mouseY: number
+}) {
+  const { camera } = useThree()
+  const target = useRef({ x: 0, y: 1.5, z: 6 })
+
+  useFrame(() => {
+    const t = {
+      x: mouseX * 0.5,
+      y: 1.5 - scrollProgress * 2 + mouseY * 0.3,
+      z: 6 + scrollProgress * 3,
+    }
+    target.current.x += (t.x - target.current.x) * 0.02
+    target.current.y += (t.y - target.current.y) * 0.02
+    target.current.z += (t.z - target.current.z) * 0.02
+
+    camera.position.set(target.current.x, target.current.y, target.current.z)
+    camera.lookAt(0, 0.5 - scrollProgress * 2, -5)
+  })
+
+  return null
+}
+
+/* ── Main Scene (exported as default) ── */
 interface Scene3DProps {
   scrollProgress: number
   mouseX: number
   mouseY: number
 }
 
-interface Particle {
-  x: number
-  y: number
-  size: number
-  speed: number
-  opacity: number
-  drift: number
-}
-
-interface Ray {
-  angle: number
-  length: number
-  width: number
-  speed: number
-}
-
-interface WaveLayer {
-  amplitude: number
-  frequency: number
-  speed: number
-  phase: number
-  color: string
-}
-
 export default function Scene3D({ scrollProgress, mouseX, mouseY }: Scene3DProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animRef = useRef<number>(0)
-  const particlesRef = useRef<Particle[]>([])
-  const raysRef = useRef<Ray[]>([])
-  const wavesRef = useRef<WaveLayer[]>([])
-  const shipXRef = useRef(-0.3)
-  const scrollRef = useRef(scrollProgress)
-  const mouseXRef = useRef(mouseX)
-  const mouseYRef = useRef(mouseY)
-
-  scrollRef.current = scrollProgress
-  mouseXRef.current = mouseX
-  mouseYRef.current = mouseY
-
-  const initScene = useCallback(() => {
-    const particles: Particle[] = []
-    for (let i = 0; i < 80; i++) {
-      particles.push({
-        x: Math.random(),
-        y: Math.random() * 0.6,
-        size: Math.random() * 2 + 0.5,
-        speed: Math.random() * 0.0002 + 0.0001,
-        opacity: Math.random() * 0.4 + 0.1,
-        drift: Math.random() * 0.0003 - 0.00015,
-      })
-    }
-    particlesRef.current = particles
-
-    const rays: Ray[] = []
-    for (let i = 0; i < 14; i++) {
-      rays.push({
-        angle: (i / 14) * Math.PI * 2,
-        length: Math.random() * 0.15 + 0.1,
-        width: Math.random() * 0.015 + 0.005,
-        speed: Math.random() * 0.1 + 0.05,
-      })
-    }
-    raysRef.current = rays
-
-    wavesRef.current = [
-      { amplitude: 8, frequency: 0.008, speed: 0.0006, phase: 0, color: "rgba(10, 22, 40, 0.95)" },
-      { amplitude: 5, frequency: 0.012, speed: 0.0009, phase: 2, color: "rgba(8, 18, 35, 0.85)" },
-      { amplitude: 3, frequency: 0.018, speed: 0.0012, phase: 4, color: "rgba(5, 12, 28, 0.75)" },
-    ]
-  }, [])
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    setReady(true)
+  }, [])
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    initScene()
-
-    let currentDpr = 1
-
-    const resize = () => {
-      currentDpr = window.devicePixelRatio || 1
-      canvas.width = window.innerWidth * currentDpr
-      canvas.height = window.innerHeight * currentDpr
-      canvas.style.width = `${window.innerWidth}px`
-      canvas.style.height = `${window.innerHeight}px`
-    }
-    resize()
-    window.addEventListener("resize", resize)
-
-    const animate = (timestamp: number) => {
-      const w = window.innerWidth
-      const h = window.innerHeight
-      const sp = scrollRef.current
-      const mx = mouseXRef.current
-      const my = mouseYRef.current
-      const t = timestamp
-
-      ctx.save()
-      ctx.setTransform(currentDpr, 0, 0, currentDpr, 0, 0)
-      ctx.clearRect(0, 0, w, h)
-
-      // Background gradient
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, h)
-      bgGrad.addColorStop(0, "#050a14")
-      bgGrad.addColorStop(0.4, "#0a1428")
-      bgGrad.addColorStop(0.7, "#0a1628")
-      bgGrad.addColorStop(1, "#050a18")
-      ctx.fillStyle = bgGrad
-      ctx.fillRect(0, 0, w, h)
-
-      // --- Particles ---
-      for (const p of particlesRef.current) {
-        p.y -= p.speed
-        p.x += p.drift + Math.sin(t * 0.001 + p.x * 10) * 0.00005
-        if (p.y < -0.05) {
-          p.y = 0.65
-          p.x = Math.random()
-        }
-        if (p.x < -0.05) p.x = 1.05
-        if (p.x > 1.05) p.x = -0.05
-        const flicker = 0.7 + Math.sin(t * 0.003 + p.x * 100) * 0.3
-        ctx.fillStyle = `rgba(232, 168, 64, ${p.opacity * flicker})`
-        ctx.beginPath()
-        ctx.arc(p.x * w, p.y * h, p.size, 0, Math.PI * 2)
-        ctx.fill()
-      }
-
-      // --- Sun ---
-      const scrollOffset = sp * h * 0.6
-      const sunX = w * 0.5 + mx * 30
-      const sunY = h * 0.3 - scrollOffset + my * 20
-      const baseRadius = Math.min(w, h) * 0.08
-      const pulse = 1 + Math.sin(t * 0.0008) * 0.04
-
-      // Outer halo
-      const haloGrad = ctx.createRadialGradient(sunX, sunY, baseRadius * 0.5, sunX, sunY, baseRadius * 5)
-      haloGrad.addColorStop(0, "rgba(232, 168, 64, 0.06)")
-      haloGrad.addColorStop(0.5, "rgba(232, 168, 64, 0.02)")
-      haloGrad.addColorStop(1, "rgba(232, 168, 64, 0)")
-      ctx.fillStyle = haloGrad
-      ctx.beginPath()
-      ctx.arc(sunX, sunY, baseRadius * 5, 0, Math.PI * 2)
-      ctx.fill()
-
-      // Rays
-      ctx.save()
-      ctx.translate(sunX, sunY)
-      ctx.rotate(t * 0.00005)
-      for (const ray of raysRef.current) {
-        const angle = ray.angle + t * 0.00003 * ray.speed
-        const len = (baseRadius + ray.length * w) * pulse
-        ctx.save()
-        ctx.rotate(angle)
-        const rayGrad = ctx.createLinearGradient(baseRadius * 0.8, 0, len, 0)
-        rayGrad.addColorStop(0, "rgba(240, 192, 96, 0.12)")
-        rayGrad.addColorStop(0.5, "rgba(240, 192, 96, 0.04)")
-        rayGrad.addColorStop(1, "rgba(240, 192, 96, 0)")
-        ctx.fillStyle = rayGrad
-        ctx.fillRect(baseRadius * 0.8, -ray.width * w * 0.5, len - baseRadius * 0.8, ray.width * w)
-        ctx.restore()
-      }
-      ctx.restore()
-
-      // Mid glow
-      const midGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, baseRadius * 2 * pulse)
-      midGrad.addColorStop(0, "rgba(240, 200, 100, 0.25)")
-      midGrad.addColorStop(0.4, "rgba(232, 168, 64, 0.1)")
-      midGrad.addColorStop(1, "rgba(232, 168, 64, 0)")
-      ctx.fillStyle = midGrad
-      ctx.beginPath()
-      ctx.arc(sunX, sunY, baseRadius * 2 * pulse, 0, Math.PI * 2)
-      ctx.fill()
-
-      // Core sun
-      const coreGrad = ctx.createRadialGradient(
-        sunX - baseRadius * 0.2,
-        sunY - baseRadius * 0.2,
-        0,
-        sunX,
-        sunY,
-        baseRadius * pulse
-      )
-      coreGrad.addColorStop(0, "#fff0c0")
-      coreGrad.addColorStop(0.3, "#f0c860")
-      coreGrad.addColorStop(0.7, "#e8a840")
-      coreGrad.addColorStop(1, "#d4922a")
-      ctx.fillStyle = coreGrad
-      ctx.beginPath()
-      ctx.arc(sunX, sunY, baseRadius * pulse, 0, Math.PI * 2)
-      ctx.fill()
-
-      // Bright highlight
-      const hlGrad = ctx.createRadialGradient(
-        sunX - baseRadius * 0.3,
-        sunY - baseRadius * 0.3,
-        0,
-        sunX,
-        sunY,
-        baseRadius * 0.6
-      )
-      hlGrad.addColorStop(0, "rgba(255, 255, 240, 0.4)")
-      hlGrad.addColorStop(1, "rgba(255, 255, 240, 0)")
-      ctx.fillStyle = hlGrad
-      ctx.beginPath()
-      ctx.arc(sunX, sunY, baseRadius * 0.6, 0, Math.PI * 2)
-      ctx.fill()
-
-      // --- Ocean ---
-      const oceanStart = h * 0.55 - sp * h * 0.15
-
-      // Sun reflection on water
-      const reflGrad = ctx.createLinearGradient(sunX, oceanStart, sunX, h)
-      reflGrad.addColorStop(0, "rgba(232, 168, 64, 0.08)")
-      reflGrad.addColorStop(0.3, "rgba(232, 168, 64, 0.03)")
-      reflGrad.addColorStop(1, "rgba(232, 168, 64, 0)")
-      ctx.fillStyle = reflGrad
-      ctx.fillRect(sunX - w * 0.15, oceanStart, w * 0.3, h - oceanStart)
-
-      // Wave layers
-      for (const wave of wavesRef.current) {
-        ctx.fillStyle = wave.color
-        ctx.beginPath()
-        ctx.moveTo(0, h)
-        for (let x = 0; x <= w; x += 3) {
-          const y =
-            oceanStart +
-            wave.phase * 10 +
-            Math.sin(x * wave.frequency + t * wave.speed) * wave.amplitude +
-            Math.sin(x * wave.frequency * 1.5 + t * wave.speed * 0.7) * wave.amplitude * 0.5
-          ctx.lineTo(x, y)
-        }
-        ctx.lineTo(w, h)
-        ctx.closePath()
-        ctx.fill()
-      }
-
-      // Shimmer on water
-      ctx.strokeStyle = "rgba(232, 168, 64, 0.04)"
-      ctx.lineWidth = 1
-      for (let i = 0; i < 8; i++) {
-        const yBase = oceanStart + 30 + i * 25
-        ctx.beginPath()
-        for (let x = sunX - 80; x < sunX + 80; x += 2) {
-          const y = yBase + Math.sin(x * 0.05 + t * 0.002 + i) * 3
-          if (x === sunX - 80) ctx.moveTo(x, y)
-          else ctx.lineTo(x, y)
-        }
-        ctx.stroke()
-      }
-
-      // --- Ship ---
-      shipXRef.current += 0.00005
-      if (shipXRef.current > 1.2) shipXRef.current = -0.2
-
-      const sX = shipXRef.current * w
-      const bob = Math.sin(t * 0.0005) * 3
-      const sY = oceanStart - 8 + bob - sp * h * 0.15
-      const tilt = Math.sin(t * 0.0004) * 0.02
-      const sc = Math.min(w, h) * 0.001
-
-      ctx.save()
-      ctx.translate(sX, sY)
-      ctx.rotate(tilt)
-      ctx.scale(sc, sc)
-
-      // Hull
-      ctx.fillStyle = "#1a1a2e"
-      ctx.beginPath()
-      ctx.moveTo(-50, 0)
-      ctx.lineTo(-60, 10)
-      ctx.lineTo(60, 10)
-      ctx.lineTo(50, 0)
-      ctx.lineTo(40, -5)
-      ctx.lineTo(-40, -5)
-      ctx.closePath()
-      ctx.fill()
-
-      // Deck
-      ctx.fillStyle = "#1e1e35"
-      ctx.fillRect(-30, -12, 50, 7)
-
-      // Bridge
-      ctx.fillStyle = "#252540"
-      ctx.fillRect(20, -28, 18, 18)
-
-      // Funnel
-      ctx.fillStyle = "#2a2a3a"
-      ctx.fillRect(25, -36, 8, 10)
-
-      // Funnel accent
-      ctx.fillStyle = "#e8a840"
-      ctx.fillRect(25, -37, 8, 2)
-
-      // Window lights
-      ctx.fillStyle = "rgba(232, 168, 64, 0.6)"
-      ctx.fillRect(23, -24, 3, 3)
-      ctx.fillRect(28, -24, 3, 3)
-      ctx.fillRect(33, -24, 3, 3)
-
-      ctx.restore()
-
-      ctx.restore()
-
-      animRef.current = requestAnimationFrame(animate)
-    }
-
-    animRef.current = requestAnimationFrame(animate)
-
-    return () => {
-      cancelAnimationFrame(animRef.current)
-      window.removeEventListener("resize", resize)
-    }
-  }, [initScene])
+  if (!ready) return null
 
   return (
-    <div className="fixed inset-0 z-0" style={{ pointerEvents: "none" }}>
-      <canvas ref={canvasRef} className="block w-full h-full" />
+    <div
+      className="fixed inset-0 z-0"
+      style={{ pointerEvents: "none" }}
+    >
+      <Canvas
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.2,
+        }}
+        camera={{ position: [0, 1.5, 6], fov: 55, near: 0.1, far: 100 }}
+        style={{ background: "transparent" }}
+        dpr={[1, 1.5]}
+      >
+        {/* Ambient / Fill lights */}
+        <ambientLight intensity={0.15} color="#4a6080" />
+        <directionalLight position={[0, 5, -5]} intensity={0.3} color="#e8c080" />
+
+        {/* Scene objects */}
+        <CameraController
+          scrollProgress={scrollProgress}
+          mouseX={mouseX}
+          mouseY={mouseY}
+        />
+        <Sun scrollProgress={scrollProgress} />
+        <SunRays scrollProgress={scrollProgress} />
+        <Ocean scrollProgress={scrollProgress} />
+        <WaterReflection scrollProgress={scrollProgress} />
+        <Ship scrollProgress={scrollProgress} />
+        <Particles />
+
+        {/* Background fog */}
+        <fog attach="fog" args={["#050a14", 8, 35]} />
+      </Canvas>
     </div>
   )
 }
