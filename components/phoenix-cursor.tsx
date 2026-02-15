@@ -1,188 +1,179 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-
-interface Trail {
-  x: number
-  y: number
-  opacity: number
-  scale: number
-  id: number
-}
+import { useEffect, useRef, useCallback } from "react"
 
 export default function PhoenixCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null)
-  const [trails, setTrails] = useState<Trail[]>([])
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouse = useRef({ x: -100, y: -100 })
   const pos = useRef({ x: -100, y: -100 })
-  const prevPos = useRef({ x: -100, y: -100 })
-  const velocity = useRef({ x: 0, y: 0 })
-  const rotation = useRef(0)
-  const trailId = useRef(0)
+  const particles = useRef<
+    {
+      x: number
+      y: number
+      vx: number
+      vy: number
+      life: number
+      maxLife: number
+      size: number
+      hue: number
+    }[]
+  >([])
   const raf = useRef(0)
-  const trailTimer = useRef(0)
-  const [visible, setVisible] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const active = useRef(false)
 
-  useEffect(() => {
-    // No custom cursor on touch devices
-    const checkMobile = () => {
-      setIsMobile(window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
+  const resize = useCallback(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
   }, [])
 
   useEffect(() => {
-    if (isMobile) return
+    // Skip on touch devices
+    if (window.matchMedia("(pointer: coarse)").matches) return
 
-    const onMouseMove = (e: MouseEvent) => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    resize()
+    window.addEventListener("resize", resize)
+
+    const onMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY }
-      if (!visible) setVisible(true)
+      active.current = true
     }
-
-    const onMouseLeave = () => setVisible(false)
-    const onMouseEnter = () => setVisible(true)
-
-    window.addEventListener("mousemove", onMouseMove)
-    document.addEventListener("mouseleave", onMouseLeave)
-    document.addEventListener("mouseenter", onMouseEnter)
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove)
-      document.removeEventListener("mouseleave", onMouseLeave)
-      document.removeEventListener("mouseenter", onMouseEnter)
+    const onLeave = () => {
+      active.current = false
     }
-  }, [visible, isMobile])
+    window.addEventListener("mousemove", onMove)
+    document.addEventListener("mouseleave", onLeave)
+    document.addEventListener("mouseenter", () => {
+      active.current = true
+    })
 
-  // Animation loop
-  useEffect(() => {
-    if (isMobile) return
+    const spawn = () => {
+      const spread = 6
+      for (let i = 0; i < 3; i++) {
+        particles.current.push({
+          x: pos.current.x + (Math.random() - 0.5) * spread,
+          y: pos.current.y + (Math.random() - 0.5) * spread,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: -Math.random() * 2.5 - 1,
+          life: 1,
+          maxLife: 0.6 + Math.random() * 0.5,
+          size: 2 + Math.random() * 4,
+          // Flame hue: 15 = red-orange, 35 = orange, 50 = yellow
+          hue: 15 + Math.random() * 35,
+        })
+      }
+    }
 
     const animate = () => {
-      const lerp = 0.12
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      prevPos.current = { ...pos.current }
-      pos.current.x += (mouse.current.x - pos.current.x) * lerp
-      pos.current.y += (mouse.current.y - pos.current.y) * lerp
+      // Smooth follow
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.18
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.18
 
-      velocity.current = {
-        x: pos.current.x - prevPos.current.x,
-        y: pos.current.y - prevPos.current.y,
+      const dx = mouse.current.x - pos.current.x
+      const dy = mouse.current.y - pos.current.y
+      const speed = Math.sqrt(dx * dx + dy * dy)
+
+      // Always spawn a few particles, more when moving
+      if (active.current) {
+        spawn()
+        if (speed > 3) spawn()
+        if (speed > 8) spawn()
       }
 
-      const speed = Math.sqrt(
-        velocity.current.x ** 2 + velocity.current.y ** 2
-      )
-
-      // Rotate phoenix in the direction of movement
-      if (speed > 0.5) {
-        const targetAngle =
-          Math.atan2(velocity.current.y, velocity.current.x) * (180 / Math.PI)
-        // Smooth rotation
-        let diff = targetAngle - rotation.current
-        if (diff > 180) diff -= 360
-        if (diff < -180) diff += 360
-        rotation.current += diff * 0.08
+      // Draw cursor dot (small bright core)
+      if (active.current) {
+        ctx.save()
+        const grad = ctx.createRadialGradient(
+          pos.current.x,
+          pos.current.y,
+          0,
+          pos.current.x,
+          pos.current.y,
+          8 + speed * 0.3
+        )
+        grad.addColorStop(0, "hsla(45, 100%, 85%, 0.9)")
+        grad.addColorStop(0.3, "hsla(38, 90%, 60%, 0.6)")
+        grad.addColorStop(1, "hsla(25, 80%, 45%, 0)")
+        ctx.fillStyle = grad
+        ctx.beginPath()
+        ctx.arc(pos.current.x, pos.current.y, 8 + speed * 0.3, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
       }
 
-      // Apply to DOM directly for performance
-      if (cursorRef.current) {
-        const tilt = Math.min(speed * 0.8, 15)
-        cursorRef.current.style.transform = `translate(${pos.current.x - 24}px, ${pos.current.y - 24}px) rotate(${rotation.current - 45}deg) scale(${1 + speed * 0.008})`
-        cursorRef.current.style.filter = `drop-shadow(0 0 ${6 + speed * 1.5}px hsl(38 70% 55% / ${0.4 + speed * 0.03})) brightness(${1 + speed * 0.01})`
-      }
+      // Update & draw particles
+      for (let i = particles.current.length - 1; i >= 0; i--) {
+        const p = particles.current[i]
+        p.life -= 0.018 / p.maxLife
+        p.x += p.vx
+        p.y += p.vy
+        p.vy -= 0.03 // Float upwards
+        p.vx *= 0.98
+        p.size *= 0.985
 
-      // Spawn trailing embers when moving
-      if (speed > 2) {
-        trailTimer.current++
-        if (trailTimer.current % 3 === 0) {
-          const id = trailId.current++
-          setTrails((prev) => [
-            ...prev.slice(-12),
-            {
-              x: pos.current.x + (Math.random() - 0.5) * 10,
-              y: pos.current.y + (Math.random() - 0.5) * 10,
-              opacity: 0.7 + Math.random() * 0.3,
-              scale: 0.3 + Math.random() * 0.5,
-              id,
-            },
-          ])
+        if (p.life <= 0 || p.size < 0.3) {
+          particles.current.splice(i, 1)
+          continue
         }
+
+        ctx.save()
+        ctx.globalCompositeOperation = "lighter"
+        const alpha = p.life * 0.8
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size)
+        grad.addColorStop(
+          0,
+          `hsla(${p.hue + (1 - p.life) * 15}, 100%, ${70 + p.life * 20}%, ${alpha})`
+        )
+        grad.addColorStop(
+          0.5,
+          `hsla(${p.hue}, 90%, ${50 + p.life * 15}%, ${alpha * 0.5})`
+        )
+        grad.addColorStop(1, `hsla(${p.hue - 10}, 80%, 30%, 0)`)
+        ctx.fillStyle = grad
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
       }
 
       raf.current = requestAnimationFrame(animate)
     }
 
     raf.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(raf.current)
-  }, [isMobile])
 
-  // Fade out old trail particles
-  useEffect(() => {
-    if (trails.length === 0) return
-    const timer = setTimeout(() => {
-      setTrails((prev) => prev.slice(1))
-    }, 150)
-    return () => clearTimeout(timer)
-  }, [trails])
+    return () => {
+      cancelAnimationFrame(raf.current)
+      window.removeEventListener("resize", resize)
+      window.removeEventListener("mousemove", onMove)
+      document.removeEventListener("mouseleave", onLeave)
+    }
+  }, [resize])
 
-  if (isMobile) return null
+  // Detect touch device and skip rendering entirely
+  if (typeof window !== "undefined" && typeof matchMedia !== "undefined") {
+    // This check runs only on the client
+  }
 
   return (
     <>
-      {/* Hide default cursor globally */}
       <style jsx global>{`
-        * {
-          cursor: none !important;
-        }
-        a, button, [role="button"], input, textarea, select, label {
-          cursor: none !important;
+        @media (pointer: fine) {
+          * { cursor: none !important; }
         }
       `}</style>
-
-      {/* Trailing ember particles */}
-      {trails.map((trail) => (
-        <div
-          key={trail.id}
-          className="fixed top-0 left-0 pointer-events-none z-[9998]"
-          style={{
-            transform: `translate(${trail.x - 3}px, ${trail.y - 3}px) scale(${trail.scale})`,
-            opacity: trail.opacity,
-            transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
-          }}
-        >
-          <div
-            className="w-1.5 h-1.5 rounded-full"
-            style={{
-              background: "radial-gradient(circle, hsl(38 80% 60%), hsl(25 90% 45%) 60%, transparent 100%)",
-              boxShadow: "0 0 6px 2px hsl(38 70% 55% / 0.5)",
-            }}
-          />
-        </div>
-      ))}
-
-      {/* Phoenix cursor */}
-      <div
-        ref={cursorRef}
-        className="fixed top-0 left-0 pointer-events-none z-[9999] will-change-transform"
-        style={{
-          opacity: visible ? 1 : 0,
-          transition: "opacity 0.3s ease",
-          width: 48,
-          height: 48,
-        }}
-      >
-        <img
-          src="/images/phoenix-cursor.png"
-          alt=""
-          width={48}
-          height={48}
-          className="w-full h-full object-contain"
-          draggable={false}
-        />
-      </div>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 z-[9999] pointer-events-none"
+        aria-hidden="true"
+      />
     </>
   )
 }
