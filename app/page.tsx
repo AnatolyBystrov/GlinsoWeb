@@ -50,7 +50,7 @@ export default function Home() {
       {/* Video background layer */}
       <VideoBackground />
 
-      {/* 3D scene layer (desktop only) */}
+      {/* Canvas scene layer (desktop only) */}
       {mounted && !isMobile && (
         <Scene3D
           scrollProgress={scrollProgress}
