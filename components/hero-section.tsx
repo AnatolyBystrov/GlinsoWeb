@@ -42,6 +42,14 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           transition={{ duration: 2.5, ease: [0.25, 0.1, 0.25, 1] }}
         />
 
+        {/* Dark backing for text readability */}
+        <div
+          className="absolute inset-0 z-5 pointer-events-none"
+          style={{
+            background: "radial-gradient(ellipse 60% 70% at 50% 48%, rgba(0,0,0,0.75) 0%, transparent 70%)",
+          }}
+        />
+
         {/* Main content */}
         <div
           className="relative z-10 text-center px-6 max-w-5xl mx-auto"
@@ -65,6 +73,9 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
             transition={{ duration: 1.6, delay: 0.2, ease }}
             className="font-serif font-light text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-[0.02em] text-foreground leading-[0.9] mb-4"
+            style={{
+              textShadow: "0 2px 40px rgba(0,0,0,0.8), 0 4px 80px rgba(0,0,0,0.5)",
+            }}
           >
             Glinso
           </motion.h1>
@@ -75,6 +86,9 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             animate={phase >= 2 ? { opacity: 1, letterSpacing: "0.2em" } : {}}
             transition={{ duration: 1.8, ease }}
             className="text-[10px] sm:text-xs md:text-sm font-mono uppercase text-primary/90 mb-10 md:mb-14"
+            style={{
+              textShadow: "0 2px 20px rgba(0,0,0,0.9), 0 4px 40px rgba(0,0,0,0.6)",
+            }}
           >
             Engineering Global Certainty
           </motion.p>
@@ -93,6 +107,9 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             animate={phase >= 3 ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1.2, ease }}
             className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed text-balance"
+            style={{
+              textShadow: "0 2px 30px rgba(0,0,0,0.9), 0 4px 60px rgba(0,0,0,0.7)",
+            }}
           >
             A global reinsurance brokerage and risk advisory group,
             delivering capital-efficient solutions to insurers
@@ -109,6 +126,9 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             <a
               href="#who-we-are"
               className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary/70 hover:text-primary transition-colors duration-500 border-b border-primary/30 hover:border-primary/60 pb-1"
+              style={{
+                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+              }}
             >
               Discover
             </a>

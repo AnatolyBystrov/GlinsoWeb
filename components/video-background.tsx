@@ -124,7 +124,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           playsInline
           className="absolute w-full h-full"
           style={{
-            filter: `brightness(${0.95 - scrollProgress * 0.15}) saturate(1.1) contrast(1.05)`,
+            filter: `brightness(${0.75 - scrollProgress * 0.15}) saturate(1.1) contrast(1.08)`,
             objectFit: "cover",
             objectPosition: "center 40%",
           }}
