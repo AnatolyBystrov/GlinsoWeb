@@ -13,7 +13,7 @@ const offices = [
 
 export default function SiteFooter() {
   return (
-    <footer id="contact" className="relative z-10 border-t border-border/10">
+    <footer id="contact" className="relative z-10 border-t border-border/30">
       <div className="max-w-6xl mx-auto px-6 md:px-16 py-24 md:py-32">
         {/* Brand */}
         <motion.div
@@ -26,7 +26,7 @@ export default function SiteFooter() {
           <span className="font-serif text-lg md:text-xl font-light tracking-[0.05em] text-foreground/80 block mb-3">
             Glinso Group
           </span>
-          <p className="text-xs md:text-sm text-muted-foreground/50 max-w-md leading-relaxed">
+          <p className="text-xs md:text-sm text-muted-foreground max-w-md leading-relaxed">
             Global reinsurance brokerage and risk advisory.
             Engineering certainty across every continent.
           </p>
@@ -42,7 +42,7 @@ export default function SiteFooter() {
               transition={{ duration: 0.6, delay: i * 0.08, ease }}
               viewport={{ once: true }}
             >
-              <h3 className="text-[9px] font-mono tracking-[0.25em] uppercase text-primary/50 mb-3">
+              <h3 className="text-[9px] font-mono tracking-[0.25em] uppercase text-primary mb-3">
                 {o.city}
               </h3>
               <p className="text-xs text-muted-foreground/35 leading-relaxed">

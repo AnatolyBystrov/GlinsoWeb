@@ -36,7 +36,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
         {/* Black overlay that lifts to reveal the scene */}
         <motion.div
           className="absolute inset-0 z-30 pointer-events-none"
-          style={{ backgroundColor: "#161B24" }}
+          style={{ backgroundColor: "hsl(220 12% 10%)" }}
           initial={{ opacity: 1 }}
           animate={{ opacity: phase >= 1 ? 0 : 1 }}
           transition={{ duration: 2.5, ease: [0.25, 0.1, 0.25, 1] }}

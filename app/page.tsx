@@ -62,7 +62,7 @@ export default function Home() {
   }, [handleScroll])
 
   return (
-    <main className="relative min-h-screen" style={{ backgroundColor: "#0A0A0A" }}>
+    <main className="relative min-h-screen bg-background">
       {mounted && <PhoenixCursor />}
       <ScrollProgress progress={scrollProgress} />
       <GlassNav scrollProgress={scrollProgress} />

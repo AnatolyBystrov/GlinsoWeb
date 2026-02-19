@@ -99,13 +99,14 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
     }
   }, [scrollProgress])
 
-  const videoOpacity = Math.max(0.08, 1 - scrollProgress * 2.2)
-  const videoScale = 1 + scrollProgress * 0.08
+  /* Keep video visible much longer -- fade gently, never fully disappear */
+  const videoOpacity = Math.max(0.15, 1 - scrollProgress * 1.2)
+  const videoScale = 1 + scrollProgress * 0.05
   const px = mouseX * 6
   const py = mouseY * 6
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden" style={{ backgroundColor: "#161B24" }}>
+    <div className="fixed inset-0 z-0 overflow-hidden" style={{ backgroundColor: "hsl(220 12% 10%)" }}>
       {/* Video */}
       <div
         className="absolute inset-0 will-change-transform"
@@ -123,7 +124,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           playsInline
           className="absolute w-full h-full"
           style={{
-            filter: `brightness(${0.85 - scrollProgress * 0.2}) saturate(1) contrast(1.05)`,
+            filter: `brightness(${0.95 - scrollProgress * 0.15}) saturate(1.1) contrast(1.05)`,
             objectFit: "cover",
             objectPosition: "center 40%",
           }}
@@ -139,27 +140,19 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
         style={{ opacity: 0.8 }}
       />
 
-      {/* Soft vignette */}
+      {/* Very subtle vignette -- let the video breathe */}
       <div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background: "radial-gradient(ellipse 80% 75% at 50% 42%, transparent 30%, rgba(22,27,36,0.7) 100%)",
+          background: "radial-gradient(ellipse 90% 80% at 50% 42%, transparent 40%, rgba(22,27,36,0.45) 100%)",
         }}
       />
 
-      {/* Bottom fade to content */}
+      {/* Gentle bottom fade */}
       <div
-        className="absolute inset-x-0 bottom-0 h-[50vh] pointer-events-none z-[2]"
+        className="absolute inset-x-0 bottom-0 h-[40vh] pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to bottom, transparent 0%, rgba(22,27,36,0.85) 70%, #161B24 100%)",
-        }}
-      />
-
-      {/* Top subtle fade */}
-      <div
-        className="absolute inset-x-0 top-0 h-32 pointer-events-none z-[2]"
-        style={{
-          background: "linear-gradient(to bottom, rgba(22,27,36,0.3) 0%, transparent 100%)",
+          background: "linear-gradient(to bottom, transparent 0%, rgba(22,27,36,0.6) 60%, hsl(220 12% 10%) 100%)",
         }}
       />
     </div>
