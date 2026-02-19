@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react"
 
 const sections = [
-  { id: "who-we-are", label: "About", range: [0.2, 0.4] },
-  { id: "divisions", label: "Divisions", range: [0.4, 0.55] },
-  { id: "presence", label: "Global", range: [0.55, 0.7] },
-  { id: "esg", label: "ESG", range: [0.7, 0.85] },
-  { id: "csr", label: "Community", range: [0.85, 1.0] },
+  { id: "who-we-are", label: "About" },
+  { id: "solutions", label: "Solutions" },
+  { id: "presence", label: "Global" },
+  { id: "esg", label: "ESG" },
+  { id: "contact", label: "Contact" },
 ]
 
 interface GlassNavProps {
@@ -16,70 +16,82 @@ interface GlassNavProps {
 
 export default function GlassNav({ scrollProgress }: GlassNavProps) {
   const [visible, setVisible] = useState(false)
+  const [activeId, setActiveId] = useState("")
 
   useEffect(() => {
-    /* Show nav once you leave the hero area */
-    setVisible(scrollProgress > 0.15)
+    setVisible(scrollProgress > 0.08)
   }, [scrollProgress])
 
-  /* Find active section */
-  const activeIdx = sections.findIndex(
-    (s) => scrollProgress >= s.range[0] && scrollProgress < s.range[1]
-  )
+  /* Track which section is in view */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id)
+          }
+        }
+      },
+      { threshold: 0.3, rootMargin: "-100px 0px -40% 0px" }
+    )
+
+    for (const s of sections) {
+      const el = document.getElementById(s.id)
+      if (el) observer.observe(el)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <header
       className="fixed top-0 left-0 right-0 z-40 transition-all duration-700"
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(-100%)",
+        transform: visible ? "translateY(0)" : "translateY(-16px)",
         pointerEvents: visible ? "auto" : "none",
       }}
     >
-      <div className="mx-auto max-w-5xl px-4 md:px-8 pt-3">
+      <div className="mx-auto max-w-6xl px-4 md:px-8 pt-4">
         <nav
-          className="flex items-center justify-between px-5 py-3 rounded-sm border border-white/[0.06]"
+          className="flex items-center justify-between px-5 md:px-6 py-3 border border-white/[0.04]"
           style={{
-            background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
-            backdropFilter: "blur(16px) saturate(1.2)",
-            WebkitBackdropFilter: "blur(16px) saturate(1.2)",
+            background: "rgba(10,10,10,0.75)",
+            backdropFilter: "blur(20px) saturate(1.1)",
+            WebkitBackdropFilter: "blur(20px) saturate(1.1)",
           }}
           aria-label="Main navigation"
         >
-          {/* Logo - click returns to hero */}
           <a
             href="#hero"
-            className="text-xs md:text-sm font-sans font-light tracking-[0.2em] uppercase text-foreground/90 hover:text-primary transition-colors duration-300"
+            className="font-serif text-sm md:text-base font-light tracking-[0.08em] text-foreground/80 hover:text-foreground transition-colors duration-300"
           >
             Glinso
           </a>
 
-          {/* Section links */}
-          <div className="hidden md:flex items-center gap-6">
-            {sections.map((sec, i) => (
+          <div className="hidden md:flex items-center gap-7">
+            {sections.map((sec) => (
               <a
                 key={sec.id}
                 href={`#${sec.id}`}
-                className="relative text-[10px] font-mono tracking-[0.18em] uppercase transition-colors duration-300"
+                className="relative text-[9px] font-mono tracking-[0.2em] uppercase transition-colors duration-300"
                 style={{
-                  color: i === activeIdx
-                    ? "hsl(38 75% 55%)"
-                    : "hsl(38 20% 50% / 0.4)",
+                  color: activeId === sec.id
+                    ? "hsl(38 65% 55%)"
+                    : "hsl(30 8% 40%)",
                 }}
               >
                 {sec.label}
-                {/* Active underline */}
                 <span
-                  className="absolute left-0 -bottom-1 h-px bg-primary transition-all duration-500"
-                  style={{ width: i === activeIdx ? "100%" : "0%" }}
+                  className="absolute left-0 -bottom-1 h-px bg-primary/50 transition-all duration-500"
+                  style={{ width: activeId === sec.id ? "100%" : "0%" }}
                 />
               </a>
             ))}
           </div>
 
-          {/* Mobile: current section indicator */}
-          <span className="md:hidden text-[9px] font-mono tracking-[0.15em] text-primary/60 uppercase">
-            {activeIdx >= 0 ? sections[activeIdx].label : "Explore"}
+          <span className="md:hidden text-[8px] font-mono tracking-[0.2em] text-primary/50 uppercase">
+            {sections.find((s) => s.id === activeId)?.label || ""}
           </span>
         </nav>
       </div>

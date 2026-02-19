@@ -8,7 +8,6 @@ import SiteFooter from "@/components/site-footer"
 import PhoenixCursor from "@/components/phoenix-cursor"
 import ScrollProgress from "@/components/scroll-progress"
 import GlassNav from "@/components/glass-nav"
-import DuneLayers from "@/components/dune-layers"
 
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -63,22 +62,19 @@ export default function Home() {
   }, [handleScroll])
 
   return (
-    <main className="relative min-h-screen bg-background">
+    <main className="relative min-h-screen" style={{ backgroundColor: "#0A0A0A" }}>
       {mounted && <PhoenixCursor />}
       <ScrollProgress progress={scrollProgress} />
       <GlassNav scrollProgress={scrollProgress} />
 
-      {/* Video background -- fixed, always behind */}
+      {/* Cinematic video background */}
       <VideoBackground
         scrollProgress={scrollProgress}
         mouseX={mouseX}
         mouseY={mouseY}
       />
 
-      {/* SVG dune silhouettes -- layered over video, parallax */}
-      <DuneLayers scrollProgress={scrollProgress} mouseX={mouseX} />
-
-      {/* Content -- on top of everything */}
+      {/* Content layer */}
       <div className="relative z-10">
         <HeroSection scrollProgress={scrollProgress} />
         <ContentSections />

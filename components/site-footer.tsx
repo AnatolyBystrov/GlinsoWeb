@@ -2,109 +2,76 @@
 
 import { motion } from "framer-motion"
 
-const offices = [
-  {
-    city: "London",
-    address: "30 St Mary Axe",
-    details: "London EC3A 8BF",
-    country: "United Kingdom",
-  },
-  {
-    city: "Zurich",
-    address: "Bahnhofstrasse 42",
-    details: "8001 Zurich",
-    country: "Switzerland",
-  },
-  {
-    city: "Singapore",
-    address: "One Raffles Place",
-    details: "Tower 2, #20-01",
-    country: "Singapore 048616",
-  },
-  {
-    city: "Dubai",
-    address: "DIFC Gate Village",
-    details: "Building 3, Level 5",
-    country: "United Arab Emirates",
-  },
-]
+const ease = [0.16, 1, 0.3, 1] as const
 
-const footerLinks = [
-  { label: "Contact", href: "#contact" },
-  { label: "ESG", href: "#esg" },
-  { label: "Privacy Policy", href: "#" },
-  { label: "Terms of Use", href: "#" },
+const offices = [
+  { city: "London", address: "30 St Mary Axe", detail: "London EC3A 8BF", country: "United Kingdom" },
+  { city: "Zurich", address: "Bahnhofstrasse 42", detail: "8001 Zurich", country: "Switzerland" },
+  { city: "Singapore", address: "One Raffles Place", detail: "Tower 2, #20-01", country: "Singapore" },
+  { city: "Dubai", address: "DIFC Gate Village", detail: "Building 3, Level 5", country: "UAE" },
 ]
 
 export default function SiteFooter() {
   return (
-    <footer
-      id="contact"
-      className="relative z-10 border-t border-border/20"
-    >
-      <div className="max-w-5xl mx-auto px-6 md:px-12 py-20 md:py-28">
+    <footer id="contact" className="relative z-10 border-t border-border/10">
+      <div className="max-w-6xl mx-auto px-6 md:px-16 py-24 md:py-32">
         {/* Brand */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.8, ease }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="mb-16 md:mb-20"
         >
-          <span className="text-base md:text-lg font-sans font-light tracking-[0.2em] uppercase text-foreground block mb-3">
+          <span className="font-serif text-lg md:text-xl font-light tracking-[0.05em] text-foreground/80 block mb-3">
             Glinso Group
           </span>
-          <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
+          <p className="text-xs md:text-sm text-muted-foreground/50 max-w-md leading-relaxed">
             Global reinsurance brokerage and risk advisory.
+            Engineering certainty across every continent.
           </p>
         </motion.div>
 
-        {/* Offices */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 mb-16">
-          {offices.map((office, i) => (
+        {/* Offices grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-16 md:mb-20">
+          {offices.map((o, i) => (
             <motion.div
-              key={office.city}
-              initial={{ opacity: 0, y: 18 }}
+              key={o.city}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
+              transition={{ duration: 0.6, delay: i * 0.08, ease }}
               viewport={{ once: true }}
             >
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary/70 mb-3">
-                {office.city}
+              <h3 className="text-[9px] font-mono tracking-[0.25em] uppercase text-primary/50 mb-3">
+                {o.city}
               </h3>
-              <p className="text-xs text-muted-foreground/60 leading-relaxed">
-                {office.address}
-                <br />
-                {office.details}
-                <br />
-                {office.country}
+              <p className="text-xs text-muted-foreground/35 leading-relaxed">
+                {o.address}<br />
+                {o.detail}<br />
+                {o.country}
               </p>
             </motion.div>
           ))}
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-border/20 mb-8" />
+        <div className="w-full h-px bg-border/10 mb-8" />
 
-        {/* Bottom */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <nav
-            className="flex flex-wrap items-center gap-5 md:gap-7"
-            aria-label="Footer navigation"
-          >
-            {footerLinks.map((link) => (
+        {/* Bottom bar */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <nav className="flex flex-wrap items-center gap-6" aria-label="Footer navigation">
+            {["Contact", "ESG", "Privacy Policy", "Terms"].map((link) => (
               <a
-                key={link.label}
-                href={link.href}
-                className="text-[10px] md:text-xs font-mono tracking-[0.15em] uppercase text-muted-foreground/50 hover:text-primary transition-colors duration-300"
+                key={link}
+                href={`#${link.toLowerCase().replace(/ /g, "-")}`}
+                className="text-[9px] font-mono tracking-[0.2em] uppercase text-muted-foreground/30 hover:text-primary/50 transition-colors duration-500"
               >
-                {link.label}
+                {link}
               </a>
             ))}
           </nav>
-
-          <p className="text-[10px] md:text-xs text-muted-foreground/30 font-mono">
-            {"\u00A9 2026 | Glinso Group \u2013 All rights reserved."}
+          <p className="text-[9px] font-mono text-muted-foreground/20 tracking-wider">
+            {"\u00A9 2026 Glinso Group \u2014 All rights reserved"}
           </p>
         </div>
       </div>
