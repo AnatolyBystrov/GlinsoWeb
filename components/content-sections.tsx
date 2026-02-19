@@ -40,7 +40,7 @@ function SectionHeader({
         initial={{ opacity: 0 }}
         animate={visible ? { opacity: 1 } : {}}
         transition={{ duration: 0.6, ease }}
-        className="text-[10px] font-mono text-primary/25 mb-5 block tracking-[0.3em]"
+        className="text-[10px] font-mono text-primary/50 mb-5 block tracking-[0.3em]"
       >
         {index}
       </motion.span>
@@ -66,7 +66,7 @@ function SectionHeader({
         initial={{ scaleX: 0 }}
         animate={visible ? { scaleX: 1 } : {}}
         transition={{ duration: 1.4, delay: 0.2, ease }}
-        className="w-12 md:w-16 h-px bg-primary/25 mt-6 origin-left"
+        className="w-12 md:w-16 h-px bg-primary/45 mt-6 origin-left"
       />
     </div>
   )
@@ -89,9 +89,9 @@ function GlassCard({
       initial={{ opacity: 0, y: 30 }}
       animate={visible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.9, delay, ease }}
-      className={`group relative overflow-hidden border border-white/[0.04] ${className}`}
+      className={`group relative overflow-hidden border border-white/[0.08] ${className}`}
       style={{
-        background: "linear-gradient(145deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.005) 100%)",
+        background: "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
       }}
@@ -100,7 +100,7 @@ function GlassCard({
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: "linear-gradient(135deg, rgba(190,165,120,0.04) 0%, transparent 50%)",
+          background: "linear-gradient(135deg, rgba(190,165,120,0.08) 0%, transparent 50%)",
         }}
       />
       {children}
@@ -122,10 +122,10 @@ function NarrativeIntro() {
             animate={visible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1, delay: 0.3, ease }}
           >
-            <p className="font-serif text-xl md:text-2xl lg:text-3xl font-light text-foreground/80 leading-[1.5] tracking-[-0.005em]">
+            <p className="font-serif text-xl md:text-2xl lg:text-3xl font-light text-foreground leading-[1.5] tracking-[-0.005em]">
               Risk lives in complexity.
               <br />
-              <span className="text-primary/60">Certainty lives in us.</span>
+              <span className="text-primary/80">Certainty lives in us.</span>
             </p>
           </motion.div>
 
@@ -185,7 +185,7 @@ const services = [
 function Solutions() {
   const { ref, visible } = useReveal()
   return (
-    <section id="solutions" ref={ref} className="relative py-32 md:py-48 border-t border-border/10">
+    <section id="solutions" ref={ref} className="relative py-32 md:py-48 border-t border-border/25">
       <div className="max-w-6xl mx-auto px-6 md:px-16">
         <SectionHeader
           index="02"
@@ -203,18 +203,18 @@ function Solutions() {
               className="p-7 md:p-9"
             >
               <div className="flex items-baseline gap-3 mb-4">
-                <span className="text-[10px] font-mono tracking-[0.2em] text-primary/40">
+                <span className="text-[10px] font-mono tracking-[0.2em] text-primary/60">
                   {s.code}
                 </span>
-                <div className="flex-1 h-px bg-border/20" />
+                <div className="flex-1 h-px bg-border/40" />
               </div>
-              <h3 className="font-serif text-lg md:text-xl font-light text-foreground/85 mb-3 group-hover:text-foreground transition-colors duration-500">
+              <h3 className="font-serif text-lg md:text-xl font-light text-foreground mb-3 group-hover:text-primary transition-colors duration-500">
                 {s.name}
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                 {s.desc}
               </p>
-              <div className="absolute bottom-0 left-0 w-0 h-px bg-primary/20 group-hover:w-full transition-all duration-700" />
+              <div className="absolute bottom-0 left-0 w-0 h-px bg-primary/40 group-hover:w-full transition-all duration-700" />
             </GlassCard>
           ))}
         </div>
@@ -234,7 +234,7 @@ const offices = [
 function GlobalPresence() {
   const { ref, visible } = useReveal()
   return (
-    <section id="presence" ref={ref} className="relative py-32 md:py-48 border-t border-border/10">
+    <section id="presence" ref={ref} className="relative py-32 md:py-48 border-t border-border/25">
       <div className="max-w-6xl mx-auto px-6 md:px-16">
         <SectionHeader index="03" title="Global Presence" visible={visible} />
 
@@ -246,13 +246,13 @@ function GlobalPresence() {
               visible={visible}
               className="p-6 md:p-8"
             >
-              <span className="font-serif text-2xl md:text-4xl lg:text-5xl font-light tracking-[-0.01em] text-foreground/75 block mb-2">
+              <span className="font-serif text-2xl md:text-4xl lg:text-5xl font-light tracking-[-0.01em] text-foreground block mb-2">
                 {o.city}
               </span>
-              <span className="text-[9px] font-mono tracking-[0.3em] text-primary/35 block mb-1">
+              <span className="text-[9px] font-mono tracking-[0.3em] text-primary/60 block mb-1">
                 {o.tz}
               </span>
-              <span className="text-[9px] font-mono tracking-[0.15em] text-muted-foreground/30">
+              <span className="text-[9px] font-mono tracking-[0.15em] text-muted-foreground/60">
                 {o.status}
               </span>
             </GlassCard>
@@ -285,7 +285,7 @@ const esgItems = [
 function EsgGovernance() {
   const { ref, visible } = useReveal()
   return (
-    <section id="esg" ref={ref} className="relative py-32 md:py-48 border-t border-border/10">
+    <section id="esg" ref={ref} className="relative py-32 md:py-48 border-t border-border/25">
       <div className="max-w-6xl mx-auto px-6 md:px-16">
         <SectionHeader index="04" title="ESG & Governance" visible={visible} />
 
@@ -297,10 +297,10 @@ function EsgGovernance() {
               visible={visible}
               className="p-7 md:p-9"
             >
-              <span className="font-serif text-5xl md:text-6xl font-light text-primary/15 block mb-4 leading-none">
+              <span className="font-serif text-5xl md:text-6xl font-light text-primary/30 block mb-4 leading-none">
                 {item.letter}
               </span>
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary/60 mb-4 group-hover:text-primary/80 transition-colors duration-500">
+              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary/80 mb-4 group-hover:text-primary transition-colors duration-500">
                 {item.title}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -318,24 +318,24 @@ function EsgGovernance() {
 function Philosophy() {
   const { ref, visible } = useReveal()
   return (
-    <section ref={ref} className="relative py-32 md:py-48 border-t border-border/10">
+    <section ref={ref} className="relative py-32 md:py-48 border-t border-border/25">
       <div className="max-w-4xl mx-auto px-6 md:px-16 text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           animate={visible ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1.5, ease }}
         >
-          <p className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-foreground/80 leading-[1.2] tracking-[-0.01em] text-balance">
+          <p className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-foreground leading-[1.2] tracking-[-0.01em] text-balance">
             Risk lives in complexity.
             <br />
-            <span className="text-primary/50">Certainty lives in us.</span>
+            <span className="text-primary/70">Certainty lives in us.</span>
           </p>
         </motion.div>
         <motion.div
           initial={{ scaleX: 0 }}
           animate={visible ? { scaleX: 1 } : {}}
           transition={{ duration: 1.8, delay: 0.4, ease }}
-          className="w-16 h-px bg-primary/20 mx-auto mt-12"
+          className="w-16 h-px bg-primary/40 mx-auto mt-12"
         />
       </div>
     </section>

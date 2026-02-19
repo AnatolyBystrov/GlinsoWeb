@@ -4,25 +4,25 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 40 10% 88%;
-    --card: 0 0% 6%;
-    --card-foreground: 40 10% 88%;
-    --popover: 0 0% 6%;
-    --popover-foreground: 40 10% 88%;
-    --primary: 38 65% 52%;
-    --primary-foreground: 0 0% 4%;
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 40 10% 75%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 30 8% 48%;
-    --accent: 175 30% 42%;
-    --accent-foreground: 40 10% 88%;
+    --background: 220 12% 10%;
+    --foreground: 40 10% 92%;
+    --card: 220 10% 13%;
+    --card-foreground: 40 10% 92%;
+    --popover: 220 10% 13%;
+    --popover-foreground: 40 10% 92%;
+    --primary: 38 65% 58%;
+    --primary-foreground: 220 12% 10%;
+    --secondary: 220 8% 16%;
+    --secondary-foreground: 40 10% 82%;
+    --muted: 220 8% 18%;
+    --muted-foreground: 30 8% 60%;
+    --accent: 175 30% 48%;
+    --accent-foreground: 40 10% 92%;
     --destructive: 0 62% 30%;
-    --destructive-foreground: 40 10% 88%;
-    --border: 30 6% 12%;
-    --input: 30 6% 12%;
-    --ring: 38 65% 52%;
+    --destructive-foreground: 40 10% 92%;
+    --border: 220 8% 20%;
+    --input: 220 8% 20%;
+    --ring: 38 65% 58%;
     --radius: 0.125rem;
   }
 }
@@ -48,7 +48,7 @@ html {
   width: 3px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(0 0% 4%);
+  background: hsl(220 12% 10%);
 }
 ::-webkit-scrollbar-thumb {
   background: hsl(38 30% 22%);

@@ -36,7 +36,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
         {/* Black overlay that lifts to reveal the scene */}
         <motion.div
           className="absolute inset-0 z-30 pointer-events-none"
-          style={{ backgroundColor: "#0A0A0A" }}
+          style={{ backgroundColor: "#161B24" }}
           initial={{ opacity: 1 }}
           animate={{ opacity: phase >= 1 ? 0 : 1 }}
           transition={{ duration: 2.5, ease: [0.25, 0.1, 0.25, 1] }}
@@ -56,7 +56,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ scaleY: 0 }}
             animate={phase >= 1 ? { scaleY: 1 } : {}}
             transition={{ duration: 1.5, delay: 0.3, ease }}
-            className="w-px h-12 md:h-16 bg-gradient-to-b from-transparent via-primary/40 to-transparent mx-auto mb-8 origin-top"
+            className="w-px h-12 md:h-16 bg-gradient-to-b from-transparent via-primary/60 to-transparent mx-auto mb-8 origin-top"
           />
 
           {/* Brand name -- elegant serif */}
@@ -74,7 +74,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, letterSpacing: "0.4em" }}
             animate={phase >= 2 ? { opacity: 1, letterSpacing: "0.2em" } : {}}
             transition={{ duration: 1.8, ease }}
-            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase text-primary/70 mb-10 md:mb-14"
+            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase text-primary/90 mb-10 md:mb-14"
           >
             Engineering Global Certainty
           </motion.p>
@@ -84,7 +84,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ scaleX: 0 }}
             animate={phase >= 2 ? { scaleX: 1 } : {}}
             transition={{ duration: 1.5, ease }}
-            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent mx-auto mb-10 md:mb-14"
+            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mb-10 md:mb-14"
           />
 
           {/* Description */}
@@ -108,7 +108,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           >
             <a
               href="#who-we-are"
-              className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary/50 hover:text-primary transition-colors duration-500 border-b border-primary/20 hover:border-primary/50 pb-1"
+              className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary/70 hover:text-primary transition-colors duration-500 border-b border-primary/30 hover:border-primary/60 pb-1"
             >
               Discover
             </a>
@@ -124,7 +124,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 cursor-pointer group"
           aria-label="Scroll down"
         >
-          <span className="text-[8px] md:text-[9px] font-mono tracking-[0.35em] uppercase text-muted-foreground/25 group-hover:text-primary/40 transition-colors duration-500">
+            <span className="text-[8px] md:text-[9px] font-mono tracking-[0.35em] uppercase text-muted-foreground/50 group-hover:text-primary/60 transition-colors duration-500">
             Scroll
           </span>
           <motion.div
@@ -147,7 +147,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
-              className="text-[8px] md:text-[9px] font-mono tracking-[0.25em] uppercase text-muted-foreground/20 hover:text-primary/50 transition-colors duration-500"
+              className="text-[8px] md:text-[9px] font-mono tracking-[0.25em] uppercase text-muted-foreground/50 hover:text-primary/70 transition-colors duration-500"
             >
               {link}
             </a>
