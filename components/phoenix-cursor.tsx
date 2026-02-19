@@ -4,41 +4,25 @@ import { useEffect, useRef, useCallback } from "react"
 
 export default function PhoenixCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const isTouchDevice = useRef(false)
   const mouse = useRef({ x: -100, y: -100 })
   const pos = useRef({ x: -100, y: -100 })
-  const particles = useRef<
-    {
-      x: number
-      y: number
-      vx: number
-      vy: number
-      life: number
-      maxLife: number
-      size: number
-      hue: number
-    }[]
-  >([])
+  const trail = useRef<{ x: number; y: number; age: number }[]>([])
   const raf = useRef(0)
   const active = useRef(false)
 
   const resize = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    const c = canvasRef.current
+    if (!c) return
+    c.width = window.innerWidth
+    c.height = window.innerHeight
   }, [])
 
   useEffect(() => {
-    // Skip entirely on touch/mobile devices
     const isTouch =
       window.matchMedia("(pointer: coarse)").matches ||
       "ontouchstart" in window ||
       navigator.maxTouchPoints > 0
-    if (isTouch) {
-      isTouchDevice.current = true
-      return
-    }
+    if (isTouch) return
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -52,105 +36,67 @@ export default function PhoenixCursor() {
       mouse.current = { x: e.clientX, y: e.clientY }
       active.current = true
     }
-    const onLeave = () => {
-      active.current = false
-    }
+    const onLeave = () => { active.current = false }
+    const onEnter = () => { active.current = true }
     window.addEventListener("mousemove", onMove)
     document.addEventListener("mouseleave", onLeave)
-    document.addEventListener("mouseenter", () => {
-      active.current = true
-    })
-
-    const spawn = () => {
-      const spread = 6
-      for (let i = 0; i < 3; i++) {
-        particles.current.push({
-          x: pos.current.x + (Math.random() - 0.5) * spread,
-          y: pos.current.y + (Math.random() - 0.5) * spread,
-          vx: (Math.random() - 0.5) * 1.2,
-          vy: -Math.random() * 2.5 - 1,
-          life: 1,
-          maxLife: 0.6 + Math.random() * 0.5,
-          size: 2 + Math.random() * 4,
-          // Flame hue: 15 = red-orange, 35 = orange, 50 = yellow
-          hue: 15 + Math.random() * 35,
-        })
-      }
-    }
+    document.addEventListener("mouseenter", onEnter)
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Smooth follow
-      pos.current.x += (mouse.current.x - pos.current.x) * 0.18
-      pos.current.y += (mouse.current.y - pos.current.y) * 0.18
+      // Smooth follow with gentle easing
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.15
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.15
 
-      const dx = mouse.current.x - pos.current.x
-      const dy = mouse.current.y - pos.current.y
-      const speed = Math.sqrt(dx * dx + dy * dy)
-
-      // Always spawn a few particles, more when moving
-      if (active.current) {
-        spawn()
-        if (speed > 3) spawn()
-        if (speed > 8) spawn()
+      if (!active.current) {
+        raf.current = requestAnimationFrame(animate)
+        return
       }
 
-      // Draw cursor dot (small bright core)
-      if (active.current) {
-        ctx.save()
-        const grad = ctx.createRadialGradient(
-          pos.current.x,
-          pos.current.y,
-          0,
-          pos.current.x,
-          pos.current.y,
-          8 + speed * 0.3
-        )
-        grad.addColorStop(0, "hsla(45, 100%, 85%, 0.9)")
-        grad.addColorStop(0.3, "hsla(38, 90%, 60%, 0.6)")
-        grad.addColorStop(1, "hsla(25, 80%, 45%, 0)")
-        ctx.fillStyle = grad
-        ctx.beginPath()
-        ctx.arc(pos.current.x, pos.current.y, 8 + speed * 0.3, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.restore()
+      // Add a trail point every few frames
+      const last = trail.current[trail.current.length - 1]
+      if (!last || Math.hypot(pos.current.x - last.x, pos.current.y - last.y) > 4) {
+        trail.current.push({ x: pos.current.x, y: pos.current.y, age: 0 })
       }
 
-      // Update & draw particles
-      for (let i = particles.current.length - 1; i >= 0; i--) {
-        const p = particles.current[i]
-        p.life -= 0.018 / p.maxLife
-        p.x += p.vx
-        p.y += p.vy
-        p.vy -= 0.03 // Float upwards
-        p.vx *= 0.98
-        p.size *= 0.985
+      // Keep trail short
+      if (trail.current.length > 12) trail.current.shift()
 
-        if (p.life <= 0 || p.size < 0.3) {
-          particles.current.splice(i, 1)
+      // Age and draw trail
+      for (let i = trail.current.length - 1; i >= 0; i--) {
+        const p = trail.current[i]
+        p.age += 0.04
+        if (p.age > 1) {
+          trail.current.splice(i, 1)
           continue
         }
-
-        ctx.save()
-        ctx.globalCompositeOperation = "lighter"
-        const alpha = p.life * 0.8
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size)
-        grad.addColorStop(
-          0,
-          `hsla(${p.hue + (1 - p.life) * 15}, 100%, ${70 + p.life * 20}%, ${alpha})`
-        )
-        grad.addColorStop(
-          0.5,
-          `hsla(${p.hue}, 90%, ${50 + p.life * 15}%, ${alpha * 0.5})`
-        )
-        grad.addColorStop(1, `hsla(${p.hue - 10}, 80%, 30%, 0)`)
-        ctx.fillStyle = grad
+        const alpha = (1 - p.age) * 0.15
+        const r = 2 + (1 - p.age) * 1.5
         ctx.beginPath()
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
+        ctx.fillStyle = `hsla(38, 70%, 65%, ${alpha})`
         ctx.fill()
-        ctx.restore()
       }
+
+      // Small elegant cursor dot with subtle warm glow
+      const g = ctx.createRadialGradient(
+        pos.current.x, pos.current.y, 0,
+        pos.current.x, pos.current.y, 6
+      )
+      g.addColorStop(0, "hsla(38, 60%, 80%, 0.6)")
+      g.addColorStop(0.5, "hsla(38, 50%, 60%, 0.15)")
+      g.addColorStop(1, "hsla(38, 40%, 50%, 0)")
+      ctx.beginPath()
+      ctx.arc(pos.current.x, pos.current.y, 6, 0, Math.PI * 2)
+      ctx.fillStyle = g
+      ctx.fill()
+
+      // Tiny bright core
+      ctx.beginPath()
+      ctx.arc(pos.current.x, pos.current.y, 1.5, 0, Math.PI * 2)
+      ctx.fillStyle = "hsla(38, 50%, 85%, 0.7)"
+      ctx.fill()
 
       raf.current = requestAnimationFrame(animate)
     }
@@ -162,6 +108,7 @@ export default function PhoenixCursor() {
       window.removeEventListener("resize", resize)
       window.removeEventListener("mousemove", onMove)
       document.removeEventListener("mouseleave", onLeave)
+      document.removeEventListener("mouseenter", onEnter)
     }
   }, [resize])
 
