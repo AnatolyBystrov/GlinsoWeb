@@ -11,57 +11,70 @@ interface VideoBackgroundProps {
 export default function VideoBackground({ scrollProgress, mouseX, mouseY }: VideoBackgroundProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const particles = useRef<{ x: number; y: number; vx: number; vy: number; size: number; alpha: number; speed: number }[]>([])
   const animFrame = useRef<number>(0)
 
-  // Initialise floating particles
+  /* Floating motes -- subtle luminous particles that drift slowly */
+  const motes = useRef<{ x: number; y: number; vx: number; vy: number; r: number; a: number }[]>([])
+
   useEffect(() => {
-    const count = 60
-    particles.current = Array.from({ length: count }, () => ({
+    motes.current = Array.from({ length: 40 }, () => ({
       x: Math.random(),
       y: Math.random(),
-      vx: (Math.random() - 0.5) * 0.0003,
-      vy: -Math.random() * 0.0004 - 0.0001,
-      size: Math.random() * 2 + 0.5,
-      alpha: Math.random() * 0.4 + 0.1,
-      speed: Math.random() * 0.5 + 0.5,
+      vx: (Math.random() - 0.5) * 0.00015,
+      vy: -Math.random() * 0.0002 - 0.00005,
+      r: Math.random() * 1.5 + 0.5,
+      a: Math.random() * 0.3 + 0.05,
     }))
   }, [])
 
-  // Canvas particle animation loop -- never stops
-  const drawParticles = useCallback(() => {
+  const draw = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext("2d")
     if (!ctx) return
-
     const w = canvas.width
     const h = canvas.height
     ctx.clearRect(0, 0, w, h)
 
-    const goldR = 232
-    const goldG = 168
-    const goldB = 64
+    /* Draw subtle pulse-line grid in the lower portion */
+    const sp = scrollProgress
+    const gridAlpha = Math.max(0, 0.06 - sp * 0.08)
+    if (gridAlpha > 0.005) {
+      ctx.strokeStyle = `rgba(190,165,120,${gridAlpha})`
+      ctx.lineWidth = 0.5
+      const yStart = h * 0.7
+      for (let i = 0; i < 8; i++) {
+        const yy = yStart + i * 18
+        ctx.beginPath()
+        ctx.moveTo(0, yy)
+        for (let x = 0; x <= w; x += 4) {
+          const wave = Math.sin(x * 0.008 + Date.now() * 0.0005 + i * 0.8) * 3
+          ctx.lineTo(x, yy + wave)
+        }
+        ctx.stroke()
+      }
+    }
 
-    for (const p of particles.current) {
-      p.x += p.vx * p.speed
-      p.y += p.vy * p.speed
+    /* Draw floating motes */
+    const moteAlpha = Math.max(0, 1 - sp * 2)
+    for (const m of motes.current) {
+      m.x += m.vx
+      m.y += m.vy
+      if (m.y < -0.02) { m.y = 1.02; m.x = Math.random() }
+      if (m.x < -0.02) m.x = 1.02
+      if (m.x > 1.02) m.x = -0.02
 
-      // Wrap around
-      if (p.y < -0.02) { p.y = 1.02; p.x = Math.random() }
-      if (p.x < -0.02) p.x = 1.02
-      if (p.x > 1.02) p.x = -0.02
-
-      const px = p.x * w
-      const py = p.y * h
+      const px = m.x * w
+      const py = m.y * h
+      const alpha = m.a * moteAlpha
 
       ctx.beginPath()
-      ctx.arc(px, py, p.size, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(${goldR},${goldG},${goldB},${p.alpha * (1 - scrollProgress * 0.6)})`
+      ctx.arc(px, py, m.r, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(210,180,120,${alpha})`
       ctx.fill()
     }
 
-    animFrame.current = requestAnimationFrame(drawParticles)
+    animFrame.current = requestAnimationFrame(draw)
   }, [scrollProgress])
 
   useEffect(() => {
@@ -73,36 +86,33 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
     }
     resize()
     window.addEventListener("resize", resize)
-    animFrame.current = requestAnimationFrame(drawParticles)
+    animFrame.current = requestAnimationFrame(draw)
     return () => {
       window.removeEventListener("resize", resize)
       cancelAnimationFrame(animFrame.current)
     }
-  }, [drawParticles])
+  }, [draw])
 
-  // Video playback rate changes with scroll
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = Math.max(0.3, 0.85 - scrollProgress * 0.4)
+      videoRef.current.playbackRate = Math.max(0.25, 0.8 - scrollProgress * 0.4)
     }
   }, [scrollProgress])
 
-  // Scroll-driven transforms for the video
-  const videoOpacity = Math.max(0.12, 1 - scrollProgress * 1.8)
-  const videoScale = 1 + scrollProgress * 0.12
-  const parallaxX = mouseX * 8
-  const parallaxY = mouseY * 8
+  const videoOpacity = Math.max(0.08, 1 - scrollProgress * 2.2)
+  const videoScale = 1 + scrollProgress * 0.08
+  const px = mouseX * 6
+  const py = mouseY * 6
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden bg-background">
-      {/* Video layer */}
+    <div className="fixed inset-0 z-0 overflow-hidden" style={{ backgroundColor: "#0A0A0A" }}>
+      {/* Video */}
       <div
         className="absolute inset-0 will-change-transform"
         style={{
           opacity: videoOpacity,
-          transform: `scale(${videoScale}) translate(${parallaxX}px, ${parallaxY}px)`,
+          transform: `scale(${videoScale}) translate(${px}px, ${py}px)`,
           transformOrigin: "center center",
-          transition: "opacity 0.4s ease-out",
         }}
       >
         <video
@@ -113,45 +123,43 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           playsInline
           className="absolute w-full h-full"
           style={{
-            filter: `brightness(${0.75 - scrollProgress * 0.2}) saturate(1.15) contrast(1.05)`,
+            filter: `brightness(${0.6 - scrollProgress * 0.2}) saturate(0.9) contrast(1.1)`,
             objectFit: "cover",
-            objectPosition: "center center",
+            objectPosition: "center 40%",
           }}
         >
           <source src="/video/hero-bg.mp4" type="video/mp4" />
         </video>
       </div>
 
-      {/* Particle overlay -- always running */}
+      {/* Canvas overlay -- motes + signal lines */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 pointer-events-none z-[1]"
-        style={{ opacity: Math.max(0.1, 1 - scrollProgress * 1.5) }}
+        style={{ opacity: 0.8 }}
       />
 
-      {/* Radial vignette -- warm desert tint */}
+      {/* Cinematic vignette */}
       <div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background:
-            "radial-gradient(ellipse 80% 70% at 50% 45%, transparent 0%, hsl(25 30% 4% / 0.35) 55%, hsl(25 25% 3% / 0.85) 100%)",
+          background: "radial-gradient(ellipse 70% 65% at 50% 42%, transparent 0%, #0A0A0A 100%)",
         }}
       />
 
-      {/* Bottom gradient -- warm sand blend */}
+      {/* Bottom fade to content */}
       <div
-        className="absolute inset-x-0 bottom-0 h-[50vh] pointer-events-none z-[2]"
+        className="absolute inset-x-0 bottom-0 h-[60vh] pointer-events-none z-[2]"
         style={{
-          background:
-            "linear-gradient(to bottom, transparent 0%, hsl(30 25% 4% / 0.6) 40%, hsl(25 25% 4%) 100%)",
+          background: "linear-gradient(to bottom, transparent 0%, #0A0A0A 80%)",
         }}
       />
 
-      {/* Top gradient for nav area */}
+      {/* Top fade */}
       <div
-        className="absolute inset-x-0 top-0 h-28 pointer-events-none z-[2]"
+        className="absolute inset-x-0 top-0 h-40 pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to bottom, hsl(25 25% 3% / 0.4) 0%, transparent 100%)",
+          background: "linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, transparent 100%)",
         }}
       />
     </div>

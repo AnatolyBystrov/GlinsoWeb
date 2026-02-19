@@ -1,6 +1,12 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Geist_Mono } from 'next/font/google'
+import { Cormorant_Garamond, Inter, Geist_Mono } from 'next/font/google'
 import './globals.css'
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-serif',
+})
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -13,13 +19,13 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Glinso | Reinsurance Broker',
+  title: 'Glinso | Engineering Global Certainty',
   description:
-    'Advancing innovation in reinsurance solutions. Glinso is a premier reinsurance broker delivering strategic partnerships and global market access.',
+    'A global reinsurance brokerage delivering strategic partnerships, advanced analytics and world-class risk transfer solutions.',
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0a0d14',
+  themeColor: '#0A0A0A',
   width: 'device-width',
   initialScale: 1,
 }
@@ -30,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${geistMono.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
         {children}
       </body>

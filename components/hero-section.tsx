@@ -1,171 +1,158 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ChevronDown } from "lucide-react"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 
 const ease = [0.16, 1, 0.3, 1] as const
-
-/* Mont-fort style: division titles that cycle as you scroll through the hero */
-const divisions = [
-  { title: "Reinsurance", subtitle: "Treaty, Facultative & Specialty Lines" },
-  { title: "Advisory", subtitle: "Strategic Risk & Capital Consulting" },
-  { title: "Analytics", subtitle: "Data-Driven Underwriting Intelligence" },
-  { title: "Capital Solutions", subtitle: "ILS, Sidecars & Alt Risk Transfer" },
-]
 
 interface HeroSectionProps {
   scrollProgress?: number
 }
 
 export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const heroRef = useRef<HTMLDivElement>(null)
+  const [phase, setPhase] = useState(0) // 0=black, 1=title, 2=subtitle, 3=full
 
-  /* Map early scroll (0 -> 0.25) to active division index */
   useEffect(() => {
-    const heroScroll = Math.min(scrollProgress / 0.2, 1)
-    const idx = Math.min(Math.floor(heroScroll * divisions.length), divisions.length - 1)
-    setActiveIndex(idx)
-  }, [scrollProgress])
+    const t1 = setTimeout(() => setPhase(1), 600)
+    const t2 = setTimeout(() => setPhase(2), 1800)
+    const t3 = setTimeout(() => setPhase(3), 3000)
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+  }, [])
+
+  /* Fade hero content as user scrolls past */
+  const heroFade = Math.max(0, 1 - scrollProgress * 6)
+  const heroY = scrollProgress * -120
 
   const handleScrollDown = () => {
-    const target = document.getElementById("who-we-are")
-    if (target) target.scrollIntoView({ behavior: "smooth" })
+    const el = document.getElementById("who-we-are")
+    if (el) el.scrollIntoView({ behavior: "smooth" })
   }
 
   return (
-    <section
-      id="hero"
-      ref={heroRef}
-      className="relative min-h-[300vh] overflow-hidden"
-    >
-      {/* Sticky viewport container */}
-      <div className="sticky top-0 h-screen flex flex-col">
-        {/* Top-right utility links -- mont-fort style */}
+    <section id="hero" className="relative min-h-[200vh]">
+      {/* Sticky viewport */}
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+
+        {/* Black overlay that lifts to reveal the scene */}
+        <motion.div
+          className="absolute inset-0 z-30 pointer-events-none"
+          style={{ backgroundColor: "#0A0A0A" }}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: phase >= 1 ? 0 : 1 }}
+          transition={{ duration: 2.5, ease: [0.25, 0.1, 0.25, 1] }}
+        />
+
+        {/* Main content */}
+        <div
+          className="relative z-10 text-center px-6 max-w-5xl mx-auto"
+          style={{
+            opacity: heroFade,
+            transform: `translateY(${heroY}px)`,
+            transition: "transform 0.1s linear",
+          }}
+        >
+          {/* Thin decorative line */}
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={phase >= 1 ? { scaleY: 1 } : {}}
+            transition={{ duration: 1.5, delay: 0.3, ease }}
+            className="w-px h-12 md:h-16 bg-gradient-to-b from-transparent via-primary/40 to-transparent mx-auto mb-8 origin-top"
+          />
+
+          {/* Brand name -- elegant serif */}
+          <motion.h1
+            initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+            animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 1.6, delay: 0.2, ease }}
+            className="font-serif font-light text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-[0.02em] text-foreground leading-[0.9] mb-4"
+          >
+            Glinso
+          </motion.h1>
+
+          {/* Tagline -- the cinematic reveal */}
+          <motion.p
+            initial={{ opacity: 0, letterSpacing: "0.4em" }}
+            animate={phase >= 2 ? { opacity: 1, letterSpacing: "0.2em" } : {}}
+            transition={{ duration: 1.8, ease }}
+            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase text-primary/70 mb-10 md:mb-14"
+          >
+            Engineering Global Certainty
+          </motion.p>
+
+          {/* Decorative divider */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={phase >= 2 ? { scaleX: 1 } : {}}
+            transition={{ duration: 1.5, ease }}
+            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent mx-auto mb-10 md:mb-14"
+          />
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={phase >= 3 ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1.2, ease }}
+            className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed text-balance"
+          >
+            A global reinsurance brokerage and risk advisory group,
+            delivering capital-efficient solutions to insurers
+            and specialty carriers worldwide.
+          </motion.p>
+
+          {/* CTA line */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={phase >= 3 ? { opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 0.4, ease }}
+            className="mt-10 md:mt-14"
+          >
+            <a
+              href="#who-we-are"
+              className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary/50 hover:text-primary transition-colors duration-500 border-b border-primary/20 hover:border-primary/50 pb-1"
+            >
+              Discover
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Scroll invite -- fine animated line at bottom */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: phase >= 3 && scrollProgress < 0.05 ? 1 : 0 }}
+          transition={{ duration: 0.8 }}
+          onClick={handleScrollDown}
+          className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 cursor-pointer group"
+          aria-label="Scroll down"
+        >
+          <span className="text-[8px] md:text-[9px] font-mono tracking-[0.35em] uppercase text-muted-foreground/25 group-hover:text-primary/40 transition-colors duration-500">
+            Scroll
+          </span>
+          <motion.div
+            className="w-px h-6 bg-gradient-to-b from-primary/30 to-transparent"
+            animate={{ scaleY: [0.5, 1, 0.5] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "top" }}
+          />
+        </motion.button>
+
+        {/* Top-right utility links */}
         <motion.nav
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.8 }}
+          animate={phase >= 3 ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8 }}
           className="absolute top-5 right-6 md:right-10 z-20 flex items-center gap-5 md:gap-7"
           aria-label="Utility links"
         >
-          {["Contact", "ESG", "Privacy Policy"].map((link) => (
+          {["Contact", "ESG", "Privacy"].map((link) => (
             <a
               key={link}
-              href={`#${link.toLowerCase().replace(/ /g, "-")}`}
-              className="text-[9px] md:text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground/40 hover:text-primary/70 transition-colors duration-300"
+              href={`#${link.toLowerCase()}`}
+              className="text-[8px] md:text-[9px] font-mono tracking-[0.25em] uppercase text-muted-foreground/20 hover:text-primary/50 transition-colors duration-500"
             >
               {link}
             </a>
           ))}
         </motion.nav>
-
-        {/* Center content area */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6">
-          {/* Company name */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.2, ease }}
-            className="text-center mb-8 md:mb-12"
-          >
-            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-sans font-extralight tracking-[-0.03em] uppercase text-foreground leading-none">
-              Glinso
-            </h1>
-          </motion.div>
-
-          {/* Division titles -- mont-fort style cycling on scroll */}
-          <div className="relative w-full max-w-3xl mx-auto h-24 md:h-32">
-            {divisions.map((div, i) => {
-              const isActive = i === activeIndex
-              return (
-                <motion.div
-                  key={div.title}
-                  className="absolute inset-0 flex flex-col items-center justify-center text-center"
-                  animate={{
-                    opacity: isActive ? 1 : 0,
-                    y: isActive ? 0 : i < activeIndex ? -30 : 30,
-                    scale: isActive ? 1 : 0.95,
-                  }}
-                  transition={{ duration: 0.7, ease }}
-                >
-                  <span className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-sans font-extralight tracking-[0.04em] uppercase text-foreground/70">
-                    {div.title}
-                  </span>
-                  <span className="mt-2 md:mt-3 text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary/50">
-                    {div.subtitle}
-                  </span>
-                </motion.div>
-              )
-            })}
-          </div>
-
-          {/* Division index dots */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.4 }}
-            className="flex items-center gap-2.5 mt-8 md:mt-10"
-          >
-            {divisions.map((_, i) => (
-              <div
-                key={i}
-                className="relative flex items-center justify-center transition-all duration-500"
-              >
-                <div
-                  className="w-1.5 h-1.5 rounded-full transition-all duration-500"
-                  style={{
-                    backgroundColor: i === activeIndex
-                      ? "hsl(38 75% 55%)"
-                      : "hsl(38 20% 30% / 0.3)",
-                    transform: i === activeIndex ? "scale(1.5)" : "scale(1)",
-                    boxShadow: i === activeIndex ? "0 0 8px hsl(38 75% 55% / 0.4)" : "none",
-                  }}
-                />
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Divider */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1.5, delay: 1.0 }}
-            className="mt-8 md:mt-10 w-16 md:w-24 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
-          />
-
-          {/* Subtext */}
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.2, ease }}
-            className="mt-6 md:mt-8 text-xs sm:text-sm md:text-base text-muted-foreground/60 max-w-md mx-auto leading-relaxed text-center text-balance"
-          >
-            A global reinsurance brokerage and risk advisory group, delivering
-            capital-efficient solutions to insurers worldwide.
-          </motion.p>
-        </div>
-
-        {/* Scroll indicator */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: scrollProgress < 0.15 ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
-          onClick={handleScrollDown}
-          className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer group"
-          aria-label="Scroll down"
-        >
-          <span className="text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-muted-foreground/30 group-hover:text-primary/50 transition-colors duration-300">
-            Scroll down to discover
-          </span>
-          <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ChevronDown className="w-4 h-4 text-primary/25" />
-          </motion.div>
-        </motion.button>
       </div>
     </section>
   )

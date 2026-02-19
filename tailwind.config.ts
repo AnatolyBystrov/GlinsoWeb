@@ -44,11 +44,7 @@ const config: Config = {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        gold: {
-          DEFAULT: 'hsl(var(--gold))',
-          light: 'hsl(var(--gold-light))',
-          dark: 'hsl(var(--gold-dark))',
-        },
+
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -57,6 +53,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-inter)'],
+        serif: ['var(--font-serif)'],
         mono: ['var(--font-geist-mono)'],
       },
       keyframes: {
