@@ -8,6 +8,22 @@
   background at the front, creating a smooth blend from video to content.
 */
 
+/* Pre-computed deterministic sand particle positions to avoid hydration mismatch */
+const SAND_PARTICLES = Array.from({ length: 20 }, (_, i) => {
+  // Simple seeded pseudo-random using index
+  const seed = (i * 2654435761) >>> 0
+  const r1 = ((seed & 0xff) / 255)
+  const r2 = (((seed >> 8) & 0xff) / 255)
+  const r3 = (((seed >> 16) & 0xff) / 255)
+  const r4 = (((seed >> 24) & 0xff) / 255)
+  return {
+    x: 5 + r1 * 90,
+    y: 50 + r2 * 45,
+    delay: r3 * 6,
+    dur: 4 + r4 * 4,
+  }
+})
+
 interface DuneLayersProps {
   scrollProgress: number
   mouseX: number
@@ -98,27 +114,21 @@ export default function DuneLayers({ scrollProgress, mouseX }: DuneLayersProps) 
         />
       </svg>
 
-      {/* Sand particle overlay -- tiny dots drifting with wind */}
+      {/* Sand particle overlay -- deterministic positions to avoid hydration mismatch */}
       <div className="absolute inset-0 hidden md:block">
-        {Array.from({ length: 20 }, (_, i) => {
-          const x = 5 + Math.random() * 90
-          const y = 50 + Math.random() * 45
-          const delay = Math.random() * 6
-          const dur = 4 + Math.random() * 4
-          return (
-            <div
-              key={i}
-              className="absolute w-px h-px rounded-full"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                backgroundColor: "hsl(38 60% 55% / 0.15)",
-                boxShadow: "0 0 2px hsl(38 60% 55% / 0.1)",
-                animation: `sand-drift ${dur}s ease-in-out ${delay}s infinite`,
-              }}
-            />
-          )
-        })}
+        {SAND_PARTICLES.map((p, i) => (
+          <div
+            key={i}
+            className="absolute w-px h-px rounded-full"
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              backgroundColor: "hsl(38 60% 55% / 0.15)",
+              boxShadow: "0 0 2px hsl(38 60% 55% / 0.1)",
+              animation: `sand-drift ${p.dur}s ease-in-out ${p.delay}s infinite`,
+            }}
+          />
+        ))}
       </div>
     </div>
   )
