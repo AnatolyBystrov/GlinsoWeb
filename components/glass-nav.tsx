@@ -7,7 +7,12 @@ const sections = [
   { id: "solutions", label: "Solutions" },
   { id: "presence", label: "Global" },
   { id: "esg", label: "ESG" },
-  { id: "contact", label: "Contact" },
+]
+
+const pages = [
+  { href: "/story", label: "Story" },
+  { href: "/team", label: "Team" },
+  { href: "/contact", label: "Contact" },
 ]
 
 interface GlassNavProps {
@@ -86,6 +91,16 @@ export default function GlassNav({ scrollProgress }: GlassNavProps) {
                   className="absolute left-0 -bottom-1 h-px bg-primary/50 transition-all duration-500"
                   style={{ width: activeId === sec.id ? "100%" : "0%" }}
                 />
+              </a>
+            ))}
+            <span className="w-px h-3 bg-border/30 mx-1" />
+            {pages.map((page) => (
+              <a
+                key={page.href}
+                href={page.href}
+                className="text-[9px] font-mono tracking-[0.2em] uppercase transition-colors duration-300 text-muted-foreground hover:text-primary"
+              >
+                {page.label}
               </a>
             ))}
           </div>
