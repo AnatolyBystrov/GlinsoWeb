@@ -21,38 +21,12 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus("submitting")
-    setErrorMessage("")
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message')
-      }
-
-      setStatus("success")
-      setTimeout(() => {
-        setStatus("idle")
-        setFormData({ name: "", email: "", company: "", phone: "", service: "", message: "" })
-      }, 5000)
-    } catch (error) {
-      console.error('Form submission error:', error)
-      setStatus("error")
-      setErrorMessage(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
-      setTimeout(() => {
-        setStatus("idle")
-        setErrorMessage("")
-      }, 5000)
-    }
+    // Static site - open email client with pre-filled message
+    const subject = encodeURIComponent(`Contact from ${formData.name}`)
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company}\nPhone: ${formData.phone}\nService: ${formData.service}\n\nMessage:\n${formData.message}`
+    )
+    window.location.href = `mailto:team@glinso.ae?subject=${subject}&body=${body}`
   }
 
   return (
