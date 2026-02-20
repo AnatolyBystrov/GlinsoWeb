@@ -7,7 +7,7 @@ export default function AmbientMusic() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [audio] = useState(() => {
     if (typeof window !== "undefined") {
-      const a = new Audio("/audio/ambient.mp3")
+      const a = new Audio(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/audio/ambient.mp3`)
       a.loop = true
       a.volume = 0.3
       return a
