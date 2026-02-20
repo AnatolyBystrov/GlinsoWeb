@@ -64,7 +64,7 @@ export default function Home() {
     <main className="relative min-h-screen bg-background">
       {mounted && <PhoenixCursor />}
       <ScrollProgress progress={scrollProgress} />
-      <GlassNav scrollProgress={scrollProgress} />
+      <GlassNav />
 
       <VideoBackground scrollProgress={scrollProgress} mouseX={mouseX} mouseY={mouseY} />
 

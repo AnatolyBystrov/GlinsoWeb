@@ -106,7 +106,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   const py = mouseY * 6
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden" style={{ backgroundColor: "hsl(220 12% 10%)" }}>
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ backgroundColor: "hsl(0 0% 9%)" }}>
       {/* Video */}
       <div
         className="absolute inset-0 will-change-transform"

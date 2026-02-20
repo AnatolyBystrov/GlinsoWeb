@@ -31,7 +31,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
   return (
     <section id="hero" className="relative min-h-[200vh]">
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden" style={{ paddingTop: "clamp(96px, 10vh, 140px)" }}>
 
         {/* Black overlay that lifts to reveal the scene */}
         <motion.div
@@ -67,17 +67,17 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             className="w-px h-12 md:h-16 bg-gradient-to-b from-transparent via-primary/60 to-transparent mx-auto mb-8 origin-top"
           />
 
-          {/* Brand name -- elegant serif */}
+          {/* Hero title */}
           <motion.h1
             initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
             animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
             transition={{ duration: 1.6, delay: 0.2, ease }}
-            className="font-serif font-light text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-[0.02em] text-foreground leading-[0.9] mb-4"
+            className="font-serif font-light text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] text-foreground leading-[1.1] mb-6"
             style={{
               textShadow: "0 2px 40px rgba(0,0,0,0.8), 0 4px 80px rgba(0,0,0,0.5)",
             }}
           >
-            Glinso
+            Global Insurance Solutions
           </motion.h1>
 
           {/* Tagline -- the cinematic reveal */}
@@ -155,24 +155,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           />
         </motion.button>
 
-        {/* Top-right utility links */}
-        <motion.nav
-          initial={{ opacity: 0 }}
-          animate={phase >= 3 ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8 }}
-          className="absolute top-5 right-6 md:right-10 z-20 flex items-center gap-5 md:gap-7"
-          aria-label="Utility links"
-        >
-          {["Contact", "ESG", "Privacy"].map((link) => (
-            <a
-              key={link}
-              href={`#${link.toLowerCase()}`}
-              className="text-[8px] md:text-[9px] font-mono tracking-[0.25em] uppercase text-muted-foreground/50 hover:text-primary/70 transition-colors duration-500"
-            >
-              {link}
-            </a>
-          ))}
-        </motion.nav>
+
       </div>
     </section>
   )
