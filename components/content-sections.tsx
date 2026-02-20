@@ -297,7 +297,295 @@ function GlobalPresence() {
   )
 }
 
-/* ── 4. PHILOSOPHY (visually distinct full-width band) ── */
+/* ── 4. STORY ── */
+const timeline = [
+  {
+    year: "2009",
+    title: "The Vision",
+    text: "On 2 July 2009, the concept behind GLINSO was first developed with the vision of building a focused, technically strong brokerage platform operating across international markets.",
+  },
+  {
+    year: "2010",
+    title: "First License",
+    text: "The first brokerage license was granted on 5 July 2010, marking the official beginning of GLINSO's journey as an independent insurance and reinsurance brokerage.",
+  },
+  {
+    year: "2018",
+    title: "Strategic Relocation",
+    text: "On 27 November 2018, operations were strategically relocated to the United Arab Emirates, where GLINSO Brokers FZE was established in Ras Al Khaimah.",
+  },
+  {
+    year: "2026",
+    title: "Long-Term Commitment",
+    text: "A new Ras Al Khaimah license was granted on 29 January 2026, valid until 28 January 2031, reinforcing the company's long-term commitment to regulatory compliance and sustainable growth in the region.",
+  },
+]
+
+function Story() {
+  const { ref, visible } = useReveal()
+  return (
+    <section
+      id="story"
+      ref={ref}
+      className="relative py-28 md:py-40"
+      style={{
+        background: "hsl(210 20% 98%)",
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-6 md:px-16">
+        <SectionHeader
+          index="04"
+          title="Our Story"
+          subtitle="From vision to execution — building a focused, technically strong brokerage platform."
+          visible={visible}
+        />
+
+        <div className="space-y-12 md:space-y-16">
+          {timeline.map((item, i) => (
+            <motion.div
+              key={item.year}
+              initial={{ opacity: 0, x: -30 }}
+              animate={visible ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.2, delay: i * 0.1, ease }}
+              className="flex flex-col md:flex-row gap-6 md:gap-12"
+            >
+              <div className="md:w-32 flex-shrink-0">
+                <div className="text-4xl md:text-5xl font-serif font-light text-primary">
+                  {item.year}
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl md:text-3xl font-serif font-semibold mb-4 text-foreground">
+                  {item.title}
+                </h3>
+                <p className="text-base md:text-lg text-secondary-foreground leading-relaxed">
+                  {item.text}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ── 5. TEAM ── */
+const leadership = [
+  {
+    name: "Svetlana Lisunova",
+    role: "Chief Financial Officer",
+    location: "Ras Al Khaimah",
+    bio: "Responsible for financial operations, regulatory compliance, and corporate governance. Ensures operational efficiency and financial transparency.",
+  },
+  {
+    name: "Veronica Bystrova",
+    role: "Treaty Broker",
+    location: "Dubai",
+    bio: "Specialist in treaty reinsurance structuring and placement. Manages complex reinsurance programmes across property, casualty, and specialty lines.",
+  },
+]
+
+function Team() {
+  const { ref, visible } = useReveal()
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
+  return (
+    <section
+      id="team"
+      ref={ref}
+      className="relative py-28 md:py-40"
+      style={{
+        background: "linear-gradient(180deg, transparent 0%, hsl(210 20% 95%) 20%, hsl(210 20% 95%) 80%, transparent 100%)",
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-6 md:px-16">
+        <SectionHeader
+          index="05"
+          title="Leadership Team"
+          subtitle="Strategic expertise driving technical excellence and market execution."
+          visible={visible}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {leadership.map((member, i) => (
+            <motion.div
+              key={member.name}
+              initial={{ opacity: 0, y: 30 }}
+              animate={visible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.2, delay: i * 0.1, ease }}
+              onMouseEnter={() => setHoveredIndex(i)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className="p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-border"
+            >
+              <h3 className="text-2xl md:text-3xl font-serif font-semibold mb-2 text-foreground">
+                {member.name}
+              </h3>
+              <p className="text-sm font-mono tracking-wider text-primary uppercase mb-1">
+                {member.role}
+              </p>
+              <p className="text-sm text-muted-foreground mb-4">
+                {member.location}
+              </p>
+              <p className="text-base text-secondary-foreground leading-relaxed">
+                {member.bio}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ── 6. CONTACT ── */
+function Contact() {
+  const { ref, visible } = useReveal()
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    phone: "",
+    service: "",
+    message: "",
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const subject = encodeURIComponent(`Contact from ${formData.name}`)
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company}\nPhone: ${formData.phone}\nService: ${formData.service}\n\nMessage:\n${formData.message}`
+    )
+    window.location.href = `mailto:team@glinso.ae?subject=${subject}&body=${body}`
+  }
+
+  return (
+    <section
+      id="contact"
+      ref={ref}
+      className="relative py-28 md:py-40"
+      style={{
+        background: "hsl(210 20% 98%)",
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-6 md:px-16">
+        <SectionHeader
+          index="06"
+          title="Contact Us"
+          subtitle="Let's discuss how we can support your reinsurance requirements."
+          visible={visible}
+        />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          {/* Contact Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={visible ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.2, ease }}
+            className="space-y-8"
+          >
+            <div>
+              <h3 className="text-xl font-serif font-semibold mb-3 text-foreground">Email</h3>
+              <a href="mailto:team@glinso.ae" className="text-primary hover:underline text-lg">
+                team@glinso.ae
+              </a>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-serif font-semibold mb-3 text-foreground">Headquarters</h3>
+              <p className="text-secondary-foreground">
+                GLINSO Brokers FZE<br />
+                Ras Al Khaimah<br />
+                United Arab Emirates
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-serif font-semibold mb-3 text-foreground">Representative Office</h3>
+              <p className="text-secondary-foreground">
+                Dubai<br />
+                United Arab Emirates
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Contact Form */}
+          <motion.form
+            initial={{ opacity: 0, x: 30 }}
+            animate={visible ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.2, ease }}
+            onSubmit={handleSubmit}
+            className="space-y-6"
+          >
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium mb-2 text-foreground">
+                Name *
+              </label>
+              <input
+                type="text"
+                id="name"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground">
+                Email *
+              </label>
+              <input
+                type="email"
+                id="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="company" className="block text-sm font-medium mb-2 text-foreground">
+                Company
+              </label>
+              <input
+                type="text"
+                id="company"
+                value={formData.company}
+                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium mb-2 text-foreground">
+                Message *
+              </label>
+              <textarea
+                id="message"
+                required
+                rows={6}
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full px-8 py-4 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors duration-300"
+            >
+              Send Message
+            </button>
+          </motion.form>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ── 7. PHILOSOPHY (visually distinct full-width band) ── */
 function Philosophy() {
   const { ref, visible } = useReveal()
   return (
@@ -340,6 +628,9 @@ export default function ContentSections() {
       <NarrativeIntro />
       <Solutions />
       <GlobalPresence />
+      <Story />
+      <Team />
+      <Contact />
       <Philosophy />
     </div>
   )

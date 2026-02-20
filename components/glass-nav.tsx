@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-const linkClass = "text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
+const linkClass = "text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300 cursor-pointer"
 
 export default function GlassNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,6 +15,22 @@ export default function GlassNav() {
     border: "1px solid rgba(0,0,0,0.08)",
   }
 
+  // Smooth scroll to section
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      const headerOffset = 100
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
+    setIsOpen(false)
+  }
+
   return (
     <header className="fixed top-4 left-0 right-0 z-50 px-6 md:px-10">
       <nav
@@ -23,22 +39,26 @@ export default function GlassNav() {
         aria-label="Main navigation"
       >
         {/* Logo */}
-        <Link
-          href="/"
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault()
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
           className="font-serif text-lg md:text-xl font-semibold tracking-[0.1em] hover:text-primary transition-colors duration-300"
           style={{ color: "hsl(220 15% 20%)" }}
         >
           GLINSO
-        </Link>
+        </a>
 
         {/* Desktop Navigation links */}
         <div className="hidden md:flex items-center gap-6 md:gap-8">
-          <a href="#who-we-are" className={linkClass}>About</a>
-          <a href="#solutions" className={linkClass}>Solutions</a>
-          <a href="#presence" className={linkClass}>Offices</a>
-          <Link href="/story" prefetch={true} className={linkClass}>Story</Link>
-          <Link href="/team" prefetch={true} className={linkClass}>Team</Link>
-          <Link href="/contact" prefetch={true} className={linkClass}>Contact</Link>
+          <a onClick={() => scrollToSection('who-we-are')} className={linkClass}>About</a>
+          <a onClick={() => scrollToSection('solutions')} className={linkClass}>Solutions</a>
+          <a onClick={() => scrollToSection('presence')} className={linkClass}>Offices</a>
+          <a onClick={() => scrollToSection('story')} className={linkClass}>Story</a>
+          <a onClick={() => scrollToSection('team')} className={linkClass}>Team</a>
+          <a onClick={() => scrollToSection('contact')} className={linkClass}>Contact</a>
         </div>
 
         {/* Mobile hamburger button */}
@@ -69,12 +89,12 @@ export default function GlassNav() {
           className="md:hidden mx-auto max-w-7xl mt-2 rounded-lg shadow-md px-6 py-4 flex flex-col gap-4"
           style={navStyle}
         >
-          <a href="#who-we-are" className={linkClass} onClick={() => setIsOpen(false)}>About</a>
-          <a href="#solutions" className={linkClass} onClick={() => setIsOpen(false)}>Solutions</a>
-          <a href="#presence" className={linkClass} onClick={() => setIsOpen(false)}>Offices</a>
-          <Link href="/story" prefetch={true} className={linkClass} onClick={() => setIsOpen(false)}>Story</Link>
-          <Link href="/team" prefetch={true} className={linkClass} onClick={() => setIsOpen(false)}>Team</Link>
-          <Link href="/contact" prefetch={true} className={linkClass} onClick={() => setIsOpen(false)}>Contact</Link>
+          <a onClick={() => scrollToSection('who-we-are')} className={linkClass}>About</a>
+          <a onClick={() => scrollToSection('solutions')} className={linkClass}>Solutions</a>
+          <a onClick={() => scrollToSection('presence')} className={linkClass}>Offices</a>
+          <a onClick={() => scrollToSection('story')} className={linkClass}>Story</a>
+          <a onClick={() => scrollToSection('team')} className={linkClass}>Team</a>
+          <a onClick={() => scrollToSection('contact')} className={linkClass}>Contact</a>
         </div>
       )}
     </header>
