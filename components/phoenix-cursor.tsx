@@ -130,7 +130,7 @@ export default function PhoenixCursor() {
   return (
     <>
       <style jsx global>{`
-        @media (hover: hover) and (pointer: fine) {
+        @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
           * { cursor: none !important; }
         }
       `}</style>
