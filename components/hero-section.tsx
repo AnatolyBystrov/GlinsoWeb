@@ -31,7 +31,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
   return (
     <section id="hero" className="relative min-h-[100vh]">
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-end overflow-hidden" style={{ paddingTop: "clamp(96px, 10vh, 140px)", paddingBottom: "2vh" }}>
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-end overflow-hidden" style={{ paddingTop: "clamp(96px, 10vh, 140px)" }}>
 
         {/* Light overlay that lifts to reveal the scene */}
         <motion.div
@@ -46,27 +46,26 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
         <div
           className="absolute inset-0 z-5 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse 60% 70% at 50% 48%, rgba(255,255,255,0.85) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse 60% 70% at 50% 65%, rgba(255,255,255,0.85) 0%, transparent 70%)",
           }}
         />
 
         {/* Main content */}
         <div
-          className="relative z-10 text-center px-6 max-w-5xl mx-auto"
+          className="relative z-10 text-center px-6 max-w-5xl mx-auto pb-2"
           style={{
             opacity: heroFade,
             transform: `translateY(${heroY}px)`,
             transition: "transform 0.1s linear",
+            marginBottom: "max(-5vh, -60px)",
           }}
         >
-          {/* Thin decorative line - hidden to save space */}
-
           {/* Hero title */}
           <motion.h1
             initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
             animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
             transition={{ duration: 1.6, delay: 0.2, ease }}
-            className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[0.03em] leading-[1.1] mb-4"
+            className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[0.03em] leading-[1.1] mb-2"
             style={{
               color: "hsl(220 15% 20%)",
               textShadow: "0 1px 2px rgba(255,255,255,0.8)",
@@ -80,7 +79,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, letterSpacing: "0.4em" }}
             animate={phase >= 2 ? { opacity: 1, letterSpacing: "0.2em" } : {}}
             transition={{ duration: 1.8, ease }}
-            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase mb-6 md:mb-8"
+            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase mb-3"
             style={{
               color: "hsl(28 95% 62%)",
               textShadow: "0 1px 2px rgba(255,255,255,0.5)",
@@ -94,7 +93,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ scaleX: 0 }}
             animate={phase >= 2 ? { scaleX: 1 } : {}}
             transition={{ duration: 1.5, ease }}
-            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mb-6 md:mb-8"
+            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mb-3"
           />
 
           {/* Description */}
@@ -102,7 +101,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={phase >= 3 ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1.2, ease }}
-            className="text-xs md:text-sm max-w-md mx-auto leading-relaxed text-balance"
+            className="text-xs md:text-sm max-w-md mx-auto leading-relaxed text-balance mb-3"
             style={{
               color: "hsl(220 10% 45%)",
             }}
@@ -115,7 +114,6 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0 }}
             animate={phase >= 3 ? { opacity: 1 } : {}}
             transition={{ duration: 1, delay: 0.4, ease }}
-            className="mt-6 md:mt-8"
           >
             <a
               href="#who-we-are"
@@ -130,7 +128,38 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           </motion.div>
         </div>
 
-
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={phase >= 3 ? { opacity: 1 } : {}}
+          transition={{ duration: 1, delay: 0.6, ease }}
+          className="absolute bottom-8 right-8 flex flex-col items-center gap-2"
+          style={{ opacity: heroFade }}
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 5V19M12 19L19 12M12 19L5 12"
+                stroke="hsl(28 95% 62%)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </motion.div>
+          <span className="text-[9px] font-mono tracking-widest uppercase" style={{ color: "hsl(220 10% 45%)" }}>
+            Scroll
+          </span>
+        </motion.div>
 
       </div>
     </section>

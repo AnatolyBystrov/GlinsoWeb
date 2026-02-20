@@ -71,31 +71,46 @@ export default function PhoenixCursor() {
           trail.current.splice(i, 1)
           continue
         }
-        const alpha = (1 - p.age) * 0.15
+        const alpha = (1 - p.age) * 0.3
         const r = 2 + (1 - p.age) * 1.5
+
+        // Dark outline
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, r + 0.5, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.3})`
+        ctx.fill()
+
+        // Orange fill
         ctx.beginPath()
         ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
-        ctx.fillStyle = `hsla(38, 70%, 65%, ${alpha})`
+        ctx.fillStyle = `hsla(28, 95%, 50%, ${alpha})`
         ctx.fill()
       }
 
-      // Small elegant cursor dot with subtle warm glow
+      // Outer ring (dark outline)
+      ctx.beginPath()
+      ctx.arc(pos.current.x, pos.current.y, 8, 0, Math.PI * 2)
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.4)"
+      ctx.lineWidth = 1.5
+      ctx.stroke()
+
+      // Main cursor dot with glow
       const g = ctx.createRadialGradient(
         pos.current.x, pos.current.y, 0,
-        pos.current.x, pos.current.y, 6
+        pos.current.x, pos.current.y, 7
       )
-      g.addColorStop(0, "hsla(38, 60%, 80%, 0.6)")
-      g.addColorStop(0.5, "hsla(38, 50%, 60%, 0.15)")
-      g.addColorStop(1, "hsla(38, 40%, 50%, 0)")
+      g.addColorStop(0, "hsla(28, 95%, 55%, 0.9)")
+      g.addColorStop(0.5, "hsla(28, 95%, 50%, 0.5)")
+      g.addColorStop(1, "hsla(28, 95%, 45%, 0)")
       ctx.beginPath()
-      ctx.arc(pos.current.x, pos.current.y, 6, 0, Math.PI * 2)
+      ctx.arc(pos.current.x, pos.current.y, 7, 0, Math.PI * 2)
       ctx.fillStyle = g
       ctx.fill()
 
-      // Tiny bright core
+      // Bright white core
       ctx.beginPath()
-      ctx.arc(pos.current.x, pos.current.y, 1.5, 0, Math.PI * 2)
-      ctx.fillStyle = "hsla(38, 50%, 85%, 0.7)"
+      ctx.arc(pos.current.x, pos.current.y, 2, 0, Math.PI * 2)
+      ctx.fillStyle = "rgba(255, 255, 255, 0.95)"
       ctx.fill()
 
       raf.current = requestAnimationFrame(animate)

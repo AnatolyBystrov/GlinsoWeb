@@ -4,8 +4,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  reactStrictMode: true,
+  swcMinify: true,
   experimental: {
     turbo: {},
+    optimizePackageImports: ['framer-motion', 'react-svg-worldmap'],
   },
 }
 

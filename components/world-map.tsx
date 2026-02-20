@@ -3,7 +3,14 @@
 import { motion } from "framer-motion"
 import dynamic from "next/dynamic"
 
-const WorldMap = dynamic(() => import("react-svg-worldmap"), { ssr: false })
+const WorldMap = dynamic(() => import("react-svg-worldmap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-64 flex items-center justify-center">
+      <div className="text-sm text-muted-foreground">Loading map...</div>
+    </div>
+  )
+})
 
 interface WorldMapComponentProps {
   visible: boolean
@@ -55,7 +62,7 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={visible ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         className="relative mb-12"
       >
         <div className="relative rounded-xl overflow-hidden bg-white shadow-lg border border-slate-200/50 p-8 md:p-12">
@@ -132,7 +139,7 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
             key={region.name}
             initial={{ opacity: 0, y: 20 }}
             animate={visible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.8 + i * 0.08 }}
+            transition={{ duration: 0.2 }}
             className="p-4 md:p-5 rounded-lg bg-white border border-slate-200/50 hover:shadow-md transition-shadow duration-300"
           >
             <div className="flex items-baseline gap-2 mb-2">

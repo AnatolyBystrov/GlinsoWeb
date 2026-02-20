@@ -46,18 +46,21 @@ export default function GlassNav() {
           </a>
           <Link
             href="/story"
+            prefetch={true}
             className="text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Story
           </Link>
           <Link
             href="/team"
+            prefetch={true}
             className="text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Team
           </Link>
           <Link
             href="/contact"
+            prefetch={true}
             className="text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Contact

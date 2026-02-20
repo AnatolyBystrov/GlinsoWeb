@@ -92,7 +92,7 @@ function NarrativeIntro() {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={visible ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 1, delay: 0.3, ease }}
+            transition={{ duration: 0.2, ease }}
           >
             <p className="font-serif text-xl md:text-2xl lg:text-3xl font-light text-foreground leading-[1.5] tracking-[-0.005em]">
               Technical clarity.
@@ -107,7 +107,7 @@ function NarrativeIntro() {
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={visible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, delay: 0.5, ease }}
+            transition={{ duration: 0.2, ease }}
             className="space-y-5"
           >
             <p className="text-sm md:text-base text-secondary-foreground leading-relaxed">
@@ -171,7 +171,7 @@ function Solutions() {
               key={s.name}
               initial={{ opacity: 0, y: 30 }}
               animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, delay: 0.15 + i * 0.08, ease }}
+              transition={{ duration: 0.2, ease }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
               className="group relative p-8 md:p-10 rounded-xl overflow-hidden cursor-default transition-all duration-500 shadow-sm hover:shadow-md"
@@ -251,7 +251,7 @@ function GlobalPresence() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease }}
+          transition={{ duration: 0.2, ease }}
           className="text-center mb-12"
         >
           <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-light mb-4" style={{ color: "hsl(220 15% 20%)" }}>
@@ -265,7 +265,7 @@ function GlobalPresence() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={visible ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 1.2, delay: 0.2, ease }}
+          transition={{ duration: 0.2, ease }}
           className="relative mb-16 p-6 md:p-10 rounded-xl bg-white shadow-lg"
         >
           <WorldMap visible={visible} />
@@ -277,7 +277,7 @@ function GlobalPresence() {
               key={o.city}
               initial={{ opacity: 0, y: 30 }}
               animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, delay: 0.4 + i * 0.1, ease }}
+              transition={{ duration: 0.2, ease }}
               className="p-6 rounded-lg bg-white shadow-sm border border-border"
             >
               <h4 className="font-serif text-xl md:text-2xl font-semibold mb-2" style={{ color: "hsl(28 95% 62%)" }}>
@@ -312,7 +312,7 @@ function Philosophy() {
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           animate={visible ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 1.5, ease }}
+          transition={{ duration: 0.2, ease }}
         >
           <p className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-foreground leading-[1.2] tracking-[-0.01em] text-balance">
             Serious risks.

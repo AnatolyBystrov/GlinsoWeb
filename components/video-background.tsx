@@ -101,9 +101,6 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
 
   /* Keep video visible and clearly seen */
   const videoOpacity = Math.max(0.3, 0.6 - scrollProgress * 0.4)
-  const videoScale = 1.0 // Fixed scale - no zoom effect
-  const px = mouseX * 1.5
-  const py = mouseY * 1.5
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ backgroundColor: "hsl(210 20% 98%)" }}>
@@ -123,8 +120,6 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           style={{
             width: "100%",
             height: "100%",
-            transform: `translate(${px}px, ${py}px)`,
-            transition: "transform 0.1s linear",
           }}
         >
           <video

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Inter, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import PageTransition from '@/components/page-transition'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin', 'cyrillic'],
@@ -38,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable} ${geistMono.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   )

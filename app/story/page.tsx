@@ -34,17 +34,17 @@ export default function StoryPage() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/10 bg-background/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="font-serif text-lg font-light tracking-[0.05em] text-foreground hover:text-primary transition-colors">
+          <Link href="/" prefetch={true} className="font-serif text-lg font-light tracking-[0.05em] text-foreground hover:text-primary transition-colors">
             Glinso
           </Link>
           <nav className="flex gap-8">
-            <Link href="/#who-we-are" className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/#who-we-are" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
               About
             </Link>
-            <Link href="/team" className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/team" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
               Team
             </Link>
-            <Link href="/contact" className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/contact" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
               Contact
             </Link>
           </nav>
@@ -57,7 +57,7 @@ export default function StoryPage() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease }}
+            transition={{ duration: 0.2, ease }}
             className="mb-20 md:mb-28"
           >
             <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
@@ -75,7 +75,7 @@ export default function StoryPage() {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 1.2, ease }}
+            transition={{ duration: 0.2, ease }}
             viewport={{ once: true }}
             className="mb-24 py-16 border-y border-border/20"
           >
@@ -91,7 +91,7 @@ export default function StoryPage() {
                 key={item.year}
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.9, delay: i * 0.05, ease }}
+                transition={{ duration: 0.2, ease }}
                 viewport={{ once: true }}
                 className="relative pl-20 pb-12 border-l-2 border-border/20 last:border-l-0"
               >
@@ -145,7 +145,7 @@ export default function StoryPage() {
                   key={value.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: i * 0.1, ease }}
+                  transition={{ duration: 0.2, ease }}
                   viewport={{ once: true }}
                 >
                   <h3 className="text-sm font-mono tracking-wider uppercase text-primary mb-3">{value.title}</h3>
@@ -166,6 +166,7 @@ export default function StoryPage() {
             <p className="font-serif text-xl md:text-2xl text-foreground/80 mb-8">Ready to work together?</p>
             <Link
               href="/contact"
+              prefetch={true}
               className="inline-block px-12 py-4 border border-primary/30 text-xs font-mono tracking-[0.2em] uppercase text-primary hover:bg-primary/5 hover:border-primary/50 transition-all duration-500"
             >
               Get in touch

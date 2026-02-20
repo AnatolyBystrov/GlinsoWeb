@@ -35,17 +35,17 @@ export default function ContactPage() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/10 bg-background/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="font-serif text-lg font-light tracking-[0.05em] text-foreground hover:text-primary transition-colors">
+          <Link href="/" prefetch={true} className="font-serif text-lg font-light tracking-[0.05em] text-foreground hover:text-primary transition-colors">
             Glinso
           </Link>
           <nav className="flex gap-8">
-            <Link href="/#who-we-are" className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/#who-we-are" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
               About
             </Link>
-            <Link href="/team" className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/team" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
               Team
             </Link>
-            <Link href="/story" className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/story" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
               Story
             </Link>
           </nav>
@@ -58,7 +58,7 @@ export default function ContactPage() {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, ease }}
+            transition={{ duration: 0.2, ease }}
           >
             <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
               Get in touch
@@ -99,8 +99,6 @@ export default function ContactPage() {
               <div>
                 <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Contact</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  legal@glinso.ae<br />
-                  veronica@glinso.ae<br />
                   team@glinso.ae
                 </p>
               </div>
@@ -111,7 +109,7 @@ export default function ContactPage() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease }}
+            transition={{ duration: 0.2, ease }}
           >
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

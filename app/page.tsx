@@ -12,11 +12,10 @@ import SiteFooter from "@/components/site-footer"
 import PhoenixCursor from "@/components/phoenix-cursor"
 import ScrollProgress from "@/components/scroll-progress"
 import GlassNav from "@/components/glass-nav"
+import AmbientMusic from "@/components/ambient-music"
 
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0)
-  const [mouseX, setMouseX] = useState(0)
-  const [mouseY, setMouseY] = useState(0)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -35,38 +34,14 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  useEffect(() => {
-    const target = { x: 0, y: 0 }
-    const current = { x: 0, y: 0 }
-
-    const handleMove = (e: MouseEvent) => {
-      target.x = (e.clientX / window.innerWidth - 0.5) * 2
-      target.y = (e.clientY / window.innerHeight - 0.5) * 2
-    }
-
-    const animate = () => {
-      current.x += (target.x - current.x) * 0.06
-      current.y += (target.y - current.y) * 0.06
-      setMouseX(current.x)
-      setMouseY(current.y)
-      requestAnimationFrame(animate)
-    }
-
-    window.addEventListener("mousemove", handleMove)
-    const raf = requestAnimationFrame(animate)
-    return () => {
-      window.removeEventListener("mousemove", handleMove)
-      cancelAnimationFrame(raf)
-    }
-  }, [])
-
   return (
     <main className="relative min-h-screen bg-background">
       {mounted && <PhoenixCursor />}
+      {mounted && <AmbientMusic />}
       <ScrollProgress progress={scrollProgress} />
       <GlassNav />
 
-      <VideoBackground scrollProgress={scrollProgress} mouseX={mouseX} mouseY={mouseY} />
+      <VideoBackground scrollProgress={scrollProgress} mouseX={0} mouseY={0} />
 
       <div className="relative z-10">
         <HeroSection scrollProgress={scrollProgress} />
