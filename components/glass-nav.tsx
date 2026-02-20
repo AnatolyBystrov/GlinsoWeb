@@ -23,13 +23,13 @@ export default function GlassNav() {
         aria-label="Main navigation"
       >
         {/* Logo */}
-        <a
+        <Link
           href="/"
           className="font-serif text-lg md:text-xl font-semibold tracking-[0.1em] hover:text-primary transition-colors duration-300"
           style={{ color: "hsl(220 15% 20%)" }}
         >
           GLINSO
-        </a>
+        </Link>
 
         {/* Desktop Navigation links */}
         <div className="hidden md:flex items-center gap-6 md:gap-8">
