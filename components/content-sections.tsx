@@ -327,44 +327,129 @@ function Story() {
     <section
       id="story"
       ref={ref}
-      className="relative py-28 md:py-40"
-      style={{
-        background: "hsl(210 20% 98%)",
-      }}
+      className="relative py-28 md:py-40 bg-background"
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <SectionHeader
-          index="04"
-          title="Our Story"
-          subtitle="From vision to execution — building a focused, technically strong brokerage platform."
-          visible={visible}
-        />
+      <div className="max-w-4xl mx-auto px-6">
+        {/* Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.2, ease }}
+          className="mb-20 md:mb-28"
+        >
+          <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
+            About GLINSO
+          </span>
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-8 leading-[1.05]">
+            Independent insurance excellence
+          </h1>
+          <p className="text-lg md:text-xl text-secondary-foreground leading-relaxed">
+            GLINSO Brokers FZE is an independent insurance and reinsurance brokerage headquartered in Ras Al Khaimah, United Arab Emirates. <span className="text-primary">Founded in 2009, we combine disciplined risk assessment, global market access, and direct decision-making to deliver efficient placement solutions for insurers, reinsurers, and corporate clients.</span>
+          </p>
+        </motion.div>
 
-        <div className="space-y-12 md:space-y-16">
+        {/* Philosophy */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={visible ? { opacity: 1 } : {}}
+          transition={{ duration: 0.2, ease }}
+          className="mb-24 py-16 border-y border-border/20"
+        >
+          <p className="font-serif text-2xl md:text-3xl lg:text-4xl font-light text-foreground leading-[1.3] tracking-[-0.01em] text-balance">
+            We act for insurers, reinsurers, MGAs, and corporate clients, delivering structured placement solutions and strategic market access. <span className="text-primary">Our focus is long-term partnerships, not transactional placements.</span>
+          </p>
+        </motion.div>
+
+        {/* Timeline */}
+        <div className="space-y-16">
           {timeline.map((item, i) => (
             <motion.div
               key={item.year}
               initial={{ opacity: 0, x: -30 }}
               animate={visible ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.2, delay: i * 0.1, ease }}
-              className="flex flex-col md:flex-row gap-6 md:gap-12"
+              transition={{ duration: 0.2, ease }}
+              className="relative pl-20 pb-12 border-l-2 border-border/20 last:border-l-0"
             >
-              <div className="md:w-32 flex-shrink-0">
-                <div className="text-4xl md:text-5xl font-serif font-light text-primary">
-                  {item.year}
-                </div>
+              {/* Year badge */}
+              <div className="absolute left-0 top-0 -translate-x-1/2 w-14 h-14 rounded-full border-2 border-primary/40 bg-background flex items-center justify-center">
+                <span className="text-[10px] font-mono tracking-wider text-primary">{item.year}</span>
               </div>
-              <div className="flex-1">
-                <h3 className="text-2xl md:text-3xl font-serif font-semibold mb-4 text-foreground">
-                  {item.title}
-                </h3>
-                <p className="text-base md:text-lg text-secondary-foreground leading-relaxed">
-                  {item.text}
-                </p>
-              </div>
+
+              <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-4">{item.title}</h3>
+              <p className="text-sm md:text-base text-secondary-foreground leading-relaxed">{item.text}</p>
             </motion.div>
           ))}
         </div>
+
+        {/* RAK highlight */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, ease }}
+          className="mt-28 p-10 md:p-14 border border-primary/20 bg-white shadow-lg rounded-lg"
+        >
+          <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-4">Ras Al Khaimah</span>
+          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground mb-6 leading-tight">
+            Headquartered in the UAE
+          </h2>
+          <p className="text-base text-secondary-foreground leading-relaxed mb-6">
+            GLINSO Brokers FZE is headquartered in Ras Al Khaimah, United Arab Emirates. Our headquarters serves as the central hub for treaty structuring, facultative placements, and international market coordination.
+          </p>
+          <p className="text-base text-secondary-foreground leading-relaxed">
+            Our current license was granted on 29 January 2026 and is valid until 28 January 2031, reinforcing our long-term commitment to regulatory compliance and sustainable growth in the region. We operate under a regulated framework aligned with international standards.
+          </p>
+        </motion.div>
+
+        {/* Values */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, ease }}
+          className="mt-28"
+        >
+          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground mb-12">Our approach</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { title: "Technical Clarity", text: "Every placement begins with disciplined analysis and structured underwriting presentation." },
+              { title: "Direct Market Access", text: "We work directly with decision-makers in regional and international markets to secure optimal terms." },
+              { title: "Execution Without Noise", text: "We prioritize efficiency, transparency, and results over unnecessary layers." },
+            ].map((value, i) => (
+              <motion.div
+                key={value.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={visible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.2, ease }}
+              >
+                <h3 className="text-sm font-mono tracking-wider uppercase text-primary mb-3">{value.title}</h3>
+                <p className="text-sm text-secondary-foreground leading-relaxed">{value.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={visible ? { opacity: 1 } : {}}
+          transition={{ duration: 1, delay: 0.3, ease }}
+          className="mt-24 text-center"
+        >
+          <p className="font-serif text-xl md:text-2xl text-foreground/80 mb-8">Ready to work together?</p>
+          <a
+            onClick={() => {
+              const element = document.getElementById('contact')
+              if (element) {
+                const headerOffset = 100
+                const elementPosition = element.getBoundingClientRect().top
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
+              }
+            }}
+            className="inline-block px-12 py-4 border border-primary/30 text-xs font-mono tracking-[0.2em] uppercase text-primary hover:bg-primary/5 hover:border-primary/50 transition-all duration-500 cursor-pointer"
+          >
+            Get in touch
+          </a>
+        </motion.div>
       </div>
     </section>
   )
@@ -394,45 +479,74 @@ function Team() {
     <section
       id="team"
       ref={ref}
-      className="relative py-28 md:py-40"
-      style={{
-        background: "linear-gradient(180deg, transparent 0%, hsl(210 20% 95%) 20%, hsl(210 20% 95%) 80%, transparent 100%)",
-      }}
+      className="relative py-28 md:py-40 bg-background"
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <SectionHeader
-          index="05"
-          title="Leadership Team"
-          subtitle="Strategic expertise driving technical excellence and market execution."
-          visible={visible}
-        />
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.2, ease }}
+          className="mb-20 md:mb-28"
+        >
+          <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
+            Leadership
+          </span>
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-8 leading-[1.05] max-w-4xl">
+            Leadership team driving technical excellence
+          </h1>
+          <p className="text-base text-secondary-foreground leading-relaxed max-w-2xl">
+            Our team combines deep market knowledge, technical expertise, and disciplined execution in reinsurance placement and risk structuring.
+          </p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Leadership Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
           {leadership.map((member, i) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 30 }}
               animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.2, delay: i * 0.1, ease }}
+              transition={{ duration: 0.2, ease }}
               onMouseEnter={() => setHoveredIndex(i)}
               onMouseLeave={() => setHoveredIndex(null)}
-              className="p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-border"
+              className="group relative p-8 bg-white border border-border/20 hover:border-primary/30 hover:shadow-md transition-all duration-500"
             >
-              <h3 className="text-2xl md:text-3xl font-serif font-semibold mb-2 text-foreground">
-                {member.name}
-              </h3>
-              <p className="text-sm font-mono tracking-wider text-primary uppercase mb-1">
-                {member.role}
-              </p>
-              <p className="text-sm text-muted-foreground mb-4">
-                {member.location}
-              </p>
-              <p className="text-base text-secondary-foreground leading-relaxed">
-                {member.bio}
-              </p>
+              <div className="mb-5">
+                <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-2 group-hover:text-primary transition-colors duration-500">
+                  {member.name}
+                </h3>
+                <p className="text-xs font-mono tracking-wider uppercase text-primary/70 mb-1">{member.role}</p>
+                <p className="text-[10px] font-mono tracking-wider text-muted-foreground">{member.location}</p>
+              </div>
+              <div className="w-12 h-px bg-primary/30 mb-5 group-hover:w-20 transition-all duration-500" />
+              <p className="text-sm text-secondary-foreground leading-relaxed">{member.bio}</p>
             </motion.div>
           ))}
         </div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={visible ? { opacity: 1 } : {}}
+          transition={{ duration: 0.3, ease }}
+          className="mt-24 text-center"
+        >
+          <a
+            onClick={() => {
+              const element = document.getElementById('contact')
+              if (element) {
+                const headerOffset = 100
+                const elementPosition = element.getBoundingClientRect().top
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
+              }
+            }}
+            className="inline-block px-12 py-4 border border-primary/30 text-xs font-mono tracking-[0.2em] uppercase text-primary hover:bg-primary/5 hover:border-primary/50 transition-all duration-500 cursor-pointer"
+          >
+            Work with us
+          </a>
+        </motion.div>
       </div>
     </section>
   )
@@ -463,53 +577,66 @@ function Contact() {
     <section
       id="contact"
       ref={ref}
-      className="relative py-28 md:py-40"
-      style={{
-        background: "hsl(210 20% 98%)",
-      }}
+      className="relative py-28 md:py-40 bg-background"
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <SectionHeader
-          index="06"
-          title="Contact Us"
-          subtitle="Let's discuss how we can support your reinsurance requirements."
-          visible={visible}
-        />
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.2, ease }}
+          className="mb-20 md:mb-28"
+        >
+          <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
+            Get in touch
+          </span>
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-8 leading-[1.05]">
+            Let's discuss your reinsurance requirements
+          </h1>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Contact Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+          {/* Left: Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={visible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.2, ease }}
-            className="space-y-8"
           >
-            <div>
-              <h3 className="text-xl font-serif font-semibold mb-3 text-foreground">Email</h3>
-              <a href="mailto:team@glinso.ae" className="text-primary hover:underline text-lg">
-                team@glinso.ae
-              </a>
-            </div>
+            <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
+              Contact information
+            </span>
 
-            <div>
-              <h3 className="text-xl font-serif font-semibold mb-3 text-foreground">Headquarters</h3>
-              <p className="text-secondary-foreground">
-                GLINSO Brokers FZE<br />
-                Ras Al Khaimah<br />
-                United Arab Emirates
-              </p>
-            </div>
+            <div className="space-y-10">
+              <div>
+                <h3 className="text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">Email</h3>
+                <a
+                  href="mailto:team@glinso.ae"
+                  className="text-lg md:text-xl text-foreground hover:text-primary transition-colors"
+                >
+                  team@glinso.ae
+                </a>
+              </div>
 
-            <div>
-              <h3 className="text-xl font-serif font-semibold mb-3 text-foreground">Representative Office</h3>
-              <p className="text-secondary-foreground">
-                Dubai<br />
-                United Arab Emirates
-              </p>
+              <div>
+                <h3 className="text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">Headquarters</h3>
+                <p className="text-base text-secondary-foreground leading-relaxed">
+                  GLINSO Brokers FZE<br />
+                  Ras Al Khaimah<br />
+                  United Arab Emirates
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">Representative Office</h3>
+                <p className="text-base text-secondary-foreground leading-relaxed">
+                  Dubai<br />
+                  United Arab Emirates
+                </p>
+              </div>
             </div>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Right: Form */}
           <motion.form
             initial={{ opacity: 0, x: 30 }}
             animate={visible ? { opacity: 1, x: 0 } : {}}
@@ -518,7 +645,7 @@ function Contact() {
             className="space-y-6"
           >
             <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-2 text-foreground">
+              <label htmlFor="name" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
                 Name *
               </label>
               <input
@@ -527,12 +654,12 @@ function Contact() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground">
+              <label htmlFor="email" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
                 Email *
               </label>
               <input
@@ -541,12 +668,12 @@ function Contact() {
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
               />
             </div>
 
             <div>
-              <label htmlFor="company" className="block text-sm font-medium mb-2 text-foreground">
+              <label htmlFor="company" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
                 Company
               </label>
               <input
@@ -554,27 +681,40 @@ function Contact() {
                 id="company"
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
               />
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium mb-2 text-foreground">
+              <label htmlFor="phone" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
+                Phone
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="message" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
                 Message *
               </label>
               <textarea
                 id="message"
                 required
-                rows={6}
+                rows={5}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground resize-none"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full px-8 py-4 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors duration-300"
+              className="w-full px-8 py-4 border border-primary/30 text-xs font-mono tracking-[0.2em] uppercase text-primary hover:bg-primary/5 hover:border-primary/50 transition-all duration-500"
             >
               Send Message
             </button>
