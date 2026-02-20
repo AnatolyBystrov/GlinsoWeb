@@ -98,26 +98,28 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
     const video = videoRef.current
     if (!video) return
 
-    // Keep video playing on mobile - some browsers pause on scroll
-    const ensurePlay = () => {
-      if (video.paused) {
-        video.play().catch(() => {}) // Silently handle autoplay restrictions
-      }
-    }
+    // Detect mobile device
+    const isMobile = window.innerWidth < 768
 
     // Adjust playback rate (simpler on mobile to avoid issues)
-    const isMobile = window.innerWidth < 768
     video.playbackRate = isMobile ? 0.8 : Math.max(0.25, 0.8 - scrollProgress * 0.4)
 
-    // Check periodically to ensure video is playing
-    const playInterval = setInterval(ensurePlay, 1000)
+    // Only apply aggressive play enforcement on mobile
+    if (isMobile) {
+      const ensurePlay = () => {
+        if (video.paused) {
+          video.play().catch(() => {})
+        }
+      }
 
-    // Also check on scroll
-    window.addEventListener('scroll', ensurePlay, { passive: true })
+      // Check periodically and on scroll (mobile only)
+      const playInterval = setInterval(ensurePlay, 1000)
+      window.addEventListener('scroll', ensurePlay, { passive: true })
 
-    return () => {
-      clearInterval(playInterval)
-      window.removeEventListener('scroll', ensurePlay)
+      return () => {
+        clearInterval(playInterval)
+        window.removeEventListener('scroll', ensurePlay)
+      }
     }
   }, [scrollProgress])
 
@@ -156,16 +158,22 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
             video.play().catch(() => {})
           }}
           onEnded={(e) => {
-            // Manually restart video when it ends (more reliable than loop attribute on mobile)
-            const video = e.currentTarget
-            video.currentTime = 0
-            video.play().catch(() => {})
+            // Manually restart video when it ends - only on mobile (desktop handles loop naturally)
+            const isMobile = window.innerWidth < 768
+            if (isMobile) {
+              const video = e.currentTarget
+              video.currentTime = 0
+              video.play().catch(() => {})
+            }
           }}
           onPause={(e) => {
-            // Auto-resume if paused unexpectedly (mobile Safari issue)
-            const video = e.currentTarget
-            if (!video.ended) {
-              video.play().catch(() => {})
+            // Auto-resume if paused unexpectedly - only on mobile Safari
+            const isMobile = window.innerWidth < 768
+            if (isMobile) {
+              const video = e.currentTarget
+              if (!video.ended) {
+                video.play().catch(() => {})
+              }
             }
           }}
         >
