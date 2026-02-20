@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useState } from "react"
+import SubPageHeader from "@/components/sub-page-header"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -28,24 +29,11 @@ export default function TeamPage() {
   return (
     <main className="relative min-h-screen bg-background">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/10 bg-background/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" prefetch={true} className="font-serif text-lg font-light tracking-[0.05em] text-foreground hover:text-primary transition-colors">
-            Glinso
-          </Link>
-          <nav className="flex gap-8">
-            <Link href="/#who-we-are" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
-              About
-            </Link>
-            <Link href="/contact" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
-              Contact
-            </Link>
-            <Link href="/story" prefetch={true} className="text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-primary transition-colors">
-              Story
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SubPageHeader links={[
+        { href: "/#who-we-are", label: "About" },
+        { href: "/contact", label: "Contact" },
+        { href: "/story", label: "Story" },
+      ]} />
 
       <div className="pt-32 pb-20 px-6">
         <div className="max-w-6xl mx-auto">
