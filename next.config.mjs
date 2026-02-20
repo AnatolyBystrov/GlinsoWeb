@@ -9,7 +9,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
-  swcMinify: true,
 
   // GitHub Pages deployment
   output: 'export',
@@ -24,7 +23,6 @@ const nextConfig = {
   }),
 
   experimental: {
-    turbo: {},
     optimizePackageImports: ['framer-motion', 'react-svg-worldmap'],
   },
 }
