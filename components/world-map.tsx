@@ -64,7 +64,7 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         className="relative mb-12"
       >
-        <div className="relative rounded-xl overflow-hidden bg-white shadow-lg border border-slate-200/50 p-8 md:p-16">
+        <div className="relative rounded-xl overflow-hidden bg-white shadow-lg border border-slate-200/50 p-4 md:p-16">
           {/* Header */}
           <div className="mb-8">
             <motion.h3
@@ -92,16 +92,17 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={visible ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 1, delay: 0.5 }}
-            className="my-8 w-full max-w-full overflow-hidden"
+            className="my-8 w-full overflow-hidden"
           >
-            <WorldMap
-              color="hsl(28 95% 62%)"
-              size="responsive"
-              data={data}
-              backgroundColor="transparent"
-              strokeOpacity={0.3}
-              valueSuffix=" partners"
-              styleFunction={(context: any) => {
+            <div className="w-full" style={{ maxWidth: '100%', margin: '0 auto' }}>
+              <WorldMap
+                color="hsl(28 95% 62%)"
+                size="responsive"
+                data={data}
+                backgroundColor="transparent"
+                strokeOpacity={0.3}
+                valueSuffix=" partners"
+                styleFunction={(context: any) => {
                 // UAE (our offices) - make it stand out in blue!
                 if (context.countryCode === "AE") {
                   return {
@@ -129,7 +130,8 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
                   cursor: "default",
                 }
               }}
-            />
+              />
+            </div>
           </motion.div>
 
           {/* Office markers overlay text */}

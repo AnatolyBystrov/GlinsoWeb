@@ -155,6 +155,12 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
             const video = e.currentTarget
             video.play().catch(() => {})
           }}
+          onEnded={(e) => {
+            // Manually restart video when it ends (more reliable than loop attribute on mobile)
+            const video = e.currentTarget
+            video.currentTime = 0
+            video.play().catch(() => {})
+          }}
           onPause={(e) => {
             // Auto-resume if paused unexpectedly (mobile Safari issue)
             const video = e.currentTarget
