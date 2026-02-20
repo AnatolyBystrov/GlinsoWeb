@@ -6,7 +6,7 @@ import WorldMap from "./world-map"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
-/* ── Intersection observer hook ── */
+/* ── Intersection observer hook with instant reveal ── */
 function useReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
@@ -15,7 +15,7 @@ function useReveal(threshold = 0.1) {
     if (!el) return
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setVisible(true) },
-      { threshold: 0.05, rootMargin: "0px 0px -20px 0px" }
+      { threshold: 0, rootMargin: "0px 0px 100px 0px" } // Start earlier for smoother feel
     )
     obs.observe(el)
     return () => obs.disconnect()
@@ -40,24 +40,24 @@ function SectionHeader({
       <motion.span
         initial={{ opacity: 0 }}
         animate={visible ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6, ease }}
+        transition={{ duration: 0.2, ease }}
         className="text-[10px] font-mono text-primary mb-5 block tracking-[0.3em]"
       >
         {index}
       </motion.span>
       <motion.h2
-        initial={{ opacity: 0, y: 40, filter: "blur(4px)" }}
-        animate={visible ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-        transition={{ duration: 1.2, delay: 0.1, ease }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={visible ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.2, ease }}
         className="font-serif font-light text-4xl md:text-6xl lg:text-7xl tracking-[-0.01em] text-foreground leading-[1.05] mb-4"
       >
         {title}
       </motion.h2>
       {subtitle && (
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3, ease }}
+          transition={{ duration: 0.2, ease }}
           className="text-sm md:text-base text-secondary-foreground max-w-xl leading-relaxed"
         >
           {subtitle}
@@ -66,7 +66,7 @@ function SectionHeader({
       <motion.div
         initial={{ scaleX: 0 }}
         animate={visible ? { scaleX: 1 } : {}}
-        transition={{ duration: 1.4, delay: 0.2, ease }}
+        transition={{ duration: 0.3, ease }}
         className="w-14 md:w-20 h-px bg-primary mt-6 origin-left"
       />
     </div>
@@ -793,7 +793,7 @@ function Philosophy() {
         <motion.div
           initial={{ scaleX: 0 }}
           animate={visible ? { scaleX: 1 } : {}}
-          transition={{ duration: 1.8, delay: 0.4, ease }}
+          transition={{ duration: 0.3, ease }}
           className="w-16 h-px bg-primary mx-auto mt-12"
         />
       </div>

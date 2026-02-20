@@ -12,16 +12,12 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animFrame = useRef<number>(0)
-  const lastTime = useRef<number>(0)
-  const isMobile = useRef<boolean>(false)
 
-  /* Floating motes -- reduced for mobile */
+  /* Floating motes -- subtle luminous particles */
   const motes = useRef<{ x: number; y: number; vx: number; vy: number; r: number; a: number }[]>([])
 
   useEffect(() => {
-    isMobile.current = window.innerWidth < 768
-    const count = isMobile.current ? 10 : 20
-    motes.current = Array.from({ length: count }, () => ({
+    motes.current = Array.from({ length: 15 }, () => ({
       x: Math.random(),
       y: Math.random(),
       vx: (Math.random() - 0.5) * 0.00015,
@@ -31,19 +27,10 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
     }))
   }, [])
 
-  const draw = useCallback((currentTime: number) => {
+  const draw = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-
-    // Throttle to 30fps for better performance
-    const elapsed = currentTime - lastTime.current
-    if (elapsed < 33) {
-      animFrame.current = requestAnimationFrame(draw)
-      return
-    }
-    lastTime.current = currentTime
-
-    const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true })
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
     const w = canvas.width
     const h = canvas.height
@@ -51,23 +38,21 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
 
     const sp = scrollProgress
 
-    /* Draw subtle pulse-line grid - skip on mobile for performance */
-    if (!isMobile.current) {
-      const gridAlpha = Math.max(0, 0.06 - sp * 0.08)
-      if (gridAlpha > 0.005) {
-        ctx.strokeStyle = `rgba(190,165,120,${gridAlpha})`
-        ctx.lineWidth = 0.5
-        const yStart = h * 0.7
-        for (let i = 0; i < 8; i++) {
-          const yy = yStart + i * 18
-          ctx.beginPath()
-          ctx.moveTo(0, yy)
-          for (let x = 0; x <= w; x += 8) { // Reduced resolution
-            const wave = Math.sin(x * 0.008 + currentTime * 0.0005 + i * 0.8) * 3
-            ctx.lineTo(x, yy + wave)
-          }
-          ctx.stroke()
+    /* Draw subtle pulse-line grid - simplified */
+    const gridAlpha = Math.max(0, 0.05 - sp * 0.08)
+    if (gridAlpha > 0.005) {
+      ctx.strokeStyle = `rgba(190,165,120,${gridAlpha})`
+      ctx.lineWidth = 0.5
+      const yStart = h * 0.75
+      for (let i = 0; i < 6; i++) {
+        const yy = yStart + i * 20
+        ctx.beginPath()
+        ctx.moveTo(0, yy)
+        for (let x = 0; x <= w; x += 6) {
+          const wave = Math.sin(x * 0.01 + Date.now() * 0.0003 + i) * 2
+          ctx.lineTo(x, yy + wave)
         }
+        ctx.stroke()
       }
     }
 
@@ -96,24 +81,13 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-
     const resize = () => {
-      isMobile.current = window.innerWidth < 768
-      const dpr = Math.min(window.devicePixelRatio || 1, 2) // Limit to 2x for performance
-      canvas.width = window.innerWidth * dpr
-      canvas.height = window.innerHeight * dpr
-      canvas.style.width = `${window.innerWidth}px`
-      canvas.style.height = `${window.innerHeight}px`
-      const ctx = canvas.getContext("2d")
-      if (ctx) {
-        ctx.scale(dpr, dpr)
-      }
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
     }
-
     resize()
-    window.addEventListener("resize", resize, { passive: true })
+    window.addEventListener("resize", resize)
     animFrame.current = requestAnimationFrame(draw)
-
     return () => {
       window.removeEventListener("resize", resize)
       cancelAnimationFrame(animFrame.current)
@@ -131,19 +105,14 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   return (
     <div
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
-      style={{
-        backgroundColor: "hsl(210 20% 98%)",
-        height: "100vh", // Always 100vh
-        minHeight: "70vh", // Minimum on mobile
-      }}
+      style={{ backgroundColor: "hsl(210 20% 98%)" }}
     >
       {/* Video container */}
       <div
         className="absolute inset-0"
         style={{
           opacity: videoOpacity,
-          transition: "opacity 0.3s ease-out",
-          willChange: "opacity",
+          transition: "opacity 0.2s ease-out",
         }}
       >
         <video
@@ -152,14 +121,13 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
           className="absolute inset-0 w-full h-full"
           style={{
             filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
             objectFit: "cover",
             objectPosition: "center center",
-            transition: "filter 0.3s ease-out",
-            willChange: "filter",
+            transition: "filter 0.2s ease-out",
           }}
         >
           <source src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/video/hero-bg.mp4`} type="video/mp4" />
@@ -170,10 +138,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
       <canvas
         ref={canvasRef}
         className="absolute inset-0 pointer-events-none z-[1]"
-        style={{
-          opacity: 0.8,
-          willChange: "transform",
-        }}
+        style={{ opacity: 0.7 }}
       />
 
       {/* Vignette */}
