@@ -95,8 +95,29 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   }, [draw])
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = Math.max(0.25, 0.8 - scrollProgress * 0.4)
+    const video = videoRef.current
+    if (!video) return
+
+    // Keep video playing on mobile - some browsers pause on scroll
+    const ensurePlay = () => {
+      if (video.paused) {
+        video.play().catch(() => {}) // Silently handle autoplay restrictions
+      }
+    }
+
+    // Adjust playback rate (simpler on mobile to avoid issues)
+    const isMobile = window.innerWidth < 768
+    video.playbackRate = isMobile ? 0.8 : Math.max(0.25, 0.8 - scrollProgress * 0.4)
+
+    // Check periodically to ensure video is playing
+    const playInterval = setInterval(ensurePlay, 1000)
+
+    // Also check on scroll
+    window.addEventListener('scroll', ensurePlay, { passive: true })
+
+    return () => {
+      clearInterval(playInterval)
+      window.removeEventListener('scroll', ensurePlay)
     }
   }, [scrollProgress])
 
@@ -128,6 +149,18 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
             objectFit: "cover",
             objectPosition: "center center",
             transition: "filter 0.2s ease-out",
+          }}
+          onLoadedData={(e) => {
+            // Ensure video starts playing on load
+            const video = e.currentTarget
+            video.play().catch(() => {})
+          }}
+          onPause={(e) => {
+            // Auto-resume if paused unexpectedly (mobile Safari issue)
+            const video = e.currentTarget
+            if (!video.ended) {
+              video.play().catch(() => {})
+            }
           }}
         >
           <source src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/video/hero-bg.mp4`} type="video/mp4" />
