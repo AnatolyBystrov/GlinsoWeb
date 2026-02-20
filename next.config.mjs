@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
+// Cache bust: 2026-02-20
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Force cache bust
   experimental: {
     turbo: {},
   },
