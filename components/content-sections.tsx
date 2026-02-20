@@ -563,6 +563,7 @@ function Contact() {
     service: "",
     message: "",
   })
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -580,22 +581,7 @@ function Contact() {
       className="relative py-28 md:py-40 bg-background"
     >
       <div className="max-w-6xl mx-auto px-6">
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.2, ease }}
-          className="mb-20 md:mb-28"
-        >
-          <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
-            Get in touch
-          </span>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-8 leading-[1.05]">
-            Let's discuss your reinsurance requirements
-          </h1>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
           {/* Left: Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -603,122 +589,176 @@ function Contact() {
             transition={{ duration: 0.2, ease }}
           >
             <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
-              Contact information
+              Get in touch
             </span>
+            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-8 leading-[1.05]">
+              Let's discuss your placement requirements
+            </h1>
+            <p className="text-base text-secondary-foreground leading-relaxed mb-12">
+              For partnership inquiries, placement submissions, or strategic discussions, please contact us directly through our main office. <span className="text-primary">Serious risks. Serious capacity. Direct execution.</span>
+            </p>
 
-            <div className="space-y-10">
+            <div className="space-y-8">
               <div>
-                <h3 className="text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">Email</h3>
-                <a
-                  href="mailto:team@glinso.ae"
-                  className="text-lg md:text-xl text-foreground hover:text-primary transition-colors"
-                >
-                  team@glinso.ae
-                </a>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">Headquarters</h3>
-                <p className="text-base text-secondary-foreground leading-relaxed">
+                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Headquarters – Ras Al Khaimah</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   GLINSO Brokers FZE<br />
                   Ras Al Khaimah<br />
                   United Arab Emirates
                 </p>
+                <p className="text-xs text-muted-foreground/80 mt-2 italic">
+                  Central hub for treaty structuring, facultative placements, and international market coordination.
+                </p>
               </div>
 
               <div>
-                <h3 className="text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">Representative Office</h3>
-                <p className="text-base text-secondary-foreground leading-relaxed">
-                  Dubai<br />
-                  United Arab Emirates
+                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Representative Office – Dubai</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  GLINSO Brokers – Dubai Representative Office<br />
+                  5, Building 2, Madison Astor<br />
+                  Majan, Wadi Al Safa 3<br />
+                  Dubai, United Arab Emirates
+                </p>
+                <p className="text-xs text-muted-foreground/80 mt-2 italic">
+                  Supporting regional client engagement.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Contact</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  team@glinso.ae
                 </p>
               </div>
             </div>
           </motion.div>
 
           {/* Right: Form */}
-          <motion.form
-            initial={{ opacity: 0, x: 30 }}
-            animate={visible ? { opacity: 1, x: 0 } : {}}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={visible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.2, ease }}
-            onSubmit={handleSubmit}
-            className="space-y-6"
           >
-            <div>
-              <label htmlFor="name" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
-                Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="text-xs font-mono tracking-wider uppercase text-muted-foreground block mb-3">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    placeholder="John Doe"
+                  />
+                </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
-                Email *
-              </label>
-              <input
-                type="email"
-                id="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
-              />
-            </div>
+                <div>
+                  <label htmlFor="email" className="text-xs font-mono tracking-wider uppercase text-muted-foreground block mb-3">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    placeholder="john@company.com"
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label htmlFor="company" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
-                Company
-              </label>
-              <input
-                type="text"
-                id="company"
-                value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
-              />
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="company" className="text-xs font-mono tracking-wider uppercase text-muted-foreground block mb-3">
+                    Company
+                  </label>
+                  <input
+                    type="text"
+                    id="company"
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    placeholder="Your Company"
+                  />
+                </div>
 
-            <div>
-              <label htmlFor="phone" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
-                Phone
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground"
-              />
-            </div>
+                <div>
+                  <label htmlFor="phone" className="text-xs font-mono tracking-wider uppercase text-muted-foreground block mb-3">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    placeholder="+44 20 ..."
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label htmlFor="message" className="block text-sm font-mono tracking-wider uppercase text-muted-foreground mb-2">
-                Message *
-              </label>
-              <textarea
-                id="message"
-                required
-                rows={5}
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-4 py-3 bg-white border border-border/30 focus:border-primary/50 focus:outline-none transition-colors text-foreground resize-none"
-              />
-            </div>
+              <div>
+                <label htmlFor="service" className="text-xs font-mono tracking-wider uppercase text-muted-foreground block mb-3">
+                  Service Interest
+                </label>
+                <select
+                  id="service"
+                  value={formData.service}
+                  onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                  className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                >
+                  <option value="">Select a service</option>
+                  <option value="treaty">Treaty Reinsurance</option>
+                  <option value="facultative">Facultative Placement</option>
+                  <option value="capital">Capital Structuring</option>
+                  <option value="analytics">Analytics & Modelling</option>
+                  <option value="advisory">Strategic Advisory</option>
+                </select>
+              </div>
 
-            <button
-              type="submit"
-              className="w-full px-8 py-4 border border-primary/30 text-xs font-mono tracking-[0.2em] uppercase text-primary hover:bg-primary/5 hover:border-primary/50 transition-all duration-500"
-            >
-              Send Message
-            </button>
-          </motion.form>
+              <div>
+                <label htmlFor="message" className="text-xs font-mono tracking-wider uppercase text-muted-foreground block mb-3">
+                  Message *
+                </label>
+                <textarea
+                  id="message"
+                  required
+                  rows={6}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+                  placeholder="Tell us about your requirements..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status !== "idle"}
+                className="w-full bg-primary text-primary-foreground font-mono text-xs tracking-[0.2em] uppercase py-4 hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground transition-all duration-300 relative overflow-hidden group"
+              >
+                {status === "idle" && "Send Message"}
+                {status === "submitting" && "Sending..."}
+                {status === "success" && "Message Sent ✓"}
+                {status === "error" && "Try Again"}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              </button>
+            </form>
+
+            {status === "success" && (
+              <motion.p
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 text-sm text-primary text-center"
+              >
+                Thank you. We'll be in touch within 24 hours.
+              </motion.p>
+            )}
+          </motion.div>
         </div>
       </div>
     </section>
