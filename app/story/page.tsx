@@ -7,34 +7,24 @@ const ease = [0.16, 1, 0.3, 1] as const
 
 const timeline = [
   {
-    year: "2015",
-    title: "Foundation in London",
-    text: "Glinso was founded by a team of Lloyd's market veterans who saw an opportunity to build a new kind of reinsurance broker — one that combined deep technical expertise with client-first thinking.",
+    year: "2009",
+    title: "The Vision",
+    text: "On 2 July 2009, the concept behind GLINSO was first developed with the vision of building a focused, technically strong brokerage platform operating across international markets.",
   },
   {
-    year: "2017",
-    title: "Dubai Expansion",
-    text: "Opened our MENA headquarters in Dubai International Financial Centre (DIFC), establishing a strategic foothold in one of the world's fastest-growing insurance markets. Our Dubai team focuses on Takaful, energy and construction risks across the Middle East and North Africa.",
+    year: "2010",
+    title: "First License",
+    text: "The first brokerage license was granted on 5 July 2010, marking the official beginning of GLINSO's journey as an independent insurance and reinsurance brokerage.",
   },
   {
-    year: "2019",
-    title: "Asia Pacific Launch",
-    text: "Expanded to Singapore to serve the region's booming specialty and marine markets. Built partnerships with major Asian carriers and alternative capital providers.",
-  },
-  {
-    year: "2021",
-    title: "Capital Markets Capability",
-    text: "Launched dedicated ILS and alternative capital platform in Zurich, connecting traditional reinsurance with pension funds, hedge funds and other institutional investors seeking insurance-linked returns.",
-  },
-  {
-    year: "2023",
-    title: "Analytics & Technology",
-    text: "Invested heavily in proprietary catastrophe modelling and portfolio analytics, building in-house capabilities that rival the major vendors. Today we deliver data-driven underwriting insights that materially improve client outcomes.",
+    year: "2018",
+    title: "Strategic Relocation",
+    text: "On 27 November 2018, operations were strategically relocated to the United Arab Emirates, where GLINSO Brokers FZE was established in Ras Al Khaimah.",
   },
   {
     year: "2026",
-    title: "Global Platform",
-    text: "Operating across four continents with 200+ professionals. Placing $3B+ in annual premium and advising on complex programmes for Fortune 500 companies and leading specialty carriers worldwide.",
+    title: "Long-Term Commitment",
+    text: "A new Ras Al Khaimah license was granted on 29 January 2026, valid until 28 January 2031, reinforcing the company's long-term commitment to regulatory compliance and sustainable growth in the region.",
   },
 ]
 
@@ -71,13 +61,13 @@ export default function StoryPage() {
             className="mb-20 md:mb-28"
           >
             <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-6">
-              Our story
+              About GLINSO
             </span>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-8 leading-[1.05]">
-              A decade engineering certainty
+              Independent insurance excellence
             </h1>
             <p className="text-lg md:text-xl text-secondary-foreground leading-relaxed">
-              From a single London office to a global platform spanning four continents, Glinso has grown by staying true to one principle: <span className="text-primary">certainty lives in expertise, discipline and client obsession.</span>
+              GLINSO Brokers is an independent insurance and reinsurance brokerage headquartered in Ras Al Khaimah, United Arab Emirates. <span className="text-primary">We combine disciplined risk assessment, global market access, and direct decision-making to deliver efficient placement solutions.</span>
             </p>
           </motion.div>
 
@@ -90,7 +80,7 @@ export default function StoryPage() {
             className="mb-24 py-16 border-y border-border/20"
           >
             <p className="font-serif text-2xl md:text-3xl lg:text-4xl font-light text-foreground leading-[1.3] tracking-[-0.01em] text-balance">
-              Insurance is about promises made in the present that must be kept in the future. <span className="text-primary">We exist to make those promises bankable.</span>
+              We serve insurers, reinsurers, and corporate clients with efficient placement solutions. <span className="text-primary">Our foundation is technical expertise, regulatory compliance, and sustainable partnerships.</span>
             </p>
           </motion.div>
 
@@ -116,7 +106,7 @@ export default function StoryPage() {
             ))}
           </div>
 
-          {/* Dubai highlight */}
+          {/* RAK highlight */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -125,15 +115,15 @@ export default function StoryPage() {
             className="mt-28 p-10 md:p-14 border border-primary/20"
             style={{ background: "linear-gradient(135deg, hsl(38 30% 8%) 0%, hsl(220 12% 10%) 100%)" }}
           >
-            <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-4">Dubai</span>
+            <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-4">Ras Al Khaimah</span>
             <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground mb-6 leading-tight">
-              A strategic gateway to the MENA region
+              Headquartered in the UAE
             </h2>
             <p className="text-base text-secondary-foreground leading-relaxed mb-6">
-              Our Dubai office sits at the heart of the region's insurance ecosystem in DIFC. From here we serve clients across the UAE, Saudi Arabia, Egypt, Qatar and beyond — structuring programmes for energy risks in the Gulf, construction megaprojects, and the region's fast-growing Takaful sector.
+              GLINSO Brokers FZE is strategically headquartered in Ras Al Khaimah, United Arab Emirates. Our establishment in 2018 marked a commitment to serving the Middle East region with independent brokerage expertise.
             </p>
             <p className="text-base text-secondary-foreground leading-relaxed">
-              Led by Managing Director Sophia Al-Mansoori, the team combines local market knowledge with global reinsurance connectivity, delivering solutions that respect cultural nuances while accessing the full depth of international capacity.
+              With our renewed license valid through 2031, we maintain our focus on regulatory compliance and building long-term relationships with insurers, reinsurers, and corporate clients across international markets.
             </p>
           </motion.div>
 
@@ -145,12 +135,12 @@ export default function StoryPage() {
             viewport={{ once: true }}
             className="mt-28"
           >
-            <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground mb-12">What drives us</h2>
+            <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground mb-12">Our approach</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { title: "Expertise", text: "Deep technical knowledge in underwriting, actuarial science and market dynamics." },
-                { title: "Discipline", text: "Rigorous process, robust governance and relentless attention to detail in every placement." },
-                { title: "Partnership", text: "Long-term client relationships built on trust, transparency and shared success." },
+                { title: "Technical Strength", text: "Disciplined risk assessment backed by deep market knowledge and analytical rigor." },
+                { title: "Global Access", text: "Direct connections to international insurance and reinsurance markets for optimal placement solutions." },
+                { title: "Independent Decisions", text: "Focused, client-centered decision-making without conflicts of interest or external pressures." },
               ].map((value, i) => (
                 <motion.div
                   key={value.title}
