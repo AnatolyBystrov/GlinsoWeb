@@ -27,33 +27,32 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
     { name: "Africa", percent: "6%", desc: "Frontier markets" },
   ]
 
-  // Data for the map - country codes with values for highlighting
+  // Data for the map - country codes with values matching percentages
   const data = [
-    // North America
-    { country: "us", value: 1 },
-    { country: "ca", value: 1 },
-    // Europe
-    { country: "gb", value: 1 },
-    { country: "de", value: 1 },
-    { country: "fr", value: 1 },
-    { country: "ch", value: 1 },
-    { country: "it", value: 1 },
-    { country: "es", value: 1 },
-    // Middle East
-    { country: "ae", value: 2 }, // UAE - HQ
-    { country: "sa", value: 1 },
-    { country: "qa", value: 1 },
-    // Asia Pacific
-    { country: "sg", value: 1 },
-    { country: "hk", value: 1 },
-    { country: "jp", value: 1 },
-    { country: "au", value: 1 },
-    // Latin America
-    { country: "br", value: 1 },
-    { country: "mx", value: 1 },
-    { country: "ar", value: 1 },
-    // Africa
-    { country: "za", value: 1 },
+    // North America - 25%
+    { country: "us", value: 15 },
+    { country: "ca", value: 10 },
+    // Europe - 22%
+    { country: "gb", value: 8 },
+    { country: "de", value: 5 },
+    { country: "fr", value: 4 },
+    { country: "ch", value: 3 },
+    { country: "it", value: 2 },
+    // Middle East - 14% (UAE - Our offices!)
+    { country: "ae", value: 14 }, // UAE - HEADQUARTERS
+    // Asia Pacific - 18%
+    { country: "sg", value: 6 },
+    { country: "cn", value: 5 },
+    { country: "jp", value: 4 },
+    { country: "au", value: 3 },
+    // Latin America - 15%
+    { country: "br", value: 8 },
+    { country: "mx", value: 4 },
+    { country: "ar", value: 3 },
+    // Africa - 6%
+    { country: "za", value: 3 },
+    { country: "eg", value: 2 },
+    { country: "ke", value: 1 },
   ]
 
   return (
@@ -65,7 +64,7 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         className="relative mb-12"
       >
-        <div className="relative rounded-xl overflow-hidden bg-white shadow-lg border border-slate-200/50 p-8 md:p-12">
+        <div className="relative rounded-xl overflow-visible bg-white shadow-lg border border-slate-200/50 p-8 md:p-16">
           {/* Header */}
           <div className="mb-8">
             <motion.h3
@@ -93,18 +92,34 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={visible ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 1, delay: 0.5 }}
-            className="my-8 flex justify-center"
+            className="my-8"
           >
-            <div className="w-full max-w-4xl mx-auto">
-              <WorldMap
-                color="hsl(28 95% 62%)"
-                size="responsive"
+            <WorldMap
+              color="hsl(28 95% 62%)"
+              size="responsive"
               data={data}
               backgroundColor="transparent"
               strokeOpacity={0.3}
               valueSuffix=" partners"
               styleFunction={(context: any) => {
-                const opacityLevel = context.countryValue === 2 ? 1 : context.countryValue ? 0.6 : 0.1
+                // UAE (our offices) - make it stand out in blue!
+                if (context.countryCode === "AE") {
+                  return {
+                    fill: "hsl(192 45% 55%)",
+                    fillOpacity: 1,
+                    stroke: "hsl(192 45% 45%)",
+                    strokeWidth: 2.5,
+                    strokeOpacity: 1,
+                    cursor: "default",
+                    filter: "drop-shadow(0 0 10px hsl(192 45% 55%))",
+                  }
+                }
+
+                // Other countries with partners
+                const opacityLevel = context.countryValue
+                  ? Math.min(0.4 + (context.countryValue * 0.04), 0.9)
+                  : 0.1
+
                 return {
                   fill: context.countryValue ? "hsl(28 95% 62%)" : "hsl(192 45% 70%)",
                   fillOpacity: opacityLevel,
@@ -115,7 +130,6 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
                 }
               }}
             />
-            </div>
           </motion.div>
 
           {/* Office markers overlay text */}
@@ -123,12 +137,33 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
             initial={{ opacity: 0 }}
             animate={visible ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 1 }}
-            className="text-center mt-6"
+            className="text-center mt-8 p-5 rounded-lg border border-slate-200/50"
+            style={{ background: "linear-gradient(135deg, rgba(130, 201, 216, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%)" }}
           >
-            <p className="text-xs md:text-sm font-mono tracking-wide" style={{ color: "hsl(220 10% 55%)" }}>
-              <span style={{ color: "hsl(28 95% 62%)" }}>●</span> Headquarters: Ras Al Khaimah, UAE
-              <span className="mx-4">•</span>
-              <span style={{ color: "hsl(28 95% 62%)" }}>●</span> Representative Office: Dubai, UAE
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                  fill="hsl(192 45% 55%)"
+                />
+              </svg>
+              <p className="text-sm md:text-base font-semibold" style={{ color: "hsl(192 45% 45%)" }}>
+                Our Offices
+              </p>
+            </div>
+            <p className="text-xs md:text-sm font-mono tracking-wide" style={{ color: "hsl(220 10% 45%)" }}>
+              <span style={{ color: "hsl(192 45% 55%)", fontWeight: 600 }}>●</span> Headquarters: Ras Al Khaimah, UAE
+              <span className="mx-3">•</span>
+              <span style={{ color: "hsl(192 45% 55%)", fontWeight: 600 }}>●</span> Representative Office: Dubai, UAE
+            </p>
+            <p className="text-[10px] mt-2 italic" style={{ color: "hsl(220 10% 55%)" }}>
+              Highlighted in blue on the map above
             </p>
           </motion.div>
         </div>
