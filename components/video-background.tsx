@@ -103,7 +103,10 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   const videoOpacity = Math.max(0.3, 0.6 - scrollProgress * 0.4)
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ backgroundColor: "hsl(210 20% 98%)" }}>
+    <div
+      className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
+      style={{ backgroundColor: "hsl(210 20% 98%)" }}
+    >
       {/* Video container with proper aspect ratio handling */}
       <div
         className="absolute inset-0"
