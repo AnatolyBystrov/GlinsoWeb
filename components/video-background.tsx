@@ -137,7 +137,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
               transition: "filter 0.3s ease-out",
             }}
           >
-            <source src="/video/hero-bg.mp4" type="video/mp4" />
+            <source src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/video/hero-bg.mp4`} type="video/mp4" />
           </video>
         </div>
       </div>

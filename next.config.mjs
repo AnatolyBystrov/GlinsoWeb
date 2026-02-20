@@ -22,6 +22,11 @@ const nextConfig = {
     assetPrefix: `/${repo}/`,
   }),
 
+  // Expose base path to client components for manual asset references (e.g. <video src>)
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGithubActions ? `/${repo}` : '',
+  },
+
   experimental: {
     optimizePackageImports: ['framer-motion', 'react-svg-worldmap'],
   },
