@@ -16,18 +16,43 @@ export default function ContactPage() {
     message: "",
   })
 
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle")
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
+  const [errorMessage, setErrorMessage] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus("submitting")
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setStatus("success")
-    setTimeout(() => {
-      setStatus("idle")
-      setFormData({ name: "", email: "", company: "", phone: "", service: "", message: "" })
-    }, 3000)
+    setErrorMessage("")
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message')
+      }
+
+      setStatus("success")
+      setTimeout(() => {
+        setStatus("idle")
+        setFormData({ name: "", email: "", company: "", phone: "", service: "", message: "" })
+      }, 5000)
+    } catch (error) {
+      console.error('Form submission error:', error)
+      setStatus("error")
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
+      setTimeout(() => {
+        setStatus("idle")
+        setErrorMessage("")
+      }, 5000)
+    }
   }
 
   return (
@@ -216,6 +241,7 @@ export default function ContactPage() {
                 {status === "idle" && "Send Message"}
                 {status === "submitting" && "Sending..."}
                 {status === "success" && "Message Sent ✓"}
+                {status === "error" && "Try Again"}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               </button>
             </form>
@@ -227,6 +253,16 @@ export default function ContactPage() {
                 className="mt-4 text-sm text-primary text-center"
               >
                 Thank you. We'll be in touch within 24 hours.
+              </motion.p>
+            )}
+
+            {status === "error" && (
+              <motion.p
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 text-sm text-red-600 text-center"
+              >
+                {errorMessage}
               </motion.p>
             )}
           </motion.div>

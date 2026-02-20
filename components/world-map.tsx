@@ -93,11 +93,12 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={visible ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 1, delay: 0.5 }}
-            className="my-8"
+            className="my-8 flex justify-center"
           >
-            <WorldMap
-              color="hsl(28 95% 62%)"
-              size="responsive"
+            <div className="w-full max-w-4xl mx-auto">
+              <WorldMap
+                color="hsl(28 95% 62%)"
+                size="responsive"
               data={data}
               backgroundColor="transparent"
               strokeOpacity={0.3}
@@ -114,6 +115,7 @@ export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
                 }
               }}
             />
+            </div>
           </motion.div>
 
           {/* Office markers overlay text */}
