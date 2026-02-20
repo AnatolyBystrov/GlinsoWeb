@@ -20,7 +20,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
   }, [])
 
   /* Fade hero content as user scrolls past */
-  const heroFade = Math.max(0, 1 - scrollProgress * 6)
+  const heroFade = Math.max(0, 1 - scrollProgress * 3)
   const heroY = scrollProgress * -120
 
   const handleScrollDown = () => {
@@ -29,24 +29,24 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
   }
 
   return (
-    <section id="hero" className="relative min-h-[200vh]">
+    <section id="hero" className="relative min-h-[100vh]">
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden" style={{ paddingTop: "clamp(96px, 10vh, 140px)" }}>
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-end overflow-hidden" style={{ paddingTop: "clamp(96px, 10vh, 140px)", paddingBottom: "2vh" }}>
 
-        {/* Black overlay that lifts to reveal the scene */}
+        {/* Light overlay that lifts to reveal the scene */}
         <motion.div
           className="absolute inset-0 z-30 pointer-events-none"
-          style={{ backgroundColor: "hsl(220 12% 10%)" }}
+          style={{ backgroundColor: "hsl(210 20% 98%)" }}
           initial={{ opacity: 1 }}
           animate={{ opacity: phase >= 1 ? 0 : 1 }}
           transition={{ duration: 2.5, ease: [0.25, 0.1, 0.25, 1] }}
         />
 
-        {/* Dark backing for text readability */}
+        {/* Light backing for text readability */}
         <div
           className="absolute inset-0 z-5 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse 60% 70% at 50% 48%, rgba(0,0,0,0.75) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse 60% 70% at 50% 48%, rgba(255,255,255,0.85) 0%, transparent 70%)",
           }}
         />
 
@@ -59,25 +59,20 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             transition: "transform 0.1s linear",
           }}
         >
-          {/* Thin decorative line */}
-          <motion.div
-            initial={{ scaleY: 0 }}
-            animate={phase >= 1 ? { scaleY: 1 } : {}}
-            transition={{ duration: 1.5, delay: 0.3, ease }}
-            className="w-px h-12 md:h-16 bg-gradient-to-b from-transparent via-primary/60 to-transparent mx-auto mb-8 origin-top"
-          />
+          {/* Thin decorative line - hidden to save space */}
 
           {/* Hero title */}
           <motion.h1
             initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
             animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
             transition={{ duration: 1.6, delay: 0.2, ease }}
-            className="font-serif font-light text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] text-foreground leading-[1.1] mb-6"
+            className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[0.03em] leading-[1.1] mb-4"
             style={{
-              textShadow: "0 2px 40px rgba(0,0,0,0.8), 0 4px 80px rgba(0,0,0,0.5)",
+              color: "hsl(220 15% 20%)",
+              textShadow: "0 1px 2px rgba(255,255,255,0.8)",
             }}
           >
-            Global Insurance Solutions
+            GLINSO
           </motion.h1>
 
           {/* Tagline -- the cinematic reveal */}
@@ -85,9 +80,10 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, letterSpacing: "0.4em" }}
             animate={phase >= 2 ? { opacity: 1, letterSpacing: "0.2em" } : {}}
             transition={{ duration: 1.8, ease }}
-            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase text-primary/90 mb-10 md:mb-14"
+            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase mb-6 md:mb-8"
             style={{
-              textShadow: "0 2px 20px rgba(0,0,0,0.9), 0 4px 40px rgba(0,0,0,0.6)",
+              color: "hsl(28 95% 62%)",
+              textShadow: "0 1px 2px rgba(255,255,255,0.5)",
             }}
           >
             Engineering Global Certainty
@@ -98,7 +94,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ scaleX: 0 }}
             animate={phase >= 2 ? { scaleX: 1 } : {}}
             transition={{ duration: 1.5, ease }}
-            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mb-10 md:mb-14"
+            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mb-6 md:mb-8"
           />
 
           {/* Description */}
@@ -106,14 +102,12 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={phase >= 3 ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1.2, ease }}
-            className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed text-balance"
+            className="text-xs md:text-sm max-w-md mx-auto leading-relaxed text-balance"
             style={{
-              textShadow: "0 2px 30px rgba(0,0,0,0.9), 0 4px 60px rgba(0,0,0,0.7)",
+              color: "hsl(220 10% 45%)",
             }}
           >
-            A global reinsurance brokerage and risk advisory group,
-            delivering capital-efficient solutions to insurers
-            and specialty carriers worldwide.
+            Independent reinsurance brokerage delivering structured placement solutions
           </motion.p>
 
           {/* CTA line */}
@@ -121,13 +115,14 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0 }}
             animate={phase >= 3 ? { opacity: 1 } : {}}
             transition={{ duration: 1, delay: 0.4, ease }}
-            className="mt-10 md:mt-14"
+            className="mt-6 md:mt-8"
           >
             <a
               href="#who-we-are"
-              className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary/70 hover:text-primary transition-colors duration-500 border-b border-primary/30 hover:border-primary/60 pb-1"
+              className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase hover:text-primary transition-colors duration-500 border-b hover:border-primary pb-1"
               style={{
-                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+                color: "hsl(28 95% 62%)",
+                borderColor: "hsl(28 95% 62% / 0.5)",
               }}
             >
               Discover
@@ -135,25 +130,6 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           </motion.div>
         </div>
 
-        {/* Scroll invite -- fine animated line at bottom */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: phase >= 3 && scrollProgress < 0.05 ? 1 : 0 }}
-          transition={{ duration: 0.8 }}
-          onClick={handleScrollDown}
-          className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 cursor-pointer group"
-          aria-label="Scroll down"
-        >
-            <span className="text-[8px] md:text-[9px] font-mono tracking-[0.35em] uppercase text-muted-foreground/50 group-hover:text-primary/60 transition-colors duration-500">
-            Scroll
-          </span>
-          <motion.div
-            className="w-px h-6 bg-gradient-to-b from-primary/30 to-transparent"
-            animate={{ scaleY: [0.5, 1, 0.5] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "top" }}
-          />
-        </motion.button>
 
 
       </div>

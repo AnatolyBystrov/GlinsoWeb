@@ -17,7 +17,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   const motes = useRef<{ x: number; y: number; vx: number; vy: number; r: number; a: number }[]>([])
 
   useEffect(() => {
-    motes.current = Array.from({ length: 40 }, () => ({
+    motes.current = Array.from({ length: 20 }, () => ({
       x: Math.random(),
       y: Math.random(),
       vx: (Math.random() - 0.5) * 0.00015,
@@ -99,38 +99,52 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
     }
   }, [scrollProgress])
 
-  /* Keep video visible much longer -- fade gently, never fully disappear */
-  const videoOpacity = Math.max(0.15, 1 - scrollProgress * 1.2)
-  const videoScale = 1 + scrollProgress * 0.05
-  const px = mouseX * 6
-  const py = mouseY * 6
+  /* Keep video visible and clearly seen */
+  const videoOpacity = Math.max(0.3, 0.6 - scrollProgress * 0.4)
+  const videoScale = 1.0 // Fixed scale - no zoom effect
+  const px = mouseX * 1.5
+  const py = mouseY * 1.5
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ backgroundColor: "hsl(0 0% 9%)" }}>
-      {/* Video */}
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ backgroundColor: "hsl(210 20% 98%)" }}>
+      {/* Video container with proper aspect ratio handling */}
       <div
-        className="absolute inset-0 will-change-transform"
+        className="absolute inset-0"
         style={{
           opacity: videoOpacity,
-          transform: `scale(${videoScale}) translate(${px}px, ${py}px)`,
-          transformOrigin: "center center",
+          transition: "opacity 0.3s ease-out",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute w-full h-full"
+        <div
+          className="relative"
           style={{
-            filter: `brightness(${0.75 - scrollProgress * 0.15}) saturate(1.1) contrast(1.08)`,
-            objectFit: "cover",
-            objectPosition: "center 40%",
+            width: "100%",
+            height: "100%",
+            transform: `translate(${px}px, ${py}px)`,
+            transition: "transform 0.1s linear",
           }}
         >
-          <source src="/video/hero-bg.mp4" type="video/mp4" />
-        </video>
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full"
+            style={{
+              filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
+              objectFit: "cover",
+              objectPosition: "center center",
+              transition: "filter 0.3s ease-out",
+            }}
+          >
+            <source src="/video/hero-bg.mp4" type="video/mp4" />
+          </video>
+        </div>
       </div>
 
       {/* Canvas overlay -- motes + signal lines */}
@@ -140,19 +154,19 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
         style={{ opacity: 0.8 }}
       />
 
-      {/* Very subtle vignette -- let the video breathe */}
+      {/* Very subtle light vignette */}
       <div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background: "radial-gradient(ellipse 90% 80% at 50% 42%, transparent 40%, rgba(22,27,36,0.45) 100%)",
+          background: "radial-gradient(ellipse 90% 80% at 50% 42%, transparent 40%, rgba(245,247,250,0.3) 100%)",
         }}
       />
 
-      {/* Gentle bottom fade */}
+      {/* Gentle bottom fade to light */}
       <div
         className="absolute inset-x-0 bottom-0 h-[40vh] pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to bottom, transparent 0%, rgba(22,27,36,0.6) 60%, hsl(220 12% 10%) 100%)",
+          background: "linear-gradient(to bottom, transparent 0%, rgba(245,247,250,0.5) 60%, hsl(210 20% 98%) 100%)",
         }}
       />
     </div>

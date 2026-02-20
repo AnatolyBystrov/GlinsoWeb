@@ -64,36 +64,45 @@ export default function ContactPage() {
               Get in touch
             </span>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-8 leading-[1.05]">
-              Let's discuss your risk transfer needs
+              Let's discuss your placement requirements
             </h1>
             <p className="text-base text-secondary-foreground leading-relaxed mb-12">
-              Whether you need reinsurance structuring, facultative placement, capital solutions or strategic advisory, our team is ready to deliver certainty.
+              For partnership inquiries, placement submissions, or strategic discussions, please contact us directly through our main office. <span className="text-primary">Serious risks. Serious capacity. Direct execution.</span>
             </p>
 
             <div className="space-y-8">
               <div>
-                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Global Headquarters</h3>
+                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Headquarters – Ras Al Khaimah</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  30 St Mary Axe<br />
-                  London EC3A 8BF<br />
-                  United Kingdom
+                  GLINSO Brokers FZE<br />
+                  Ras Al Khaimah<br />
+                  United Arab Emirates
+                </p>
+                <p className="text-xs text-muted-foreground/80 mt-2 italic">
+                  Central hub for treaty structuring, facultative placements, and international market coordination.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Direct Lines</h3>
+                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Representative Office – Dubai</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  +44 20 7123 4567<br />
-                  contact@glinso.com
+                  GLINSO Brokers – Dubai Representative Office<br />
+                  5, Building 2, Madison Astor<br />
+                  Majan, Wadi Al Safa 3<br />
+                  Dubai, United Arab Emirates
+                </p>
+                <p className="text-xs text-muted-foreground/80 mt-2 italic">
+                  Supporting regional client engagement.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Other Offices</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
-                  <div>Zurich<br />Dubai</div>
-                  <div>Singapore<br />New York</div>
-                </div>
+                <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Contact</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  legal@glinso.ae<br />
+                  veronica@glinso.ae<br />
+                  team@glinso.ae
+                </p>
               </div>
             </div>
           </motion.div>
@@ -116,7 +125,7 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -131,7 +140,7 @@ export default function ContactPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                     placeholder="john@company.com"
                   />
                 </div>
@@ -147,7 +156,7 @@ export default function ContactPage() {
                     id="company"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                     placeholder="Your Company"
                   />
                 </div>
@@ -161,7 +170,7 @@ export default function ContactPage() {
                     id="phone"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                     placeholder="+44 20 ..."
                   />
                 </div>

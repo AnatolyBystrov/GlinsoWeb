@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
+import WorldMap from "./world-map"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -14,7 +15,7 @@ function useReveal(threshold = 0.1) {
     if (!el) return
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setVisible(true) },
-      { threshold, rootMargin: "0px 0px -60px 0px" }
+      { threshold: 0.05, rootMargin: "0px 0px -20px 0px" }
     )
     obs.observe(el)
     return () => obs.disconnect()
@@ -81,7 +82,7 @@ function NarrativeIntro() {
       ref={ref}
       className="relative py-28 md:py-40"
       style={{
-        background: "linear-gradient(180deg, transparent 0%, hsl(220 12% 12%) 20%, hsl(220 12% 12%) 80%, transparent 100%)",
+        background: "linear-gradient(180deg, transparent 0%, hsl(210 20% 95%) 20%, hsl(210 20% 95%) 80%, transparent 100%)",
       }}
     >
       <div className="max-w-6xl mx-auto px-6 md:px-16">
@@ -94,9 +95,11 @@ function NarrativeIntro() {
             transition={{ duration: 1, delay: 0.3, ease }}
           >
             <p className="font-serif text-xl md:text-2xl lg:text-3xl font-light text-foreground leading-[1.5] tracking-[-0.005em]">
-              Risk lives in complexity.
+              Technical clarity.
               <br />
-              <span className="text-primary">Certainty lives in us.</span>
+              <span className="text-primary">Direct market access.</span>
+              <br />
+              Execution without noise.
             </p>
           </motion.div>
 
@@ -108,14 +111,10 @@ function NarrativeIntro() {
             className="space-y-5"
           >
             <p className="text-sm md:text-base text-secondary-foreground leading-relaxed">
-              Glinso is a global reinsurance broker that combines deep market
-              intelligence, advanced analytics and sector-specific expertise to
-              deliver optimal outcomes for insurers and specialty carriers.
+              GLINSO Brokers FZE is an independent insurance and reinsurance brokerage headquartered in Ras Al Khaimah, United Arab Emirates. We act for insurers, reinsurers, MGAs, and corporate clients, delivering structured placement solutions and strategic market access.
             </p>
             <p className="text-sm md:text-base text-secondary-foreground leading-relaxed">
-              We operate as both a strategic adviser and an execution partner,
-              structuring resilient programmes across property, casualty,
-              specialty and marine lines worldwide.
+              Founded in 2009, we combine disciplined risk assessment, global market access, and direct decision-making to deliver efficient placement solutions. <span className="text-primary">Our focus is long-term partnerships, not transactional placements.</span>
             </p>
           </motion.div>
         </div>
@@ -127,34 +126,28 @@ function NarrativeIntro() {
 /* ── 2. SOLUTIONS ── */
 const services = [
   {
-    code: "Re",
-    name: "Treaty Reinsurance",
-    desc: "Structuring resilient risk transfer programmes across treaty, facultative and specialty lines.",
-    color: "hsl(38 65% 58%)",
+    code: "01",
+    name: "Insurance",
+    desc: "Comprehensive insurance solutions across property, casualty, specialty and marine lines worldwide.",
+    color: "hsl(192 45% 65%)",
   },
   {
-    code: "Fac",
-    name: "Facultative Placement",
-    desc: "Tailored single-risk solutions with access to global specialty markets and capacity.",
-    color: "hsl(28 60% 55%)",
+    code: "02",
+    name: "Reinsurance",
+    desc: "Treaty and facultative reinsurance structuring with access to global reinsurance capacity.",
+    color: "hsl(192 45% 65%)",
   },
   {
-    code: "Cap",
-    name: "Capital Structuring",
-    desc: "Connecting risk with global capital markets through ILS, sidecars and alternative transfer.",
-    color: "hsl(175 35% 50%)",
+    code: "03",
+    name: "Brokerage",
+    desc: "Independent brokerage services connecting cedants with optimal market solutions.",
+    color: "hsl(192 45% 65%)",
   },
   {
-    code: "An",
-    name: "Analytics & Modelling",
-    desc: "Data-driven underwriting, portfolio insights and catastrophe modelling that sharpen decisions.",
-    color: "hsl(210 40% 60%)",
-  },
-  {
-    code: "Adv",
-    name: "Strategic Advisory",
-    desc: "Risk and capital advisory for insurers navigating complex regulatory and market landscapes.",
-    color: "hsl(38 45% 52%)",
+    code: "04",
+    name: "Claims Management",
+    desc: "Professional claims settlement and loss adjustment services across all insurance lines.",
+    color: "hsl(192 45% 65%)",
   },
 ]
 
@@ -168,11 +161,11 @@ function Solutions() {
         <SectionHeader
           index="02"
           title="Solutions"
-          subtitle="Five interlinked capabilities that create a unified platform for comprehensive risk transfer and advisory."
+          subtitle="Comprehensive reinsurance and insurance placement solutions tailored to risk profile, geography, and capital strategy."
           visible={visible}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {services.map((s, i) => (
             <motion.div
               key={s.name}
@@ -181,39 +174,27 @@ function Solutions() {
               transition={{ duration: 0.9, delay: 0.15 + i * 0.08, ease }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
-              className="group relative p-7 md:p-9 border border-border/30 overflow-hidden cursor-default transition-all duration-500"
+              className="group relative p-8 md:p-10 rounded-xl overflow-hidden cursor-default transition-all duration-500 shadow-sm hover:shadow-md"
               style={{
-                background: hovered === i
-                  ? `linear-gradient(145deg, ${s.color}12 0%, transparent 70%)`
-                  : "hsl(220 10% 13%)",
-                borderColor: hovered === i ? `${s.color}40` : undefined,
+                background: hovered === i ? "hsl(192 45% 60%)" : "hsl(192 45% 65%)",
+                border: "none",
               }}
             >
-              {/* Animated top accent line */}
-              <div
-                className="absolute top-0 left-0 h-[2px] transition-all duration-700"
-                style={{
-                  width: hovered === i ? "100%" : "0%",
-                  backgroundColor: s.color,
-                }}
-              />
-
-              <div className="flex items-baseline gap-3 mb-5">
+              <div className="flex items-baseline gap-3 mb-4">
                 <span
-                  className="text-xs font-mono tracking-[0.15em] transition-colors duration-500"
-                  style={{ color: hovered === i ? s.color : "hsl(38 65% 58% / 0.6)" }}
+                  className="text-xs font-mono tracking-[0.15em] font-semibold"
+                  style={{ color: "rgba(255,255,255,0.9)" }}
                 >
                   {s.code}
                 </span>
-                <div className="flex-1 h-px bg-border/30 group-hover:bg-border/60 transition-colors duration-500" />
               </div>
               <h3
-                className="font-serif text-lg md:text-xl font-light mb-3 transition-colors duration-500"
-                style={{ color: hovered === i ? s.color : "hsl(40 10% 92%)" }}
+                className="font-serif text-xl md:text-2xl font-semibold mb-3 transition-colors duration-500"
+                style={{ color: "white" }}
               >
                 {s.name}
               </h3>
-              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed group-hover:text-secondary-foreground transition-colors duration-500">
+              <p className="text-sm md:text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.95)" }}>
                 {s.desc}
               </p>
             </motion.div>
@@ -226,10 +207,8 @@ function Solutions() {
 
 /* ── 3. GLOBAL PRESENCE with animated counters ── */
 const offices = [
-  { city: "London", tz: "GMT+0", status: "Headquarters", markets: "50+" },
-  { city: "Zurich", tz: "CET+1", status: "European Hub", markets: "30+" },
-  { city: "Singapore", tz: "SGT+8", status: "Asia Pacific", markets: "25+" },
-  { city: "Dubai", tz: "GST+4", status: "MENA Region", markets: "20+" },
+  { city: "Ras Al Khaimah", tz: "GST+4", status: "Headquarters", markets: "Global" },
+  { city: "Dubai", tz: "GST+4", status: "Representative Office", markets: "Regional" },
 ]
 
 function AnimatedNumber({ value, visible }: { value: string; visible: boolean }) {
@@ -263,40 +242,53 @@ function GlobalPresence() {
       ref={ref}
       className="relative py-28 md:py-40"
       style={{
-        background: "linear-gradient(180deg, transparent 0%, hsl(220 15% 11%) 15%, hsl(220 15% 11%) 85%, transparent 100%)",
+        background: "hsl(210 20% 98%)",
       }}
     >
       <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <SectionHeader index="03" title="Global Presence" visible={visible} />
+        <SectionHeader index="03" title="Global Network" visible={visible} />
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, ease }}
+          className="text-center mb-12"
+        >
+          <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-light mb-4" style={{ color: "hsl(220 15% 20%)" }}>
+            100+ Partner Companies Worldwide
+          </h3>
+          <p className="text-lg md:text-xl" style={{ color: "hsl(220 10% 45%)" }}>
+            Building trusted relationships across every continent
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={visible ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 1.2, delay: 0.2, ease }}
+          className="relative mb-16 p-6 md:p-10 rounded-xl bg-white shadow-lg"
+        >
+          <WorldMap visible={visible} />
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {offices.map((o, i) => (
             <motion.div
               key={o.city}
               initial={{ opacity: 0, y: 30 }}
               animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, delay: 0.2 + i * 0.1, ease }}
-              className="group relative p-6 md:p-8 border border-border/20 hover:border-primary/30 transition-all duration-500"
-              style={{ background: "hsl(220 10% 12%)" }}
+              transition={{ duration: 0.9, delay: 0.4 + i * 0.1, ease }}
+              className="p-6 rounded-lg bg-white shadow-sm border border-border"
             >
-              <span className="font-serif text-2xl md:text-4xl lg:text-5xl font-light tracking-[-0.01em] text-foreground block mb-3 group-hover:text-primary transition-colors duration-500">
+              <h4 className="font-serif text-xl md:text-2xl font-semibold mb-2" style={{ color: "hsl(28 95% 62%)" }}>
                 {o.city}
-              </span>
-              <span className="text-[9px] font-mono tracking-[0.3em] text-primary/70 block mb-1">
-                {o.tz}
-              </span>
-              <span className="text-[9px] font-mono tracking-[0.15em] text-muted-foreground block mb-4">
+              </h4>
+              <p className="text-sm font-mono mb-1" style={{ color: "hsl(220 10% 45%)" }}>
                 {o.status}
-              </span>
-              {/* Animated market count */}
-              <div className="pt-3 border-t border-border/20">
-                <span className="font-serif text-2xl md:text-3xl text-primary font-light">
-                  <AnimatedNumber value={o.markets} visible={visible} />
-                </span>
-                <span className="text-[8px] font-mono tracking-[0.2em] text-muted-foreground ml-2">
-                  MARKETS
-                </span>
-              </div>
+              </p>
+              <p className="text-xs" style={{ color: "hsl(220 10% 55%)" }}>
+                {o.markets} Market Access
+              </p>
             </motion.div>
           ))}
         </div>
@@ -305,77 +297,7 @@ function GlobalPresence() {
   )
 }
 
-/* ── 4. ESG & GOVERNANCE ── */
-const esgItems = [
-  {
-    letter: "E",
-    title: "Environmental",
-    text: "Sustainable insurance solutions integrating ESG risk factors into programme design, with focus on climate and catastrophe risk modelling.",
-    accent: "hsl(160 40% 45%)",
-  },
-  {
-    letter: "S",
-    title: "Social",
-    text: "Protecting policyholders and investing in talent development, education in actuarial science, and community resilience programmes.",
-    accent: "hsl(210 45% 55%)",
-  },
-  {
-    letter: "G",
-    title: "Governance",
-    text: "Robust compliance across sanctions, AML, ABAC and KYC. A comprehensive risk management framework underpins every engagement.",
-    accent: "hsl(38 55% 55%)",
-  },
-]
-
-function EsgGovernance() {
-  const { ref, visible } = useReveal()
-  return (
-    <section id="esg" ref={ref} className="relative py-28 md:py-40">
-      <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <SectionHeader index="04" title="ESG & Governance" visible={visible} />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {esgItems.map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, delay: 0.2 + i * 0.12, ease }}
-              className="group relative p-7 md:p-9 border border-border/20 hover:border-white/10 transition-all duration-500 overflow-hidden"
-              style={{ background: "hsl(220 10% 12%)" }}
-            >
-              {/* Big background letter */}
-              <span
-                className="absolute -top-4 -right-2 font-serif text-[120px] md:text-[160px] font-light leading-none pointer-events-none transition-opacity duration-700"
-                style={{ color: `${item.accent}15` }}
-              >
-                {item.letter}
-              </span>
-
-              <div className="relative z-10">
-                <div
-                  className="w-8 h-1 mb-6 transition-all duration-500 group-hover:w-12"
-                  style={{ backgroundColor: item.accent }}
-                />
-                <h3
-                  className="text-xs font-mono tracking-[0.2em] uppercase mb-4 transition-colors duration-500"
-                  style={{ color: item.accent }}
-                >
-                  {item.title}
-                </h3>
-                <p className="text-sm text-secondary-foreground leading-relaxed">
-                  {item.text}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ── 5. PHILOSOPHY (visually distinct full-width band) ── */
+/* ── 4. PHILOSOPHY (visually distinct full-width band) ── */
 function Philosophy() {
   const { ref, visible } = useReveal()
   return (
@@ -383,7 +305,7 @@ function Philosophy() {
       ref={ref}
       className="relative py-28 md:py-40"
       style={{
-        background: "linear-gradient(180deg, transparent 0%, hsl(38 20% 10%) 20%, hsl(38 20% 10%) 80%, transparent 100%)",
+        background: "linear-gradient(180deg, transparent 0%, hsl(210 20% 96%) 20%, hsl(210 20% 96%) 80%, transparent 100%)",
       }}
     >
       <div className="max-w-4xl mx-auto px-6 md:px-16 text-center">
@@ -393,9 +315,11 @@ function Philosophy() {
           transition={{ duration: 1.5, ease }}
         >
           <p className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-foreground leading-[1.2] tracking-[-0.01em] text-balance">
-            Risk lives in complexity.
+            Serious risks.
             <br />
-            <span className="text-primary">Certainty lives in us.</span>
+            <span className="text-primary">Serious capacity.</span>
+            <br />
+            Direct execution.
           </p>
         </motion.div>
         <motion.div
@@ -416,7 +340,6 @@ export default function ContentSections() {
       <NarrativeIntro />
       <Solutions />
       <GlobalPresence />
-      <EsgGovernance />
       <Philosophy />
     </div>
   )

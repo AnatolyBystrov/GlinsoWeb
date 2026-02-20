@@ -67,7 +67,7 @@ export default function StoryPage() {
               Independent insurance excellence
             </h1>
             <p className="text-lg md:text-xl text-secondary-foreground leading-relaxed">
-              GLINSO Brokers is an independent insurance and reinsurance brokerage headquartered in Ras Al Khaimah, United Arab Emirates. <span className="text-primary">We combine disciplined risk assessment, global market access, and direct decision-making to deliver efficient placement solutions.</span>
+              GLINSO Brokers FZE is an independent insurance and reinsurance brokerage headquartered in Ras Al Khaimah, United Arab Emirates. <span className="text-primary">Founded in 2009, we combine disciplined risk assessment, global market access, and direct decision-making to deliver efficient placement solutions for insurers, reinsurers, and corporate clients.</span>
             </p>
           </motion.div>
 
@@ -80,7 +80,7 @@ export default function StoryPage() {
             className="mb-24 py-16 border-y border-border/20"
           >
             <p className="font-serif text-2xl md:text-3xl lg:text-4xl font-light text-foreground leading-[1.3] tracking-[-0.01em] text-balance">
-              We serve insurers, reinsurers, and corporate clients with efficient placement solutions. <span className="text-primary">Our foundation is technical expertise, regulatory compliance, and sustainable partnerships.</span>
+              We act for insurers, reinsurers, MGAs, and corporate clients, delivering structured placement solutions and strategic market access. <span className="text-primary">Our focus is long-term partnerships, not transactional placements.</span>
             </p>
           </motion.div>
 
@@ -112,18 +112,17 @@ export default function StoryPage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease }}
             viewport={{ once: true }}
-            className="mt-28 p-10 md:p-14 border border-primary/20"
-            style={{ background: "linear-gradient(135deg, hsl(38 30% 8%) 0%, hsl(220 12% 10%) 100%)" }}
+            className="mt-28 p-10 md:p-14 border border-primary/20 bg-white shadow-lg rounded-lg"
           >
             <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block mb-4">Ras Al Khaimah</span>
             <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground mb-6 leading-tight">
               Headquartered in the UAE
             </h2>
             <p className="text-base text-secondary-foreground leading-relaxed mb-6">
-              GLINSO Brokers FZE is strategically headquartered in Ras Al Khaimah, United Arab Emirates. Our establishment in 2018 marked a commitment to serving the Middle East region with independent brokerage expertise.
+              GLINSO Brokers FZE is headquartered in Ras Al Khaimah, United Arab Emirates. Our headquarters serves as the central hub for treaty structuring, facultative placements, and international market coordination.
             </p>
             <p className="text-base text-secondary-foreground leading-relaxed">
-              With our renewed license valid through 2031, we maintain our focus on regulatory compliance and building long-term relationships with insurers, reinsurers, and corporate clients across international markets.
+              Our current license was granted on 29 January 2026 and is valid until 28 January 2031, reinforcing our long-term commitment to regulatory compliance and sustainable growth in the region. We operate under a regulated framework aligned with international standards.
             </p>
           </motion.div>
 
@@ -138,9 +137,9 @@ export default function StoryPage() {
             <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground mb-12">Our approach</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { title: "Technical Strength", text: "Disciplined risk assessment backed by deep market knowledge and analytical rigor." },
-                { title: "Global Access", text: "Direct connections to international insurance and reinsurance markets for optimal placement solutions." },
-                { title: "Independent Decisions", text: "Focused, client-centered decision-making without conflicts of interest or external pressures." },
+                { title: "Technical Clarity", text: "Every placement begins with disciplined analysis and structured underwriting presentation." },
+                { title: "Direct Market Access", text: "We work directly with decision-makers in regional and international markets to secure optimal terms." },
+                { title: "Execution Without Noise", text: "We prioritize efficiency, transparency, and results over unnecessary layers." },
               ].map((value, i) => (
                 <motion.div
                   key={value.title}

@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 9%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 12%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 25 95% 62%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 186 35% 70%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 25 95% 62%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 95%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 25 95% 62%;
-    --radius: 0.125rem;
+    --background: 210 20% 98%;
+    --foreground: 220 15% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 20%;
+    --primary: 28 95% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 192 45% 65%;
+    --secondary-foreground: 220 15% 20%;
+    --muted: 210 15% 92%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 192 45% 65%;
+    --accent-foreground: 220 15% 20%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 15% 85%;
+    --input: 210 15% 85%;
+    --ring: 28 95% 62%;
+    --radius: 0.375rem;
   }
 }
 
@@ -35,8 +35,8 @@
     @apply bg-background text-foreground;
   }
   ::selection {
-    background: hsl(38 65% 52% / 0.2);
-    color: hsl(40 10% 95%);
+    background: hsl(192 45% 65% / 0.3);
+    color: hsl(220 15% 20%);
   }
 }
 
@@ -45,17 +45,17 @@ html {
 }
 
 ::-webkit-scrollbar {
-  width: 3px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(220 12% 10%);
+  background: hsl(210 15% 92%);
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(38 30% 22%);
-  border-radius: 2px;
+  background: hsl(192 45% 65%);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(38 50% 32%);
+  background: hsl(192 50% 55%);
 }
 
 @keyframes cinematic-rise {
