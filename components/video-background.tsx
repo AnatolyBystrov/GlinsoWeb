@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useEffect, useCallback } from "react"
+import { useRef, useEffect, useCallback, useState } from "react"
 
 interface VideoBackgroundProps {
   scrollProgress: number
@@ -12,9 +12,23 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animFrame = useRef<number>(0)
+  const [isMobile, setIsMobile] = useState(false)
 
   /* Floating motes -- subtle luminous particles */
   const motes = useRef<{ x: number; y: number; vx: number; vy: number; r: number; a: number }[]>([])
+
+  useEffect(() => {
+    // Set initial mobile state
+    setIsMobile(window.innerWidth < 768)
+    
+    // Handle resize
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     motes.current = Array.from({ length: 15 }, () => ({
@@ -148,8 +162,8 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           className="absolute inset-0 w-full h-full"
           style={{
             filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
-            objectFit: "cover",
-            objectPosition: "center center",
+            objectFit: isMobile ? "contain" : "cover",
+            objectPosition: isMobile ? "center top" : "center center",
             transition: "filter 0.2s ease-out",
           }}
           onLoadedData={(e) => {
