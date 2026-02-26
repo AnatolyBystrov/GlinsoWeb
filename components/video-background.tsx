@@ -162,11 +162,12 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           className="absolute inset-0 w-full h-full"
           style={{
             filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
-            objectFit: isMobile ? "contain" : "cover",
+            objectFit: "cover",
             objectPosition: "center center",
             transition: "filter 0.2s ease-out",
-            minWidth: isMobile ? "auto" : "100%",
-            minHeight: isMobile ? "auto" : "100%",
+            transform: isMobile ? "scale(1.5)" : "none",
+            minWidth: "100%",
+            minHeight: "100%",
           }}
           onLoadedData={(e) => {
             // Ensure video starts playing on load
