@@ -177,7 +177,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
             }
           }}
         >
-          <source src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/video/hero-bg.mp4`} type="video/mp4" />
+          <source src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/video/Glinso-finalVideo.mp4`} type="video/mp4" />
         </video>
       </div>
 
