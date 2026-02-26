@@ -150,6 +150,10 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
         style={{
           opacity: videoOpacity,
           transition: "opacity 0.2s ease-out",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
         }}
       >
         <video
@@ -159,15 +163,14 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full"
           style={{
             filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
-            objectFit: "cover",
-            objectPosition: "center center",
             transition: "filter 0.2s ease-out",
-            transform: isMobile ? "scale(1.5)" : "none",
-            minWidth: "100%",
+            width: isMobile ? "auto" : "100%",
+            height: isMobile ? "100%" : "100%",
+            minWidth: isMobile ? "100%" : "100%",
             minHeight: "100%",
+            objectFit: "cover",
           }}
           onLoadedData={(e) => {
             // Ensure video starts playing on load
