@@ -9,7 +9,6 @@ import ContentSections from "@/components/content-sections"
 import SiteFooter from "@/components/site-footer"
 
 // UI enhancements
-import PhoenixCursor from "@/components/phoenix-cursor"
 import ScrollProgress from "@/components/scroll-progress"
 import GlassNav from "@/components/glass-nav"
 import AmbientMusic from "@/components/ambient-music"
@@ -36,7 +35,6 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen bg-background">
-      {mounted && <PhoenixCursor />}
       {mounted && <AmbientMusic />}
       <ScrollProgress progress={scrollProgress} />
       <GlassNav />

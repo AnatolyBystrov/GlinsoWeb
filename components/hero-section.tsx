@@ -65,7 +65,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
             animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
             transition={{ duration: 1.6, delay: 0.2, ease }}
-            className="font-serif font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] leading-[1.1] mb-2"
+            className="font-serif font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] leading-[1.1] mb-2"
             style={{
               color: "hsl(220 15% 20%)",
               textShadow: "0 1px 2px rgba(255,255,255,0.8)",
