@@ -45,9 +45,9 @@ export default function PhoenixCursor() {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Smooth follow with gentle easing
-      pos.current.x += (mouse.current.x - pos.current.x) * 0.15
-      pos.current.y += (mouse.current.y - pos.current.y) * 0.15
+      // Fast smoothing: keeps a soft motion feel without the heavy lag from the previous value.
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.55
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.55
 
       if (!active.current) {
         raf.current = requestAnimationFrame(animate)
