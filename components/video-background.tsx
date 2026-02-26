@@ -163,8 +163,10 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           style={{
             filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
             objectFit: "cover",
-            objectPosition: "center center",
+            objectPosition: isMobile ? "center 45%" : "center center",
             transition: "filter 0.2s ease-out",
+            minWidth: "100%",
+            minHeight: "100%",
           }}
           onLoadedData={(e) => {
             // Ensure video starts playing on load

@@ -31,7 +31,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
   return (
     <section id="hero" className="relative min-h-[100vh]">
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-end overflow-hidden" style={{ paddingTop: "clamp(96px, 10vh, 140px)" }}>
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden" style={{ paddingTop: "clamp(40px, 8vh, 80px)" }}>
 
         {/* Light overlay that lifts to reveal the scene */}
         <motion.div
@@ -46,7 +46,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
         <div
           className="absolute inset-0 z-5 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse 60% 70% at 50% 65%, rgba(255,255,255,0.85) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse 50% 50% at 50% 45%, rgba(255,255,255,0.4) 0%, transparent 60%)",
           }}
         />
 
@@ -65,7 +65,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
             animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
             transition={{ duration: 1.6, delay: 0.2, ease }}
-            className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[0.03em] leading-[1.1] mb-2"
+            className="font-serif font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] leading-[1.1] mb-2"
             style={{
               color: "hsl(220 15% 20%)",
               textShadow: "0 1px 2px rgba(255,255,255,0.8)",
