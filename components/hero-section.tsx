@@ -31,7 +31,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
   return (
     <section id="hero" className="relative min-h-[100vh]">
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden" style={{ paddingTop: "clamp(40px, 8vh, 80px)" }}>
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-end overflow-hidden" style={{ paddingTop: "clamp(60px, 8vh, 100px)", paddingBottom: "clamp(60px, 10vh, 120px)" }}>
 
         {/* Light overlay that lifts to reveal the scene */}
         <motion.div
