@@ -12,22 +12,13 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animFrame = useRef<number>(0)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobileViewport, setIsMobileViewport] = useState(false)
 
   /* Floating motes -- subtle luminous particles */
   const motes = useRef<{ x: number; y: number; vx: number; vy: number; r: number; a: number }[]>([])
 
   useEffect(() => {
-    // Set initial mobile state
-    setIsMobile(window.innerWidth < 768)
-    
-    // Handle resize
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    // No longer need to track isMobile
   }, [])
 
   useEffect(() => {
@@ -98,6 +89,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
     const resize = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      setIsMobileViewport(window.innerWidth < 768)
     }
     resize()
     window.addEventListener("resize", resize)
@@ -138,6 +130,8 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
   }, [scrollProgress])
 
   const videoOpacity = Math.max(0.3, 0.6 - scrollProgress * 0.4)
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
+  const videoSrc = `${basePath}/video/${isMobileViewport ? "TestVideo.mp4" : "Glinso-finalVideo.mp4"}`
 
   return (
     <div
@@ -150,13 +144,10 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
         style={{
           opacity: videoOpacity,
           transition: "opacity 0.2s ease-out",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
         }}
       >
         <video
+          key={isMobileViewport ? "mobile-video" : "desktop-video"}
           ref={videoRef}
           autoPlay
           loop
@@ -164,13 +155,17 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
           playsInline
           preload="auto"
           style={{
-            filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
-            transition: "filter 0.2s ease-out",
-            width: isMobile ? "auto" : "100%",
-            height: isMobile ? "100%" : "100%",
-            minWidth: isMobile ? "100%" : "100%",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "100%",
+            height: "auto",
             minHeight: "100%",
             objectFit: "cover",
+            objectPosition: "center center",
+            filter: `brightness(${0.9 - scrollProgress * 0.15}) saturate(1.15) contrast(1.1)`,
+            transition: "filter 0.2s ease-out",
           }}
           onLoadedData={(e) => {
             // Ensure video starts playing on load
@@ -197,7 +192,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
             }
           }}
         >
-          <source src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/video/Glinso-finalVideo.mp4`} type="video/mp4" />
+          <source src={videoSrc} type="video/mp4" />
         </video>
       </div>
 
