@@ -10,8 +10,8 @@ const nextConfig = {
   },
   reactStrictMode: true,
 
-  // GitHub Pages deployment
-  output: 'export',
+  // For Vercel deployment — remove static export to enable API routes
+  // output: 'export' was used for GitHub Pages; Vercel supports SSR natively
   trailingSlash: true,
   images: {
     unoptimized: true,

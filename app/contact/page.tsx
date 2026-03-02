@@ -22,12 +22,23 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Static site - open email client with pre-filled message
-    const subject = encodeURIComponent(`Contact from ${formData.name}`)
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company}\nPhone: ${formData.phone}\nService: ${formData.service}\n\nMessage:\n${formData.message}`
-    )
-    window.location.href = `mailto:team@glinso.ae?subject=${subject}&body=${body}`
+    setStatus("submitting")
+    setErrorMessage("")
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? "Unknown error")
+      setStatus("success")
+      setFormData({ name: "", email: "", company: "", phone: "", service: "", message: "" })
+    } catch (err: any) {
+      setStatus("error")
+      setErrorMessage(err.message ?? "Something went wrong. Please try again.")
+    }
   }
 
   return (
