@@ -89,11 +89,25 @@ interface Globe3DProps {
   visible: boolean
 }
 
+function checkWebGL(): boolean {
+  try {
+    if (typeof window === "undefined") return false
+    const canvas = document.createElement("canvas")
+    return !!(
+      canvas.getContext("webgl") ||
+      canvas.getContext("experimental-webgl")
+    )
+  } catch {
+    return false
+  }
+}
+
 export default function Globe3D({ visible }: Globe3DProps) {
   const globeRef = useRef<any>(null)
   const [countries, setCountries] = useState<any[]>([])
   const [mounted, setMounted] = useState(false)
   const [size, setSize] = useState(700)
+  const [webglAvailable, setWebglAvailable] = useState(true)
 
   /* Load GeoJSON */
   useEffect(() => {
@@ -105,6 +119,7 @@ export default function Globe3D({ visible }: Globe3DProps) {
 
   useEffect(() => {
     setMounted(true)
+    setWebglAvailable(checkWebGL())
     const updateSize = () => {
       const w = window.innerWidth
       setSize(w < 768 ? Math.min(w - 32, 500) : Math.min(w * 0.48, 760))
@@ -146,6 +161,25 @@ export default function Globe3D({ visible }: Globe3DProps) {
   }, [])
 
   if (!mounted) return null
+
+  if (!webglAvailable) {
+    return (
+      <div
+        style={{ width: size, height: size }}
+        className="flex flex-col items-center justify-center rounded-full border border-border/20"
+      >
+        <svg viewBox="0 0 200 200" width="60%" height="60%" style={{ opacity: 0.18 }}>
+          <circle cx="100" cy="100" r="95" fill="none" stroke="hsl(220 70% 28%)" strokeWidth="1.5" />
+          <ellipse cx="100" cy="100" rx="35" ry="95" fill="none" stroke="hsl(220 70% 28%)" strokeWidth="1" />
+          <line x1="5" y1="100" x2="195" y2="100" stroke="hsl(220 70% 28%)" strokeWidth="1" />
+          <line x1="100" y1="5" x2="100" y2="195" stroke="hsl(220 70% 28%)" strokeWidth="1" />
+        </svg>
+        <p className="text-xs mt-4" style={{ color: "hsl(220 45% 55%)" }}>
+          Enable hardware acceleration to view 3D globe
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div style={{
