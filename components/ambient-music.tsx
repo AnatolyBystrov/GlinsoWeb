@@ -99,7 +99,7 @@ export default function AmbientMusic() {
       )}
 
       {/* Tooltip */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-md bg-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap text-xs font-mono tracking-wide" style={{ color: "hsl(220 15% 25%)" }}>
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-md bg-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap text-xs font-mono tracking-wide" style={{ color: "hsl(220 70% 28%)" }}>
         {isPlaying ? "Pause" : "Play"} ambient music
       </div>
     </motion.button>

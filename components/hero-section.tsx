@@ -67,8 +67,8 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             transition={{ duration: 1.6, delay: 0.2, ease }}
             className="font-serif font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] leading-[1.1] mb-2"
             style={{
-              color: "hsl(220 15% 20%)",
-              textShadow: "0 1px 2px rgba(255,255,255,0.8)",
+              color: "hsl(28 95% 62%)",
+              textShadow: "0 2px 8px rgba(245,130,31,0.18), 0 1px 2px rgba(255,255,255,0.7)",
             }}
           >
             GLINSO
@@ -85,7 +85,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
               textShadow: "0 1px 2px rgba(255,255,255,0.5)",
             }}
           >
-            Engineering Global Certainty
+            Global Insurance Solutions
           </motion.p>
 
           {/* Decorative divider */}
@@ -103,7 +103,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             transition={{ duration: 1.2, ease }}
             className="text-xs md:text-sm max-w-md mx-auto leading-relaxed text-balance mb-3"
             style={{
-              color: "hsl(220 10% 45%)",
+              color: "hsl(192 55% 42%)",
             }}
           >
             Independent reinsurance brokerage delivering structured placement solutions
@@ -156,7 +156,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
               />
             </svg>
           </motion.div>
-          <span className="text-[9px] font-mono tracking-widest uppercase" style={{ color: "hsl(220 10% 45%)" }}>
+          <span className="text-[9px] font-mono tracking-widest uppercase" style={{ color: "hsl(220 55% 38%)" }}>
             Scroll
           </span>
         </motion.div>

@@ -62,9 +62,9 @@ const PADDING = 20
 const COLORS = {
   bg: "hsl(210 20% 98%)",
   panel: "hsl(0 0% 100%)",
-  ink: "hsl(220 15% 22%)",
-  text: "hsl(220 10% 45%)",
-  textSoft: "hsl(220 10% 55%)",
+  ink: "hsl(220 70% 28%)",
+  text: "hsl(220 55% 38%)",
+  textSoft: "hsl(220 40% 52%)",
   primary: "hsl(28 95% 62%)",
   primarySoft: "hsl(28 95% 62% / 0.24)",
   secondary: "hsl(192 45% 55%)",

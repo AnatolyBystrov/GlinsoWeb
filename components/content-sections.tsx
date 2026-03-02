@@ -198,7 +198,7 @@ function Solutions() {
                   className="pointer-events-none select-none absolute right-6 bottom-3 font-serif leading-none transition-all duration-500"
                   style={{
                     fontSize: "clamp(80px, 10vw, 120px)",
-                    color: isHovered ? "hsl(192 45% 55% / 0.10)" : "hsl(220 15% 22% / 0.04)",
+                    color: isHovered ? "hsl(192 45% 55% / 0.10)" : "hsl(220 70% 28% / 0.04)",
                   }}
                 >
                   {s.code}
@@ -207,7 +207,7 @@ function Solutions() {
                 <div className="relative p-8 md:p-10">
                   <h3
                     className="font-serif text-2xl md:text-3xl font-light mb-3 leading-tight transition-colors duration-300"
-                    style={{ color: isHovered ? "hsl(192 45% 35%)" : "hsl(220 15% 18%)" }}
+                    style={{ color: isHovered ? "hsl(192 45% 35%)" : "hsl(220 70% 28%)" }}
                   >
                     {s.name}
                   </h3>
@@ -260,23 +260,23 @@ function GlobalPresence() {
             </span>
             <h2
               className="font-serif font-light text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.01em] mb-5"
-              style={{ color: "hsl(220 15% 20%)" }}
+              style={{ color: "hsl(220 70% 28%)" }}
             >
               Global Partner<br />Network
             </h2>
-            <p className="text-sm leading-relaxed mb-10 max-w-sm" style={{ color: "hsl(220 10% 45%)" }}>
+            <p className="text-sm leading-relaxed mb-10 max-w-sm" style={{ color: "hsl(220 55% 38%)" }}>
               100+ insurance & reinsurance partners worldwide.
             </p>
 
             {/* Regional breakdown */}
             <div className="space-y-0">
               {[
-                { pct: 25, name: "North America",  desc: "Leading insurance markets",     color: "hsl(28 95% 62%)"  },
-                { pct: 22, name: "Europe",          desc: "Lloyd's & continental markets", color: "hsl(192 65% 45%)" },
-                { pct: 18, name: "Asia Pacific",    desc: "Growth markets access",         color: "hsl(192 65% 45%)" },
-                { pct: 15, name: "Latin America",   desc: "Emerging markets",              color: "hsl(28 95% 62%)"  },
-                { pct: 14, name: "Middle East",     desc: "Regional hub operations",       color: "hsl(28 95% 62%)"  },
-                { pct: 6,  name: "Africa",          desc: "Frontier markets",              color: "hsl(192 65% 45%)" },
+                { pct: 30, name: "Europe",          desc: "Lloyd's & continental markets", color: "hsl(192 65% 45%)" },
+                { pct: 28, name: "Asia Pacific",    desc: "Growth markets access",         color: "hsl(192 65% 45%)" },
+                { pct: 20, name: "Africa",          desc: "Frontier markets",              color: "hsl(142 55% 45%)" },
+                { pct: 12, name: "Latin America",   desc: "Emerging markets",              color: "hsl(28 95% 62%)"  },
+                { pct: 6,  name: "Middle East",     desc: "Regional hub operations",       color: "hsl(28 95% 62%)"  },
+                { pct: 4,  name: "North America",   desc: "Leading insurance markets",     color: "hsl(28 95% 62%)"  },
               ].map((r, i) => (
                 <motion.div
                   key={r.name}
@@ -293,10 +293,10 @@ function GlobalPresence() {
                       {r.pct}%
                     </span>
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm font-medium" style={{ color: "hsl(220 15% 20%)" }}>
+                      <span className="text-sm font-medium" style={{ color: "hsl(220 70% 28%)" }}>
                         {r.name}
                       </span>
-                      <span className="text-[11px] ml-2" style={{ color: "hsl(220 10% 60%)" }}>
+                      <span className="text-[11px] ml-2" style={{ color: "hsl(220 45% 50%)" }}>
                         {r.desc}
                       </span>
                     </div>
@@ -333,7 +333,7 @@ function GlobalPresence() {
             {visible && <Globe3D visible={visible} />}
             <p
               className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[9px] font-mono tracking-[0.25em] uppercase whitespace-nowrap"
-              style={{ color: "hsl(220 10% 65%)" }}
+              style={{ color: "hsl(220 45% 52%)" }}
             >
               Drag · Zoom · Hover
             </p>
@@ -601,7 +601,7 @@ function Team() {
                 onMouseLeave={() => setHoveredIndex(null)}
                 className="group relative rounded-xl border bg-white transition-all duration-300"
                 style={{
-                  borderColor: isHovered ? "hsl(220 15% 80%)" : "hsl(220 15% 90%)",
+                  borderColor: isHovered ? "hsl(220 40% 80%)" : "hsl(220 40% 90%)",
                   boxShadow: isHovered ? "0 8px 24px -12px rgba(15,23,42,0.14)" : "none",
                 }}
               >

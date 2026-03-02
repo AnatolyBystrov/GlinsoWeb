@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 
-const linkClass = "text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300 cursor-pointer"
+const linkClass = "text-[10px] font-mono tracking-[0.2em] uppercase text-primary hover:text-primary/70 transition-colors duration-300 cursor-pointer"
 
 export default function GlassNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -46,7 +46,7 @@ export default function GlassNav() {
             window.scrollTo({ top: 0, behavior: 'smooth' })
           }}
           className="font-serif text-lg md:text-xl font-semibold tracking-[0.1em] hover:text-primary transition-colors duration-300"
-          style={{ color: "hsl(220 15% 20%)" }}
+          style={{ color: "hsl(28 95% 62%)" }}
         >
           GLINSO
         </a>

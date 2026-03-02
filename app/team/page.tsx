@@ -71,7 +71,7 @@ export default function TeamPage() {
                   onMouseLeave={() => setHoveredIndex(null)}
                   className="group relative rounded-xl border bg-white transition-all duration-300"
                   style={{
-                    borderColor: isHovered ? "hsl(220 15% 80%)" : "hsl(220 15% 90%)",
+                    borderColor: isHovered ? "hsl(220 40% 80%)" : "hsl(220 40% 90%)",
                     boxShadow: isHovered ? "0 8px 24px -12px rgba(15,23,42,0.14)" : "none",
                   }}
                 >

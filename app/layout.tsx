@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Glinso | Engineering Global Certainty',
+  title: 'Glinso | Global Insurance Solutions',
   description:
     'A global reinsurance brokerage delivering strategic partnerships, advanced analytics and world-class risk transfer solutions.',
 }
