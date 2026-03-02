@@ -1,8 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
-import WorldMap from "./world-map"
+import { useRef, useState, useEffect, useCallback } from "react"
+import dynamic from "next/dynamic"
+
+const Globe3D = dynamic(() => import("./globe-3d"), { ssr: false })
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -156,7 +158,12 @@ function Solutions() {
   const [hovered, setHovered] = useState<number | null>(null)
 
   return (
-    <section id="solutions" ref={ref} className="relative py-28 md:py-40">
+    <section
+      id="solutions"
+      ref={ref}
+      className="relative py-28 md:py-40"
+      style={{ background: "linear-gradient(180deg, transparent 0%, hsl(210 20% 95%) 8%, hsl(210 20% 95%) 92%, transparent 100%)" }}
+    >
       <div className="max-w-6xl mx-auto px-6 md:px-16">
         <SectionHeader
           index="02"
@@ -165,107 +172,55 @@ function Solutions() {
           visible={visible}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border/25 border border-border/25 rounded-2xl overflow-hidden max-w-4xl mx-auto">
           {services.map((s, i) => {
             const isHovered = hovered === i
 
             return (
               <motion.div
                 key={s.name}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 24 }}
                 animate={visible ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.2, ease }}
-                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.25, delay: i * 0.06, ease }}
                 onMouseEnter={() => setHovered(i)}
                 onMouseLeave={() => setHovered(null)}
-                className="group relative overflow-hidden rounded-2xl cursor-default border border-border/20"
-                style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(248,250,252,0.98) 100%)",
-                  boxShadow: isHovered
-                    ? "0 18px 42px -22px rgba(15,23,42,0.28)"
-                    : "0 12px 28px -20px rgba(15,23,42,0.18)",
-                }}
+                className="group relative bg-white overflow-hidden cursor-default"
               >
+                {/* hover – left accent bar */}
                 <div
-                  className="absolute inset-0 pointer-events-none transition-opacity duration-500"
-                  style={{
-                    opacity: isHovered ? 1 : 0.82,
-                    background: `
-                      radial-gradient(circle at 14% 14%, rgba(130,201,216,0.18) 0%, transparent 42%),
-                      radial-gradient(circle at 88% 18%, rgba(255,170,90,0.16) 0%, transparent 38%),
-                      linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(248,250,252,0.94) 100%)
-                    `,
-                  }}
-                />
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-60"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(circle at 1px 1px, rgba(130,201,216,0.16) 1px, transparent 0)",
-                    backgroundSize: "14px 14px",
-                  }}
-                />
-                <div
-                  className="absolute inset-x-0 top-0 h-px pointer-events-none"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, transparent 0%, rgba(130,201,216,0.5) 25%, rgba(255,170,90,0.45) 75%, transparent 100%)",
-                  }}
+                  className="absolute left-0 inset-y-0 w-[3px] bg-primary origin-top transition-transform duration-300"
+                  style={{ transform: isHovered ? "scaleY(1)" : "scaleY(0)" }}
                 />
 
-                <div className="relative p-7 md:p-8">
-                  <div className="mb-5 flex items-center justify-between gap-3">
-                    <span
-                      className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-mono tracking-[0.2em] uppercase border transition-all duration-300"
-                      style={{
-                        color: isHovered ? "hsl(192 45% 35%)" : "hsl(220 12% 40%)",
-                        borderColor: isHovered ? "rgba(130,201,216,0.35)" : "rgba(148,163,184,0.2)",
-                        background: isHovered ? "rgba(255,255,255,0.86)" : "rgba(255,255,255,0.72)",
-                      }}
-                    >
-                      {s.code}
-                    </span>
+                {/* large background number */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none select-none absolute right-6 bottom-3 font-serif leading-none transition-all duration-500"
+                  style={{
+                    fontSize: "clamp(80px, 10vw, 120px)",
+                    color: isHovered ? "hsl(192 45% 55% / 0.10)" : "hsl(220 15% 22% / 0.04)",
+                  }}
+                >
+                  {s.code}
+                </span>
 
-                    <div className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "hsl(192 45% 55%)" }} />
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "hsl(28 95% 62%)" }} />
-                    </div>
-                  </div>
-
+                <div className="relative p-8 md:p-10">
                   <h3
-                    className="font-serif text-2xl md:text-3xl font-light tracking-tight mb-3 transition-colors duration-300"
-                    style={{ color: isHovered ? "hsl(220 15% 18%)" : "hsl(220 15% 22%)" }}
+                    className="font-serif text-2xl md:text-3xl font-light mb-3 leading-tight transition-colors duration-300"
+                    style={{ color: isHovered ? "hsl(192 45% 35%)" : "hsl(220 15% 18%)" }}
                   >
                     {s.name}
                   </h3>
-
                   <div
-                    className="w-14 h-px mb-4 transition-all duration-500"
+                    className="h-px mb-5 transition-all duration-500 origin-left"
                     style={{
-                      width: isHovered ? 88 : 56,
-                      background:
-                        "linear-gradient(90deg, rgba(130,201,216,0.7) 0%, rgba(255,170,90,0.55) 100%)",
+                      width: isHovered ? 64 : 32,
+                      background: "linear-gradient(90deg, hsl(192 45% 55% / 0.7) 0%, hsl(28 95% 62% / 0.5) 100%)",
                     }}
                   />
-
-                  <p className="text-sm md:text-base leading-relaxed" style={{ color: "hsl(220 10% 42%)" }}>
+                  <p className="text-sm md:text-base text-secondary-foreground leading-relaxed max-w-xs">
                     {s.desc}
                   </p>
-
-                  <div className="mt-6 flex items-center justify-between">
-                    <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-muted-foreground">
-                      Structured Placement
-                    </span>
-                    <motion.span
-                      aria-hidden="true"
-                      animate={isHovered ? { x: 2 } : { x: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-sm"
-                      style={{ color: "hsl(28 95% 62%)" }}
-                    >
-                      →
-                    </motion.span>
-                  </div>
                 </div>
               </motion.div>
             )
@@ -276,130 +231,113 @@ function Solutions() {
   )
 }
 
-/* ── 3. GLOBAL PRESENCE with animated counters ── */
-const offices = [
-  { city: "Ras Al Khaimah", tz: "GST+4", status: "Headquarters", markets: "Global" },
-  { city: "Dubai", tz: "GST+4", status: "Representative Office", markets: "Regional" },
-]
-
-function AnimatedNumber({ value, visible }: { value: string; visible: boolean }) {
-  const num = parseInt(value)
-  const [display, setDisplay] = useState(0)
-
-  useEffect(() => {
-    if (!visible) return
-    let frame: number
-    const start = Date.now()
-    const duration = 1500
-    const tick = () => {
-      const elapsed = Date.now() - start
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setDisplay(Math.round(eased * num))
-      if (progress < 1) frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
-  }, [visible, num])
-
-  return <>{display}{value.includes("+") ? "+" : ""}</>
-}
-
+/* ── 3. GLOBAL PRESENCE ── */
 function GlobalPresence() {
   const { ref, visible } = useReveal()
+
   return (
     <section
       id="presence"
       ref={ref}
-      className="relative py-28 md:py-40"
-      style={{
-        background: "hsl(210 20% 98%)",
-      }}
+      className="relative overflow-hidden"
+      style={{ background: "hsl(210 20% 98%)" }}
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <SectionHeader index="03" title="Global Network" visible={visible} />
+      <div className="relative z-20 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[680px]">
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.2, ease }}
-          className="text-center mb-12"
-        >
-          <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-light mb-4" style={{ color: "hsl(220 15% 20%)" }}>
-            100+ Partner Companies Worldwide
-          </h3>
-          <p className="text-lg md:text-xl" style={{ color: "hsl(220 10% 45%)" }}>
-            Building trusted relationships across every continent
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={visible ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.2, ease }}
-          className="relative mb-16 p-6 md:p-10 rounded-xl bg-white shadow-lg"
-        >
-          <WorldMap visible={visible} />
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {offices.map((o, i) => (
-            <motion.div
-              key={o.city}
-              initial={{ opacity: 0, y: 30 }}
-              animate={visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.2, ease }}
-              whileHover={{ y: -3, scale: 1.01 }}
-              className="group relative overflow-hidden rounded-2xl border border-border/20"
-              style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(248,250,252,0.98) 100%)",
-                boxShadow: "0 14px 32px -22px rgba(15,23,42,0.2)",
-              }}
+          {/* Left — stats */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            animate={visible ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, ease }}
+            className="flex flex-col justify-center px-6 md:px-16 py-24 lg:py-32"
+          >
+            <span
+              className="text-[10px] font-mono tracking-[0.3em] uppercase block mb-6"
+              style={{ color: "hsl(28 95% 62%)" }}
             >
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(circle at 12% 14%, rgba(130,201,216,0.16) 0%, transparent 42%), radial-gradient(circle at 88% 18%, rgba(255,170,90,0.14) 0%, transparent 38%), linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(248,250,252,0.92) 100%)",
-                }}
-              />
-              <div
-                className="absolute inset-0 pointer-events-none opacity-60"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle at 1px 1px, rgba(130,201,216,0.15) 1px, transparent 0)",
-                  backgroundSize: "14px 14px",
-                }}
-              />
-              <div
-                className="absolute inset-x-0 top-0 h-px pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent 0%, rgba(130,201,216,0.45) 30%, rgba(255,170,90,0.4) 70%, transparent 100%)",
-                }}
-              />
+              03 — Key Markets
+            </span>
+            <h2
+              className="font-serif font-light text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.01em] mb-5"
+              style={{ color: "hsl(220 15% 20%)" }}
+            >
+              Global Partner<br />Network
+            </h2>
+            <p className="text-sm leading-relaxed mb-10 max-w-sm" style={{ color: "hsl(220 10% 45%)" }}>
+              100+ insurance & reinsurance partners worldwide.
+            </p>
 
-              <div className="relative p-6 md:p-7">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <span className="inline-flex rounded-full border border-border/20 bg-white/75 px-3 py-1 text-[10px] font-mono tracking-[0.18em] uppercase text-muted-foreground">
-                    {o.status}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-[hsl(192_45%_55%)]" />
-                    <span className="h-2 w-2 rounded-full bg-[hsl(28_95%_62%)]" />
+            {/* Regional breakdown */}
+            <div className="space-y-0">
+              {[
+                { pct: 25, name: "North America",  desc: "Leading insurance markets",     color: "hsl(28 95% 62%)"  },
+                { pct: 22, name: "Europe",          desc: "Lloyd's & continental markets", color: "hsl(192 65% 45%)" },
+                { pct: 18, name: "Asia Pacific",    desc: "Growth markets access",         color: "hsl(192 65% 45%)" },
+                { pct: 15, name: "Latin America",   desc: "Emerging markets",              color: "hsl(28 95% 62%)"  },
+                { pct: 14, name: "Middle East",     desc: "Regional hub operations",       color: "hsl(28 95% 62%)"  },
+                { pct: 6,  name: "Africa",          desc: "Frontier markets",              color: "hsl(192 65% 45%)" },
+              ].map((r, i) => (
+                <motion.div
+                  key={r.name}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={visible ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.4, delay: 0.15 + i * 0.07, ease }}
+                  className="pt-3 pb-2"
+                >
+                  <div className="flex items-baseline gap-3 mb-2">
+                    <span
+                      className="text-2xl font-light tabular-nums leading-none flex-shrink-0"
+                      style={{ color: r.color, fontVariantNumeric: "tabular-nums", minWidth: "3.2rem" }}
+                    >
+                      {r.pct}%
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-medium" style={{ color: "hsl(220 15% 20%)" }}>
+                        {r.name}
+                      </span>
+                      <span className="text-[11px] ml-2" style={{ color: "hsl(220 10% 60%)" }}>
+                        {r.desc}
+                      </span>
+                    </div>
                   </div>
-                </div>
+                  <div className="w-full h-[3px] rounded-full" style={{ background: "hsl(210 15% 90%)" }}>
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ background: r.color }}
+                      initial={{ width: 0 }}
+                      animate={visible ? { width: `${r.pct}%` } : {}}
+                      transition={{ duration: 0.7, delay: 0.25 + i * 0.07, ease: [0.4, 0, 0.2, 1] }}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
-                <h4 className="font-serif text-xl md:text-2xl font-light tracking-tight mb-2 text-foreground">
-                  {o.city}
-                </h4>
-                <div className="w-14 h-px mb-4 bg-gradient-to-r from-[hsl(192_45%_55%/.65)] to-[hsl(28_95%_62%/.55)] group-hover:w-20 transition-all duration-500" />
-                <p className="text-xs md:text-sm text-muted-foreground">
-                  {o.markets} Market Access
-                </p>
-              </div>
-            </motion.div>
-          ))}
+          {/* Right — 3D Globe */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={visible ? { opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 0.1, ease }}
+            className="relative flex items-center justify-center py-16 lg:py-0 lg:translate-x-16"
+            style={{ marginRight: "-80px", marginTop: "50px" }}
+          >
+            <div
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-16 pointer-events-none"
+              style={{
+                background: "radial-gradient(ellipse, hsl(28 95% 62% / 0.08) 0%, transparent 70%)",
+                filter: "blur(20px)",
+              }}
+            />
+            {visible && <Globe3D visible={visible} />}
+            <p
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[9px] font-mono tracking-[0.25em] uppercase whitespace-nowrap"
+              style={{ color: "hsl(220 10% 65%)" }}
+            >
+              Drag · Zoom · Hover
+            </p>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -490,15 +428,8 @@ function Story() {
               </div>
 
               <div className="pb-2">
-                <div className="relative overflow-hidden rounded-2xl border border-border/20 bg-white/95 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.22)]">
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        "radial-gradient(circle at 14% 14%, rgba(130,201,216,0.12) 0%, transparent 42%), radial-gradient(circle at 88% 18%, rgba(255,170,90,0.12) 0%, transparent 38%), linear-gradient(180deg, rgba(255,255,255,0.86) 0%, rgba(248,250,252,0.94) 100%)",
-                    }}
-                  />
-                  <div className="relative p-5 md:p-6">
+                <div className="rounded-2xl border border-border/20 bg-white shadow-sm">
+                  <div className="p-5 md:p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="inline-flex items-center rounded-full border border-primary/25 bg-white/80 px-3 py-1 text-[10px] font-mono tracking-[0.18em] text-primary shadow-[0_8px_18px_-14px_rgba(15,23,42,0.35)]">
                         {item.year}
@@ -525,30 +456,11 @@ function Story() {
           initial={{ opacity: 0, y: 30 }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease }}
-          className="group relative mt-28 overflow-hidden rounded-2xl border border-border/20"
-          style={{
-            background: "linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(248,250,252,0.98) 100%)",
-            boxShadow: "0 18px 42px -22px rgba(15,23,42,0.22)",
-          }}
+          className="group relative mt-28 rounded-2xl border border-border/25 bg-white shadow-sm"
         >
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle at 14% 14%, rgba(130,201,216,0.16) 0%, transparent 42%), radial-gradient(circle at 88% 18%, rgba(255,170,90,0.14) 0%, transparent 38%), linear-gradient(180deg, rgba(255,255,255,0.84) 0%, rgba(248,250,252,0.94) 100%)",
-            }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none opacity-55"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, rgba(130,201,216,0.14) 1px, transparent 0)",
-              backgroundSize: "14px 14px",
-            }}
-          />
-          <div className="absolute inset-x-0 top-0 h-px pointer-events-none bg-gradient-to-r from-transparent via-primary/35 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-px pointer-events-none bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-          <div className="relative p-10 md:p-14">
+          <div className="p-10 md:p-14">
             <div className="mb-5 flex items-center justify-between gap-4">
               <span className="text-[10px] font-mono tracking-[0.3em] text-primary uppercase block">
                 Ras Al Khaimah
@@ -687,32 +599,13 @@ function Team() {
                 whileHover={{ y: -4, scale: 1.01 }}
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group relative overflow-hidden rounded-2xl border border-border/20"
+                className="group relative rounded-xl border bg-white transition-all duration-300"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(248,250,252,0.98) 100%)",
-                  boxShadow: isHovered
-                    ? "0 18px 42px -22px rgba(15,23,42,0.28)"
-                    : "0 12px 28px -20px rgba(15,23,42,0.18)",
+                  borderColor: isHovered ? "hsl(220 15% 80%)" : "hsl(220 15% 90%)",
+                  boxShadow: isHovered ? "0 8px 24px -12px rgba(15,23,42,0.14)" : "none",
                 }}
               >
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 14% 14%, rgba(130,201,216,0.16) 0%, transparent 42%), radial-gradient(circle at 88% 18%, rgba(255,170,90,0.14) 0%, transparent 38%), linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(248,250,252,0.94) 100%)",
-                  }}
-                />
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-55"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(circle at 1px 1px, rgba(130,201,216,0.14) 1px, transparent 0)",
-                    backgroundSize: "14px 14px",
-                  }}
-                />
-                <div className="absolute inset-x-0 top-0 h-px pointer-events-none bg-gradient-to-r from-transparent via-primary/35 to-transparent" />
-
-                <div className="relative p-8">
+                <div className="p-8">
                   <div className="mb-5 flex items-start justify-between gap-4">
                     <div>
                       <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-2 transition-colors duration-500 group-hover:text-primary">
