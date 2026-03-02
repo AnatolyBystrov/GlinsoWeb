@@ -1,7 +1,8 @@
 "use client"
 
-import { useRef, useEffect, useState, useCallback } from "react"
+import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import dynamic from "next/dynamic"
+import * as THREE from "three"
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false })
 
@@ -197,8 +198,6 @@ export default function Globe3D({ visible }: Globe3DProps) {
         atmosphereAltitude={0.18}
 
         globeMaterial={(() => {
-          if (typeof window === "undefined") return undefined
-          const THREE = require("three")
           return new THREE.ShaderMaterial({
             vertexShader: `
               varying vec3 vNormal;
