@@ -32,6 +32,15 @@ const nextConfig = {
     optimizePackageImports: ['framer-motion', 'react-svg-worldmap'],
   },
 
+  // Deduplicate Three.js — prevents "Multiple instances" warning from react-globe.gl
+  webpack(config) {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      three: new URL('./node_modules/three', import.meta.url).pathname,
+    }
+    return config
+  },
+
   // Turbopack config (required to avoid webpack-vs-turbopack warning in Next 16)
   turbopack: {},
 }

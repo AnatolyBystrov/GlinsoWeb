@@ -1,7 +1,8 @@
 "use client"
 
-import { useRef, useEffect, useState, useCallback } from "react"
+import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import dynamic from "next/dynamic"
+import * as THREE from "three"
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false })
 
@@ -70,6 +71,12 @@ export default function Globe3D({ visible }: Globe3DProps) {
   const [countries, setCountries] = useState<any[]>([])
   const [mounted, setMounted] = useState(false)
   const [size, setSize] = useState(700)
+
+  const globeMaterial = useMemo(() => new THREE.MeshPhongMaterial({
+    color: new THREE.Color(0xf0f4f8),
+    shininess: 6,
+    specular: new THREE.Color(0xc8d8ea),
+  }), [])
 
   /* Load GeoJSON */
   useEffect(() => {
@@ -156,29 +163,7 @@ export default function Globe3D({ visible }: Globe3DProps) {
         atmosphereColor="rgba(180,200,230,0.5)"
         atmosphereAltitude={0.18}
 
-        globeMaterial={(() => {
-          if (typeof window === "undefined") return undefined
-          const THREE = require("three")
-          return new THREE.ShaderMaterial({
-            vertexShader: `
-              varying vec3 vNormal;
-              void main() {
-                vNormal = normalize(normalMatrix * normal);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-              }
-            `,
-            fragmentShader: `
-              varying vec3 vNormal;
-              void main() {
-                float facing = max(0.0, dot(vNormal, vec3(0.0, 0.0, 1.0)));
-                float intensity = pow(facing, 1.8);
-                vec3 bright = vec3(1.0, 1.0, 1.0);
-                vec3 edge  = vec3(0.78, 0.84, 0.90);
-                gl_FragColor = vec4(mix(edge, bright, intensity), 1.0);
-              }
-            `,
-          })
-        })()}
+        globeMaterial={globeMaterial}
 
         hexPolygonsData={countries}
         hexPolygonGeoJsonGeometry={(d: any) => d.geometry}
