@@ -68,6 +68,55 @@ https://YOUR_USERNAME.github.io/YOUR_REPO/
 
 Тогда сайт: `https://glinsouae.github.io/GlinsoWeb/`
 
+## 🌐 DNS Configuration for Custom Domain (glinso.ae)
+
+To connect `glinso.ae` to GitHub Pages you need to add DNS records at your domain registrar (e.g. GoDaddy, Namecheap, etc.).
+
+### Step 1: Add A Records (root domain `@`)
+
+GitHub Pages requires **four A records** for the apex domain:
+
+| Type | Name | Value            | TTL  |
+|------|------|-----------------|------|
+| A    | @    | 185.199.108.153 | 3600 |
+| A    | @    | 185.199.109.153 | 3600 |
+| A    | @    | 185.199.110.153 | 3600 |
+| A    | @    | 185.199.111.153 | 3600 |
+
+### Step 2: Add CNAME Record (www subdomain)
+
+| Type  | Name | Value                      | TTL  |
+|-------|------|---------------------------|------|
+| CNAME | www  | anatolybystrov.github.io  | 3600 |
+
+### Step 3: Verify the CNAME file in the repository
+
+The `CNAME` file in the root of this repository must contain exactly:
+
+```
+glinso.ae
+```
+
+This file is already configured ✅ — it tells GitHub Pages to serve the site on `glinso.ae`.
+
+### Step 4: Enable custom domain in GitHub Pages settings
+
+1. Go to your repository on GitHub
+2. **Settings** → **Pages**
+3. Under **Custom domain**, enter `glinso.ae`
+4. Click **Save**
+5. Check **Enforce HTTPS** once the SSL certificate is provisioned (usually 5–30 minutes)
+
+### Step 5: Check DNS propagation
+
+After saving DNS records, propagation can take **5–30 minutes** (up to 48 hours in rare cases).
+
+Check propagation status at: [whatsmydns.net](https://www.whatsmydns.net/#A/glinso.ae)
+
+Once propagated, your site will be available at `https://glinso.ae` 🎉
+
+---
+
 ## 🔧 Важные настройки
 
 ### Base Path
