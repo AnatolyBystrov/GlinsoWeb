@@ -34,10 +34,11 @@
   body {
     @apply bg-background text-foreground;
   }
-  ::selection {
-    background: hsl(38 65% 52% / 0.2);
-    color: hsl(40 10% 95%);
-  }
+::selection {
+  background: rgba(248, 152, 72, 0.25);
+  color: hsl(0 0% 95%);
+}
+
 }
 
 html {
@@ -48,14 +49,14 @@ html {
   width: 3px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(220 12% 10%);
+  background: #171717;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(38 30% 22%);
+  background: rgba(248,152,72,0.3);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(38 50% 32%);
+  background: rgba(248,152,72,0.5);
 }
 
 @keyframes cinematic-rise {

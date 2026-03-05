@@ -64,7 +64,8 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ scaleY: 0 }}
             animate={phase >= 1 ? { scaleY: 1 } : {}}
             transition={{ duration: 1.5, delay: 0.3, ease }}
-            className="w-px h-12 md:h-16 bg-gradient-to-b from-transparent via-primary/60 to-transparent mx-auto mb-8 origin-top"
+            className="w-px h-12 md:h-16 mx-auto mb-8 origin-top"
+            style={{ background: "linear-gradient(to bottom, transparent, rgba(248,152,72,0.55), transparent)" }}
           />
 
           {/* Hero title */}
@@ -85,9 +86,11 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ opacity: 0, letterSpacing: "0.4em" }}
             animate={phase >= 2 ? { opacity: 1, letterSpacing: "0.2em" } : {}}
             transition={{ duration: 1.8, ease }}
-            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase text-primary/90 mb-10 md:mb-14"
+            className="text-[10px] sm:text-xs md:text-sm font-mono uppercase mb-10 md:mb-14"
             style={{
+              color: "rgba(248,152,72,0.9)",
               textShadow: "0 2px 20px rgba(0,0,0,0.9), 0 4px 40px rgba(0,0,0,0.6)",
+              letterSpacing: phase >= 2 ? "0.2em" : "0.4em",
             }}
           >
             Engineering Global Certainty
@@ -98,7 +101,8 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
             initial={{ scaleX: 0 }}
             animate={phase >= 2 ? { scaleX: 1 } : {}}
             transition={{ duration: 1.5, ease }}
-            className="w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mb-10 md:mb-14"
+            className="w-20 md:w-28 h-px mx-auto mb-10 md:mb-14"
+            style={{ background: "linear-gradient(to right, transparent, rgba(144,208,216,0.45), transparent)" }}
           />
 
           {/* Description */}
@@ -125,9 +129,21 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           >
             <a
               href="#who-we-are"
-              className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase text-primary/70 hover:text-primary transition-colors duration-500 border-b border-primary/30 hover:border-primary/60 pb-1"
+              className="inline-block text-[10px] md:text-xs font-mono tracking-[0.25em] uppercase pb-1 transition-colors duration-500"
               style={{
+                color: "rgba(248,152,72,0.7)",
+                borderBottom: "1px solid rgba(248,152,72,0.3)",
                 textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.target as HTMLElement
+                el.style.color = "#F89848"
+                el.style.borderBottomColor = "rgba(248,152,72,0.6)"
+              }}
+              onMouseLeave={(e) => {
+                const el = e.target as HTMLElement
+                el.style.color = "rgba(248,152,72,0.7)"
+                el.style.borderBottomColor = "rgba(248,152,72,0.3)"
               }}
             >
               Discover
