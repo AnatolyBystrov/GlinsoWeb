@@ -3,8 +3,22 @@
 import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import dynamic from "next/dynamic"
 import * as THREE from "three"
+import GlobeSvg from "./globe-svg"
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false })
+
+function checkWebGL(): boolean {
+  if (typeof window === "undefined") return false
+  try {
+    const canvas = document.createElement("canvas")
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    )
+  } catch {
+    return false
+  }
+}
 
 /* ── Partner country ISO codes ── */
 const PARTNER_COUNTRIES = new Set([
@@ -71,6 +85,7 @@ export default function Globe3D({ visible }: Globe3DProps) {
   const [countries, setCountries] = useState<any[]>([])
   const [mounted, setMounted] = useState(false)
   const [size, setSize] = useState(700)
+  const [webglSupported, setWebglSupported] = useState<boolean | null>(null)
 
   const globeMaterial = useMemo(() => new THREE.MeshPhongMaterial({
     color: new THREE.Color(0xf0f4f8),
@@ -88,6 +103,7 @@ export default function Globe3D({ visible }: Globe3DProps) {
 
   useEffect(() => {
     setMounted(true)
+    setWebglSupported(checkWebGL())
     const updateSize = () => {
       const w = window.innerWidth
       setSize(w < 768 ? Math.min(w - 32, 500) : Math.min(w * 0.48, 760))
@@ -147,6 +163,10 @@ export default function Globe3D({ visible }: Globe3DProps) {
   }, [])
 
   if (!mounted) return null
+
+  if (webglSupported === false) {
+    return <GlobeSvg visible={visible} size={size} />
+  }
 
   return (
     <div style={{

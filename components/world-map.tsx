@@ -7,6 +7,7 @@ import countriesSource from "react-svg-worldmap/dist/countries.geo.js"
 
 interface WorldMapComponentProps {
   visible: boolean
+  compact?: boolean
 }
 
 type RawCountry = {
@@ -446,12 +447,29 @@ function NetworkSvg({ visible }: { visible: boolean }) {
   )
 }
 
-export default function WorldMapComponent({ visible }: WorldMapComponentProps) {
+export default function WorldMapComponent({ visible, compact }: WorldMapComponentProps) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  if (compact) {
+    return (
+      <div className="w-full h-full relative overflow-hidden rounded-2xl border border-border/30 bg-white/95 shadow-[0_18px_50px_-20px_rgba(15,23,42,0.28)]">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at 18% 12%, rgba(130,201,216,0.15) 0%, transparent 44%), radial-gradient(circle at 86% 18%, rgba(255,170,90,0.16) 0%, transparent 40%), linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(248,250,252,1) 100%)",
+          }}
+        />
+        <div className="relative h-full w-full overflow-hidden rounded-xl border border-border/10 bg-white/55 shadow-inner">
+          {mounted && <NetworkSvg visible={visible} />}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="w-full">
