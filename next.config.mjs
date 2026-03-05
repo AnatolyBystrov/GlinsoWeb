@@ -13,8 +13,11 @@ const nextConfig = {
   // Static export for GitHub Pages; Vercel supports SSR natively
   ...(isGithubActions && { output: 'export' }),
   trailingSlash: true,
+
+  // Vercel supports built-in image optimisation; only disable it for the
+  // GitHub Pages static export which has no server to run the optimizer.
   images: {
-    unoptimized: true,
+    unoptimized: !!isGithubActions,
   },
 
   // Only set basePath and assetPrefix for GitHub Pages
