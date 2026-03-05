@@ -103,27 +103,32 @@ See `DEPLOYMENT.md` for detailed setup instructions.
 
 ## 🚢 Deployment
 
-### Vercel (Recommended)
+> **Production platform: [Vercel](https://vercel.com)**
+> Vercel is connected to this repository and automatically deploys every push to `main`.
+> CI (build + type-check + lint) runs via GitHub Actions on every push and pull request.
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+### Connect to Vercel (first time only)
 
-# Deploy
-vercel --prod
-```
+1. Go to [vercel.com/new](https://vercel.com/new) and import this repository
+2. Framework will be auto-detected as **Next.js**
+3. Add the environment variables below and click **Deploy**
 
 ### Environment Variables on Vercel
-1. Go to Project Settings → Environment Variables
-2. Add all variables from `.env.local`
-3. Redeploy
 
-### Custom Domain Setup
-1. Add domain in Vercel dashboard
-2. Update DNS records:
-   - A record: `76.76.21.21`
-   - CNAME record: `cname.vercel-dns.com`
-3. Wait for SSL certificate (automatic)
+| Variable | Description |
+|---|---|
+| `RESEND_API_KEY` | Resend API key (from resend.com) |
+| `CONTACT_TO` | Recipient email address (e.g. `team@glinso.ae`) |
+
+Go to **Project Settings → Environment Variables** to set these.
+
+### Custom Domain Setup (glinso.ae)
+
+1. Add `glinso.ae` and `www.glinso.ae` in the Vercel dashboard under **Project Settings → Domains**
+2. Update DNS records at your domain registrar:
+   - **A record** `@` → `76.76.21.21`
+   - **CNAME** `www` → `cname.vercel-dns.com`
+3. SSL certificate is provisioned automatically by Vercel
 
 ## 🎵 Adding Ambient Music
 
