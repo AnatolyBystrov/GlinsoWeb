@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { Mail, Phone } from "lucide-react"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -36,9 +37,18 @@ export default function SiteFooter() {
           <p className="text-sm md:text-base text-foreground/90 max-w-2xl leading-relaxed mb-5">
             Independent insurance and reinsurance brokerage. Headquartered in Ras Al Khaimah, United Arab Emirates.
           </p>
-          <div className="text-sm md:text-base text-foreground/85">
-            <a href="mailto:team@glinso.ae" className="hover:text-primary transition-colors underline-offset-4 hover:underline">
+          <div className="flex flex-col gap-2">
+            <a href="mailto:team@glinso.ae" className="inline-flex items-center gap-2.5 text-sm md:text-base text-foreground/85 hover:text-primary transition-colors group">
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <Mail className="w-3.5 h-3.5 text-primary" />
+              </span>
               team@glinso.ae
+            </a>
+            <a href="tel:+971567078585" className="inline-flex items-center gap-2.5 text-sm md:text-base text-foreground/85 hover:text-primary transition-colors group">
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <Phone className="w-3.5 h-3.5 text-primary" />
+              </span>
+              +971 56 707 85 85
             </a>
           </div>
         </motion.div>

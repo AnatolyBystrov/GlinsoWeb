@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { useRef, useState, useEffect, useCallback } from "react"
 import dynamic from "next/dynamic"
+import { Mail, Phone } from "lucide-react"
 
 const Globe3D = dynamic(() => import("./globe-3d"), { ssr: false })
 
@@ -331,12 +332,6 @@ function GlobalPresence() {
               }}
             />
             {visible && <Globe3D visible={visible} />}
-            <p
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[9px] font-mono tracking-[0.25em] uppercase whitespace-nowrap"
-              style={{ color: "hsl(220 45% 52%)" }}
-            >
-              Drag · Zoom · Hover
-            </p>
           </motion.div>
         </div>
       </div>
@@ -729,9 +724,20 @@ function Contact() {
 
               <div>
                 <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3">Contact</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  team@glinso.ae
-                </p>
+                <div className="flex flex-col gap-2">
+                  <a href="mailto:team@glinso.ae" className="inline-flex items-center gap-2.5 text-sm text-muted-foreground hover:text-primary transition-colors group">
+                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors shrink-0">
+                      <Mail className="w-3.5 h-3.5 text-primary" />
+                    </span>
+                    team@glinso.ae
+                  </a>
+                  <a href="tel:+971567078585" className="inline-flex items-center gap-2.5 text-sm text-muted-foreground hover:text-primary transition-colors group">
+                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors shrink-0">
+                      <Phone className="w-3.5 h-3.5 text-primary" />
+                    </span>
+                    +971 56 707 85 85
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -754,7 +760,7 @@ function Contact() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-white border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -769,7 +775,7 @@ function Contact() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-white border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                     placeholder="john@company.com"
                   />
                 </div>
@@ -785,7 +791,7 @@ function Contact() {
                     id="company"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-white border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                     placeholder="Your Company"
                   />
                 </div>
@@ -799,8 +805,8 @@ function Contact() {
                     id="phone"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-white border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
-                    placeholder="+44 20 ..."
+                    className="w-full bg-white border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    placeholder="+971 56 707 85 85"
                   />
                 </div>
               </div>
@@ -813,7 +819,7 @@ function Contact() {
                   id="service"
                   value={formData.service}
                   onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                  className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                  className="w-full bg-card border border-border px-4 py-3 text-sm text-foreground focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                 >
                   <option value="">Select a service</option>
                   <option value="treaty">Treaty Reinsurance</option>
@@ -834,7 +840,7 @@ function Contact() {
                   rows={6}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full bg-card border border-border/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+                  className="w-full bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all resize-none"
                   placeholder="Tell us about your requirements..."
                 />
               </div>
