@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     // ── Email to GLINSO team ──────────────────────────────────────────
     const { data: teamData, error: teamError } = await resend.emails.send({
-      from: "GLINSO Website <onboarding@resend.dev>",
+      from: "GLINSO Website <noreply@glinso.ae>",
       to: process.env.CONTACT_TO ?? "team@glinso.ae",
       replyTo: email,
       subject: `New enquiry from ${name}${company ? ` · ${company}` : ""}`,
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     // ── Auto-reply to sender ──────────────────────────────────────────
     const { error: replyError } = await resend.emails.send({
-      from: "GLINSO Brokers <onboarding@resend.dev>",
+      from: "GLINSO Brokers <noreply@glinso.ae>",
       to: email,
       subject: "We received your message — GLINSO Brokers",
       html: `
