@@ -70,6 +70,20 @@ const CX = SIZE / 2
 const CY = SIZE / 2
 const R = SIZE * 0.42
 
+/* ── Back-face visibility: returns 0 when behind globe, 1 when fully front ── */
+function getPointVisibility(lon: number, lat: number, rot: [number, number]): number {
+  const toRad = Math.PI / 180
+  const viewLon = -rot[0] * toRad
+  const viewLat = -rot[1] * toRad
+  const pLon = lon * toRad
+  const pLat = lat * toRad
+  const dot =
+    Math.cos(viewLat) * Math.cos(pLat) * Math.cos(pLon - viewLon) +
+    Math.sin(viewLat) * Math.sin(pLat)
+  // smooth fade near the limb (dot 0..0.15 → opacity 0..1)
+  return Math.max(0, Math.min(1, dot / 0.15))
+}
+
 /* ── Great-circle arc via native d3 geoPath (proper horizon clipping) ── */
 function ArcPath({ from, to, color, pathBuilder, index }: {
   from: [number, number]
@@ -253,11 +267,13 @@ export default function GlobeSvg({ visible, size = SIZE }: GlobeSvgProps) {
 
             {/* City dots */}
             {mounted && CITIES.map((city) => {
+              const vis = getPointVisibility(city.lon, city.lat, rot)
+              if (vis <= 0) return null
               const pt = projection([city.lon, city.lat])
               if (!pt) return null
               const r = city.hub ? 5 : 3.2
               return (
-                <g key={city.id} filter="url(#g-cityglow)">
+                <g key={city.id} filter="url(#g-cityglow)" opacity={vis}>
                   <circle cx={pt[0]} cy={pt[1]} r={r + 6}
                     fill={city.color} fillOpacity={0.14} />
                   <circle cx={pt[0]} cy={pt[1]} r={r}
@@ -273,6 +289,8 @@ export default function GlobeSvg({ visible, size = SIZE }: GlobeSvgProps) {
 
             {/* City labels */}
             {mounted && CITIES.map((city) => {
+              const vis = getPointVisibility(city.lon, city.lat, rot)
+              if (vis <= 0) return null
               const pt = projection([city.lon, city.lat])
               if (!pt) return null
               const dx = pt[0] - CX, dy = pt[1] - CY
@@ -288,6 +306,7 @@ export default function GlobeSvg({ visible, size = SIZE }: GlobeSvgProps) {
                   stroke="rgba(255,255,255,0.92)"
                   strokeWidth={city.hub ? 3.5 : 2.8}
                   paintOrder="stroke"
+                  opacity={vis}
                 >
                   {city.label}
                 </text>
