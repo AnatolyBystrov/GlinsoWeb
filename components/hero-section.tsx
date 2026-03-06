@@ -56,7 +56,7 @@ export default function HeroSection({ scrollProgress = 0 }: HeroSectionProps) {
           style={{
             opacity: heroFade,
             transform: `translateY(${heroY}px)`,
-            transition: "transform 0.1s linear",
+            willChange: "transform, opacity",
             marginBottom: "max(-5vh, -60px)",
           }}
         >

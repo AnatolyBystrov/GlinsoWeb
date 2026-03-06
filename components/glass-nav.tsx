@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 
-const linkClass = "text-[10px] font-mono tracking-[0.2em] uppercase text-primary hover:text-primary/70 transition-colors duration-300 cursor-pointer"
+const linkClass = "text-[11px] font-semibold tracking-[0.18em] uppercase text-primary hover:text-primary/70 transition-colors duration-300 cursor-pointer"
 
 export default function GlassNav() {
   const [isOpen, setIsOpen] = useState(false)
