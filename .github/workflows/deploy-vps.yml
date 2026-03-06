@@ -17,7 +17,9 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd ~/GlinsoWeb
-            git pull origin main
+            git remote set-url origin https://github.com/AnatolyBystrov/GlinsoWeb.git
+            git fetch origin
+            git reset --hard origin/main
             source ~/.nvm/nvm.sh
             npm ci
             npm run build
