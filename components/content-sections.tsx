@@ -2,10 +2,8 @@
 
 import { motion } from "framer-motion"
 import { useRef, useState, useEffect, useCallback } from "react"
-import dynamic from "next/dynamic"
 import { Mail, Phone } from "lucide-react"
-
-const Globe3D = dynamic(() => import("./globe-3d"), { ssr: false })
+import GlobeSvg from "./globe-svg"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -331,7 +329,7 @@ function GlobalPresence() {
                 filter: "blur(20px)",
               }}
             />
-            {visible && <Globe3D visible={visible} />}
+            {visible && <GlobeSvg visible={visible} />}
           </motion.div>
         </div>
       </div>
