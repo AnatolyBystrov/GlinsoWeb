@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          CONTACT_TO: ${{ secrets.CONTACT_TO }}
         with:
           host: 83.228.221.136
           username: ubuntu
