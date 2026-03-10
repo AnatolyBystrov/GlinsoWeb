@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Inter, Geist_Mono } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 import PageTransition from '@/components/page-transition'
 
@@ -40,6 +41,15 @@ export default function RootLayout({
     <html lang="en" className={`${cormorant.variable} ${inter.variable} ${geistMono.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
         <PageTransition>{children}</PageTransition>
+        {process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL && (
+          <Script
+            async
+            defer
+            src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   )

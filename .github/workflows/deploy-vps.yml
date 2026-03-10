@@ -14,17 +14,19 @@ jobs:
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           CONTACT_TO: ${{ secrets.CONTACT_TO }}
+          NEXT_PUBLIC_UMAMI_SCRIPT_URL: ${{ secrets.NEXT_PUBLIC_UMAMI_SCRIPT_URL }}
+          NEXT_PUBLIC_UMAMI_WEBSITE_ID: ${{ secrets.NEXT_PUBLIC_UMAMI_WEBSITE_ID }}
         with:
           host: 83.228.221.136
           username: ubuntu
           key: ${{ secrets.VPS_SSH_KEY }}
-          envs: RESEND_API_KEY,CONTACT_TO
+          envs: RESEND_API_KEY,CONTACT_TO,NEXT_PUBLIC_UMAMI_SCRIPT_URL,NEXT_PUBLIC_UMAMI_WEBSITE_ID
           script: |
             cd ~/GlinsoWeb
             git remote set-url origin https://github.com/AnatolyBystrov/GlinsoWeb.git
             git fetch origin
             git reset --hard origin/main
-            printf 'RESEND_API_KEY=%s\nCONTACT_TO=%s\n' "$RESEND_API_KEY" "$CONTACT_TO" > .env.local
+            printf 'RESEND_API_KEY=%s\nCONTACT_TO=%s\nNEXT_PUBLIC_UMAMI_SCRIPT_URL=%s\nNEXT_PUBLIC_UMAMI_WEBSITE_ID=%s\n' "$RESEND_API_KEY" "$CONTACT_TO" "$NEXT_PUBLIC_UMAMI_SCRIPT_URL" "$NEXT_PUBLIC_UMAMI_WEBSITE_ID" > .env.local
             source ~/.nvm/nvm.sh
             npm ci
             npm run build
