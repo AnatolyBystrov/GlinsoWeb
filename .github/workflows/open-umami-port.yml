@@ -1,0 +1,22 @@
+name: Open Umami port on VPS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  open-port:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open port 3001 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 83.228.221.136
+          username: ubuntu
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            sudo ufw allow 3001/tcp
+            sudo ufw --force enable
+            sudo ufw reload
+            sudo ufw status
+            echo "✅ Port 3001 is now open"
+            echo "🌐 Umami: http://83.228.221.136:3001"
