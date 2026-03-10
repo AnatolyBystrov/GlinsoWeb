@@ -100,37 +100,33 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
     }
   }, [draw])
 
+  // Switch video source when mobile viewport detection settles — no remount (no key change)
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
-
-    // Detect mobile device
-    const isMobile = window.innerWidth < 768
-
-    // Adjust playback rate (simpler on mobile to avoid issues)
-    video.playbackRate = isMobile ? 0.8 : Math.max(0.25, 0.8 - scrollProgress * 0.4)
-
-    // Only apply aggressive play enforcement on mobile
-    if (isMobile) {
-      const ensurePlay = () => {
-        if (video.paused) {
-          video.play().catch(() => {})
-        }
-      }
-
-      // Check periodically and on scroll (mobile only)
-      const playInterval = setInterval(ensurePlay, 1000)
-      window.addEventListener('scroll', ensurePlay, { passive: true })
-
-      return () => {
-        clearInterval(playInterval)
-        window.removeEventListener('scroll', ensurePlay)
-      }
+    const newSrc = `${basePath}/video/${isMobileViewport ? "TestVideo.mp4" : "Glinso-finalVideo.mp4"}`
+    // Only reload if src actually changed
+    if (!video.currentSrc.endsWith(isMobileViewport ? "TestVideo.mp4" : "Glinso-finalVideo.mp4")) {
+      video.src = newSrc
+      video.load()
+      video.play().catch(() => {})
     }
-  }, [scrollProgress])
+  }, [isMobileViewport, basePath])
+
+  // On mount: force play (handles iOS where autoPlay alone is unreliable)
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    video.play().catch(() => {})
+    // Periodically re-check in case iOS paused it (background tab, low power mode, etc.)
+    const id = setInterval(() => {
+      if (video.paused && !video.ended) video.play().catch(() => {})
+    }, 2000)
+    return () => clearInterval(id)
+  }, [])
 
   const videoOpacity = Math.max(0.3, 0.6 - scrollProgress * 0.4)
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
   const videoSrc = `${basePath}/video/${isMobileViewport ? "TestVideo.mp4" : "Glinso-finalVideo.mp4"}`
 
   return (
@@ -147,7 +143,6 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
         }}
       >
         <video
-          key={isMobileViewport ? "mobile-video" : "desktop-video"}
           ref={videoRef}
           autoPlay
           loop
@@ -168,28 +163,7 @@ export default function VideoBackground({ scrollProgress, mouseX, mouseY }: Vide
             transition: "filter 0.2s ease-out",
           }}
           onLoadedData={(e) => {
-            // Ensure video starts playing on load
-            const video = e.currentTarget
-            video.play().catch(() => {})
-          }}
-          onEnded={(e) => {
-            // Manually restart video when it ends - only on mobile (desktop handles loop naturally)
-            const isMobile = window.innerWidth < 768
-            if (isMobile) {
-              const video = e.currentTarget
-              video.currentTime = 0
-              video.play().catch(() => {})
-            }
-          }}
-          onPause={(e) => {
-            // Auto-resume if paused unexpectedly - only on mobile Safari
-            const isMobile = window.innerWidth < 768
-            if (isMobile) {
-              const video = e.currentTarget
-              if (!video.ended) {
-                video.play().catch(() => {})
-              }
-            }
+            e.currentTarget.play().catch(() => {})
           }}
         >
           <source src={videoSrc} type="video/mp4" />

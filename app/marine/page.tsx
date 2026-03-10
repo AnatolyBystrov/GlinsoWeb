@@ -18,11 +18,29 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
   const animFrame = useRef<number>(0)
   const activeRef = useRef<1 | 2>(1)
   const fadingRef = useRef(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
   const FADE_DURATION = 1800  // ms
 
-  // Direct DOM crossfade — no React state, no re-render hang
+  // Detect mobile once on mount
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
+
+  // On mount: force-play the primary video (handles iOS autoplay restrictions)
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.play().catch(() => {})
+    // Periodically recover from unexpected pauses (iOS Low Power Mode etc.)
+    const id = setInterval(() => {
+      if (v.paused && !v.ended) v.play().catch(() => {})
+    }, 2000)
+    return () => clearInterval(id)
+  }, [])
+
+  // Direct DOM crossfade — desktop only, no React state, no re-render hang
   const startCrossfade = useCallback(() => {
     if (fadingRef.current) return
     fadingRef.current = true
@@ -37,11 +55,9 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
     const wOut    = activeRef.current === 1 ? w1 : w2
     const wIn     = activeRef.current === 1 ? w2 : w1
 
-    // Prepare incoming video
     incoming.currentTime = 0
     incoming.play().catch(() => {})
 
-    // Fade out → fade in via direct style
     wOut.style.transition = `opacity ${FADE_DURATION}ms ease-in-out`
     wIn.style.transition  = `opacity ${FADE_DURATION}ms ease-in-out`
     wOut.style.opacity = "0"
@@ -53,8 +69,9 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
     }, FADE_DURATION + 200)
   }, [])
 
-  // Trigger crossfade when active video finishes — plays to the very end
+  // Trigger crossfade when active video finishes (desktop only)
   useEffect(() => {
+    if (isMobile) return
     const v1 = videoRef.current
     const v2 = video2Ref.current
     if (!v1 || !v2) return
@@ -68,14 +85,7 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
       v1.removeEventListener("ended", onEnd1)
       v2.removeEventListener("ended", onEnd2)
     }
-  }, [startCrossfade])
-
-  // Sync playback rate
-  useEffect(() => {
-    const rate = Math.max(0.2, 0.4 - scrollProgress * 0.15)
-    if (videoRef.current) videoRef.current.playbackRate = rate
-    if (video2Ref.current) video2Ref.current.playbackRate = rate
-  }, [scrollProgress])
+  }, [startCrossfade, isMobile])
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current
@@ -129,6 +139,12 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
   // Sync video opacity with scroll — direct DOM, no re-render
   useEffect(() => {
     const videoOpacity = Math.max(0.35, 0.65 - scrollProgress * 0.4)
+    if (isMobile) {
+      // Single video path on mobile
+      const v = videoRef.current
+      if (v && !fadingRef.current) v.style.opacity = String(videoOpacity)
+      return
+    }
     const w1 = wrap1Ref.current
     const w2 = wrap2Ref.current
     if (!w1 || !w2 || fadingRef.current) return
@@ -137,24 +153,45 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
     } else {
       w2.style.opacity = String(videoOpacity)
     }
-  }, [scrollProgress])
+  }, [scrollProgress, isMobile])
+
+  const videoStyle: React.CSSProperties = {
+    position: "absolute", top: "50%", left: "50%",
+    transform: "translate(-50%,-50%)",
+    minWidth: "100%", minHeight: "100%", objectFit: "cover",
+  }
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ backgroundColor: "hsl(210 25% 96%)" }}>
-      {/* Video 1 */}
-      <div ref={wrap1Ref} className="absolute inset-0" style={{ opacity: "0.65", transition: "opacity 2s ease-in-out" }}>
-        <video ref={videoRef} autoPlay muted playsInline preload="auto"
-          style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", minWidth: "100%", minHeight: "100%", objectFit: "cover" }}>
+      {isMobile ? (
+        /* ── Mobile: single looping video, no crossfade, plays at normal speed ── */
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          style={{ ...videoStyle, position: "absolute", opacity: 0.65 }}
+          onLoadedData={(e) => { e.currentTarget.play().catch(() => {}) }}
+        >
           <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
         </video>
-      </div>
-      {/* Video 2 (crossfade clone) */}
-      <div ref={wrap2Ref} className="absolute inset-0" style={{ opacity: "0", transition: "opacity 2s ease-in-out" }}>
-        <video ref={video2Ref} muted playsInline preload="auto"
-          style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", minWidth: "100%", minHeight: "100%", objectFit: "cover" }}>
-          <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
-        </video>
-      </div>
+      ) : (
+        /* ── Desktop: crossfade between two clones ── */
+        <>
+          <div ref={wrap1Ref} className="absolute inset-0" style={{ opacity: "0.65", transition: "opacity 2s ease-in-out" }}>
+            <video ref={videoRef} autoPlay muted playsInline preload="auto" style={videoStyle}>
+              <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
+            </video>
+          </div>
+          <div ref={wrap2Ref} className="absolute inset-0" style={{ opacity: "0", transition: "opacity 2s ease-in-out" }}>
+            <video ref={video2Ref} muted playsInline preload="auto" style={videoStyle}>
+              <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
+            </video>
+          </div>
+        </>
+      )}
       {/* Ocean tint overlay */}
       <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,60,100,0.18) 0%, rgba(0,100,160,0.10) 50%, rgba(0,40,80,0.25) 100%)" }} />
       {/* Canvas particles */}
