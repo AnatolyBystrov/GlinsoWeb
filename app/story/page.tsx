@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import SubPageHeader from "@/components/sub-page-header"
+import GlassNav from "@/components/glass-nav"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -33,11 +33,7 @@ export default function StoryPage() {
   return (
     <main className="relative min-h-screen bg-background">
       {/* Header */}
-      <SubPageHeader links={[
-        { href: "/#who-we-are", label: "About" },
-        { href: "/team", label: "Team" },
-        { href: "/contact", label: "Contact" },
-      ]} />
+      <GlassNav />
 
       <div className="pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto">

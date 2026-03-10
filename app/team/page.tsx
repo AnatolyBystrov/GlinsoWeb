@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useState } from "react"
-import SubPageHeader from "@/components/sub-page-header"
+import GlassNav from "@/components/glass-nav"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -29,11 +29,7 @@ export default function TeamPage() {
   return (
     <main className="relative min-h-screen bg-background">
       {/* Header */}
-      <SubPageHeader links={[
-        { href: "/#who-we-are", label: "About" },
-        { href: "/contact", label: "Contact" },
-        { href: "/story", label: "Story" },
-      ]} />
+      <GlassNav />
 
       <div className="pt-32 pb-20 px-6">
         <div className="max-w-6xl mx-auto">

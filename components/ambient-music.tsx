@@ -3,11 +3,22 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function AmbientMusic() {
+interface AmbientMusicProps {
+  src?: string
+  accentColor?: string
+  label?: string
+}
+
+export default function AmbientMusic({
+  src,
+  accentColor = "hsl(28 95% 62%)",
+  label = "ambient music",
+}: AmbientMusicProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [audio] = useState(() => {
     if (typeof window !== "undefined") {
-      const a = new Audio(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/audio/ambient.mp3`)
+      const path = src ?? `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/audio/ambient.mp3`
+      const a = new Audio(path)
       a.loop = true
       a.volume = 0.3
       return a
@@ -57,8 +68,8 @@ export default function AmbientMusic() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <rect x="6" y="4" width="4" height="16" rx="1" fill="hsl(28 95% 62%)" />
-            <rect x="14" y="4" width="4" height="16" rx="1" fill="hsl(28 95% 62%)" />
+            <rect x="6" y="4" width="4" height="16" rx="1" fill={accentColor} />
+            <rect x="14" y="4" width="4" height="16" rx="1" fill={accentColor} />
           </motion.svg>
         ) : (
           <motion.svg
@@ -75,7 +86,7 @@ export default function AmbientMusic() {
           >
             <path
               d="M8 5.14V19.14L19 12.14L8 5.14Z"
-              fill="hsl(28 95% 62%)"
+              fill={accentColor}
             />
           </motion.svg>
         )}
@@ -85,7 +96,7 @@ export default function AmbientMusic() {
       {isPlaying && (
         <motion.div
           className="absolute inset-0 rounded-full border-2"
-          style={{ borderColor: "hsl(28 95% 62%)" }}
+          style={{ borderColor: accentColor }}
           animate={{
             scale: [1, 1.5, 1.5],
             opacity: [0.5, 0, 0],
@@ -100,7 +111,7 @@ export default function AmbientMusic() {
 
       {/* Tooltip */}
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-md bg-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap text-xs font-mono tracking-wide" style={{ color: "hsl(220 70% 28%)" }}>
-        {isPlaying ? "Pause" : "Play"} ambient music
+        {isPlaying ? "Pause" : "Play"} {label}
       </div>
     </motion.button>
   )
