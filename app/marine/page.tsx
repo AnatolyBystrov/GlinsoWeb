@@ -424,7 +424,7 @@ export default function MarinePage() {
       <section className="relative z-10 bg-white/80 backdrop-blur-sm border-y border-border/20 py-16">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10">
           <Stat value="$6M" label="Hull limit" />
-          <Stat value="$3M" label="P&I (ROW)" />
+          <Stat value="$3M" label="P&I" />
           <Stat value="3" label="Use types" />
           <Stat value="Lloyd's" label="Capacity" />
         </div>
