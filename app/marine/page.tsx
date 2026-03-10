@@ -28,17 +28,19 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
     setIsMobile(window.innerWidth < 768)
   }, [])
 
-  // On mount: force-play the primary video (handles iOS autoplay restrictions)
+  // Force-play whenever the video element changes (mount OR isMobile switch)
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
     v.play().catch(() => {})
+    // Set gentle playback speed on desktop (looks cinematic, not choppy)
+    if (!isMobile) v.playbackRate = 0.65
     // Periodically recover from unexpected pauses (iOS Low Power Mode etc.)
     const id = setInterval(() => {
       if (v.paused && !v.ended) v.play().catch(() => {})
     }, 2000)
     return () => clearInterval(id)
-  }, [])
+  }, [isMobile])
 
   // Direct DOM crossfade — desktop only, no React state, no re-render hang
   const startCrossfade = useCallback(() => {
@@ -173,7 +175,14 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
           playsInline
           preload="auto"
           style={{ ...videoStyle, position: "absolute", opacity: 0.65 }}
-          onLoadedData={(e) => { e.currentTarget.play().catch(() => {}) }}
+          onLoadedData={(e) => {
+            const v = e.currentTarget
+            v.play().catch(() => {})
+          }}
+          onCanPlayThrough={(e) => {
+            // Extra trigger for iOS that sometimes fires after loadeddata is skipped
+            e.currentTarget.play().catch(() => {})
+          }}
         >
           <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
         </video>
@@ -181,7 +190,8 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
         /* ── Desktop: crossfade between two clones ── */
         <>
           <div ref={wrap1Ref} className="absolute inset-0" style={{ opacity: "0.65", transition: "opacity 2s ease-in-out" }}>
-            <video ref={videoRef} autoPlay muted playsInline preload="auto" style={videoStyle}>
+            <video ref={videoRef} autoPlay muted playsInline preload="auto" style={videoStyle}
+              onLoadedData={(e) => { const v = e.currentTarget; v.playbackRate = 0.65; v.play().catch(() => {}) }}>
               <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
             </video>
           </div>
