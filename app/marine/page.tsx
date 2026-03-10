@@ -18,32 +18,31 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
   const animFrame = useRef<number>(0)
   const activeRef = useRef<1 | 2>(1)
   const fadingRef = useRef(false)
-  const [isMobile, setIsMobile] = useState(false)
+  // NOTE: isMobile is stored in a ref — never causes re-render, so the video element
+  // is always the same DOM node (critical for iOS autoPlay to work after hydration)
+  const isMobileRef = useRef(false)
 
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
   const FADE_DURATION = 1800  // ms
 
-  // Detect mobile once on mount
+  // On mount: detect mobile, force-play, set playback speed, keep alive
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768)
-  }, [])
-
-  // Force-play whenever the video element changes (mount OR isMobile switch)
-  useEffect(() => {
+    isMobileRef.current = window.innerWidth < 768
     const v = videoRef.current
     if (!v) return
+    // Speed: 1x on mobile (smooth), 0.65x on desktop (cinematic)
+    v.playbackRate = isMobileRef.current ? 1.0 : 0.65
     v.play().catch(() => {})
-    // Set gentle playback speed on desktop (looks cinematic, not choppy)
-    if (!isMobile) v.playbackRate = 0.65
-    // Periodically recover from unexpected pauses (iOS Low Power Mode etc.)
+    // Re-check every 2s — handles iOS Low Power Mode / background tab pauses
     const id = setInterval(() => {
       if (v.paused && !v.ended) v.play().catch(() => {})
     }, 2000)
     return () => clearInterval(id)
-  }, [isMobile])
+  }, [])
 
-  // Direct DOM crossfade — desktop only, no React state, no re-render hang
+  // Direct DOM crossfade — desktop only
   const startCrossfade = useCallback(() => {
+    if (isMobileRef.current) return   // mobile: just loop, no crossfade
     if (fadingRef.current) return
     fadingRef.current = true
 
@@ -71,9 +70,8 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
     }, FADE_DURATION + 200)
   }, [])
 
-  // Trigger crossfade when active video finishes (desktop only)
+  // Crossfade on video end (desktop only — on mobile video loops via `loop` attr)
   useEffect(() => {
-    if (isMobile) return
     const v1 = videoRef.current
     const v2 = video2Ref.current
     if (!v1 || !v2) return
@@ -87,7 +85,7 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
       v1.removeEventListener("ended", onEnd1)
       v2.removeEventListener("ended", onEnd2)
     }
-  }, [startCrossfade, isMobile])
+  }, [startCrossfade])
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current
@@ -141,12 +139,6 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
   // Sync video opacity with scroll — direct DOM, no re-render
   useEffect(() => {
     const videoOpacity = Math.max(0.35, 0.65 - scrollProgress * 0.4)
-    if (isMobile) {
-      // Single video path on mobile
-      const v = videoRef.current
-      if (v && !fadingRef.current) v.style.opacity = String(videoOpacity)
-      return
-    }
     const w1 = wrap1Ref.current
     const w2 = wrap2Ref.current
     if (!w1 || !w2 || fadingRef.current) return
@@ -155,7 +147,7 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
     } else {
       w2.style.opacity = String(videoOpacity)
     }
-  }, [scrollProgress, isMobile])
+  }, [scrollProgress])
 
   const videoStyle: React.CSSProperties = {
     position: "absolute", top: "50%", left: "50%",
@@ -165,8 +157,8 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ backgroundColor: "hsl(210 25% 96%)" }}>
-      {isMobile ? (
-        /* ── Mobile: single looping video, no crossfade, plays at normal speed ── */
+      {/* Primary video — always rendered (same DOM node on mobile & desktop so iOS autoPlay works) */}
+      <div ref={wrap1Ref} className="absolute inset-0" style={{ opacity: "0.65", transition: "opacity 2s ease-in-out" }}>
         <video
           ref={videoRef}
           autoPlay
@@ -174,34 +166,19 @@ function MarineVideoBackground({ scrollProgress }: { scrollProgress: number }) {
           muted
           playsInline
           preload="auto"
-          style={{ ...videoStyle, position: "absolute", opacity: 0.65 }}
-          onLoadedData={(e) => {
-            const v = e.currentTarget
-            v.play().catch(() => {})
-          }}
-          onCanPlayThrough={(e) => {
-            // Extra trigger for iOS that sometimes fires after loadeddata is skipped
-            e.currentTarget.play().catch(() => {})
-          }}
+          style={videoStyle}
+          onLoadedData={(e) => { e.currentTarget.play().catch(() => {}) }}
+          onCanPlayThrough={(e) => { e.currentTarget.play().catch(() => {}) }}
         >
           <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
         </video>
-      ) : (
-        /* ── Desktop: crossfade between two clones ── */
-        <>
-          <div ref={wrap1Ref} className="absolute inset-0" style={{ opacity: "0.65", transition: "opacity 2s ease-in-out" }}>
-            <video ref={videoRef} autoPlay muted playsInline preload="auto" style={videoStyle}
-              onLoadedData={(e) => { const v = e.currentTarget; v.playbackRate = 0.65; v.play().catch(() => {}) }}>
-              <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
-            </video>
-          </div>
-          <div ref={wrap2Ref} className="absolute inset-0" style={{ opacity: "0", transition: "opacity 2s ease-in-out" }}>
-            <video ref={video2Ref} muted playsInline preload="auto" style={videoStyle}>
-              <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
-            </video>
-          </div>
-        </>
-      )}
+      </div>
+      {/* Secondary video for desktop crossfade — hidden via CSS on mobile, never affects iOS autoplay */}
+      <div ref={wrap2Ref} className="absolute inset-0" style={{ opacity: "0", transition: "opacity 2s ease-in-out" }}>
+        <video ref={video2Ref} muted playsInline preload="none" style={videoStyle}>
+          <source src={`${basePath}/video/marine-bg.mp4`} type="video/mp4" />
+        </video>
+      </div>
       {/* Ocean tint overlay */}
       <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,60,100,0.18) 0%, rgba(0,100,160,0.10) 50%, rgba(0,40,80,0.25) 100%)" }} />
       {/* Canvas particles */}
